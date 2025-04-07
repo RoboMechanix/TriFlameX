@@ -1,0 +1,5 @@
+Design for 3D Printing Tips
+- The minimum wall thickness for a sturdy wall is 3 mm
+- Having two printed parts fit within another is all about clearance and tolerance.
+- For a tight friction fit, go with 0.25mm of space.
+- For two sliding parts, go with 0.50 mm of space.
