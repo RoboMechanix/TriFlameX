@@ -1,5 +1,26 @@
 Design for 3D Printing Tips
+
 - The minimum wall thickness for a sturdy wall is 3 mm
+
 - Having two printed parts fit within another is all about clearance and tolerance.
+
 - For a tight friction fit, go with 0.25mm of space.
+
 - For two sliding parts, go with 0.50 mm of space.
+
+- Tighten your belts! If you pluck your x and y belts it should be taut and
+sound like a guitar string.
+
+- Level your bed properly! Take a piece of paper and place it between the
+nozzle and build plate. You should feel a slight amount of friction, and an
+equal amount at each corner of your bed.
+
+- Take your time and be patient, print a larger square and make sure the first
+layer looks like it has a consistent thickness all the way around
+
+- Print on the ground, or a sturdy work bench if possible. Vibrations can
+cause quality loss in your parts
+
+- After leveling your bed, make sure you have strong first layer adhesion with
+the z offset feature. If you run your finger over the first layer it shouldn’t move
+off the build plate.
