@@ -1,3 +1,4 @@
+```
 boombot-firefighter/
 ├── docs/
 │   ├── images/
@@ -44,3 +45,4 @@ boombot-firefighter/
 ├── README.md
 ├── CONTRIBUTING.md
 └── .gitignore
+```
