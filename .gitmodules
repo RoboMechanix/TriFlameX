@@ -1,0 +1,3 @@
+[submodule "hardware/BlazeRobot_Hardware"]
+	path = hardware/BlazeRobot_Hardware
+	url = https://github.com/RoboMechanix/BlazeRobot_Hardware.git
