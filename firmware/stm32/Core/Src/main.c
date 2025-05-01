@@ -10,7 +10,7 @@ int main(void)
 	{
     	if (GPIO_digitalRead(GPIOA, 6)){
     		GPIO_digitalWrite(GPIOB, 7, HIGH);
-    	}else if(!GPIO_digitalRead(GPIOB, 6)){
+    	}if(!GPIO_digitalRead(GPIOB, 6)){
     		GPIO_digitalWrite(GPIOB, 7, LOW);
     	}
 	}

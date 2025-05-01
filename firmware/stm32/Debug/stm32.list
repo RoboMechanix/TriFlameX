@@ -105,27 +105,27 @@ int main(void)
  8000168:	f000 f993 	bl	8000492 <GPIO_digitalRead>
  800016c:	4603      	mov	r3, r0
  800016e:	2b00      	cmp	r3, #0
- 8000170:	d005      	beq.n	800017e <main+0x32>
+ 8000170:	d004      	beq.n	800017c <main+0x30>
     		GPIO_digitalWrite(GPIOB, 7, HIGH);
  8000172:	2200      	movs	r2, #0
  8000174:	2107      	movs	r1, #7
  8000176:	4808      	ldr	r0, [pc, #32]	@ (8000198 <main+0x4c>)
  8000178:	f000 f960 	bl	800043c <GPIO_digitalWrite>
- 800017c:	e7f2      	b.n	8000164 <main+0x18>
-    	}else if(!GPIO_digitalRead(GPIOB, 6)){
- 800017e:	2106      	movs	r1, #6
- 8000180:	4805      	ldr	r0, [pc, #20]	@ (8000198 <main+0x4c>)
- 8000182:	f000 f986 	bl	8000492 <GPIO_digitalRead>
- 8000186:	4603      	mov	r3, r0
- 8000188:	2b00      	cmp	r3, #0
- 800018a:	d1eb      	bne.n	8000164 <main+0x18>
+    	}if(!GPIO_digitalRead(GPIOB, 6)){
+ 800017c:	2106      	movs	r1, #6
+ 800017e:	4806      	ldr	r0, [pc, #24]	@ (8000198 <main+0x4c>)
+ 8000180:	f000 f987 	bl	8000492 <GPIO_digitalRead>
+ 8000184:	4603      	mov	r3, r0
+ 8000186:	2b00      	cmp	r3, #0
+ 8000188:	d1ec      	bne.n	8000164 <main+0x18>
     		GPIO_digitalWrite(GPIOB, 7, LOW);
- 800018c:	2201      	movs	r2, #1
- 800018e:	2107      	movs	r1, #7
- 8000190:	4801      	ldr	r0, [pc, #4]	@ (8000198 <main+0x4c>)
- 8000192:	f000 f953 	bl	800043c <GPIO_digitalWrite>
+ 800018a:	2201      	movs	r2, #1
+ 800018c:	2107      	movs	r1, #7
+ 800018e:	4802      	ldr	r0, [pc, #8]	@ (8000198 <main+0x4c>)
+ 8000190:	f000 f954 	bl	800043c <GPIO_digitalWrite>
     	if (GPIO_digitalRead(GPIOA, 6)){
- 8000196:	e7e5      	b.n	8000164 <main+0x18>
+ 8000194:	e7e6      	b.n	8000164 <main+0x18>
+ 8000196:	bf00      	nop
  8000198:	40010c00 	.word	0x40010c00
  800019c:	40010800 	.word	0x40010800
 
