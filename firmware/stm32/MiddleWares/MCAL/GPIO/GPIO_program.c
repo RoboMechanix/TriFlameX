@@ -11,10 +11,6 @@ void GPIO_pinMode(GPIO_TypeDef *GPIOX, uint8_t pinNumber, GPIO_MODE mode){
 		SET_BIT(RCC->APB2ENR, 3);
     } else if (GPIOX == GPIOC) {
 		SET_BIT(RCC->APB2ENR, 4);
-    } else if (GPIOX == GPIOD){
-    	SET_BIT(RCC->APB2ENR, 5);
-    } else if (GPIOX == GPIOE){
-    	SET_BIT(RCC->APB2ENR, 6);
     }
 	volatile uint8_t pinIndex = pinNumber % 8;
 
@@ -27,30 +23,14 @@ void GPIO_pinMode(GPIO_TypeDef *GPIOX, uint8_t pinNumber, GPIO_MODE mode){
 	// Zero the CRX register
 	*CRX &= 0;
 	if (mode == OUTPUT){
-		if (pinIndex == 0){
-			*CRX |= (0x2 << 0);
-		}else{
-			*CRX |= (0x2 << (4*(pinIndex)));
-		}
+		*CRX |= (0x2 << (4*(pinIndex)));
 	}else if (mode == INPUT_FLOAT){
-		if (pinIndex == 0){
-			*CRX |= (0x4 << 0);
-		}else{
-			*CRX |= (0x4 << (4*(pinIndex)));
-		}
+		*CRX |= (0x4 << (4*(pinIndex)));
 	}else if (mode == INPUT_PULLUP){
-		if (pinIndex == 0){
-			*CRX |= (0x8 << 0);
-		}else{
-			*CRX |= (0x8 << (4*(pinIndex)));
-		}
+		*CRX |= (0x8 << (4*(pinIndex)));
 		SET_BIT(GPIOX->ODR, pinNumber);
 	}else if (mode == INPUT_PULLDOWN){
-		if (pinIndex == 0){
-			*CRX |= (0x8 << 0);
-		}else{
-			*CRX |= (0x8 << (4*(pinIndex)));
-		}
+		*CRX |= (0x8 << (4*(pinIndex)));
 		CLEAR_BIT(GPIOX->ODR, pinNumber);
 	}
 }
