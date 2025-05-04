@@ -2,6 +2,7 @@
 #define TIM_INTERFACE_H
 
 #include "stm32f1xx_hal.h"
+#include "stm32f1xx.h"
 #include "../../UTIL/BIT_MATH.h"
 
 void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency);
