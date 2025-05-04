@@ -132,13 +132,26 @@ void TIM_writePWM(TIM_TypeDef *TIMX, uint8_t channel, float dutyCycle){
 	*CCRX = (dutyCycle/100)*(TIMX->ARR);
 }
 
-void TIM_initDelay(TIM_TypeDef *TIMX, int minTime){
+void TIM_initDelay(TIM_TypeDef *TIMX, uint16_t minTime){
 
 }
-void TIM_delay(TIM_TypeDef *TIMX, int delay_ms){
+
+void TIM_delay(TIM_TypeDef *TIMX, uint32_t delay_ms){
+		TIMX->CR1 = 0;
+	    TIMX->CNT = 0;
 		TIMX->PSC = 8000-1;
-		TIMX->ARR = t-1;
+		TIMX->ARR = delay_ms-1;
 		TIMX->CR1 |= TIM_CR1_CEN;
 		while(!(TIMX->SR & TIM_SR_UIF));
 		TIMX->SR &= ~TIM_SR_UIF;
+		TIMX->CR1 &= ~TIM_CR1_CEN;    // Stop timer
 }
+
+void TIM_delay_long(TIM_TypeDef *TIMX, uint32_t delay_ms) { // use it when delay > 65 Seconds
+    while (delay_ms > 0) {
+        uint32_t chunk = (delay_ms > 65000) ? 65000 : delay_ms;
+        TIM_delay(TIMX, chunk);
+        delay_ms -= chunk;
+    }
+}
+
