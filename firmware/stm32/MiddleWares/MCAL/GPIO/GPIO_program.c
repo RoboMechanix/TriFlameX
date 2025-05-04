@@ -20,8 +20,8 @@ void GPIO_pinMode(GPIO_TypeDef *GPIOX, uint8_t pinNumber, GPIO_MODE mode){
 	}else if(pinNumber >= 8 && pinNumber < 16){
 		CRX = &GPIOX->CRH;
 	}
-	// Zero the CRX register
-	*CRX &= 0;
+	// Zero the CRX register's specific pin mode not the whole register
+	*CRX &= ~(0xF << (4*(pinIndex)));
 	if (mode == OUTPUT){
 		*CRX |= (0x2 << (4*(pinIndex)));
 	}else if (mode == INPUT_FLOAT){

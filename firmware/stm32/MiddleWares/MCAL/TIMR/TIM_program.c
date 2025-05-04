@@ -4,56 +4,71 @@ void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
 	if (channel < 1 || channel > 4){
 		return;
 	}
-    // init clock
+	// init clock and corresponding pin in the GPIO
 	if (TIMX == TIM2) {
-		SET_BIT(RCC->APB1ENR, 0);
-		switch (channel){
-		case 1:
-
-			break;
-		case 2:
-
-			break;
-		case 3:
-
-			break;
-		case 4:
-
-			break;
-		}
-    } else if (TIMX == TIM3) {
-		SET_BIT(RCC->APB1ENR, 1);
-		switch (channel){
-		case 1:
-
-			break;
-		case 2:
-
-			break;
-		case 3:
-
-			break;
-		case 4:
-
-			break;
-		}
-    } else if (TIMX == TIM4) {
-		SET_BIT(RCC->APB1ENR, 2);
-		switch (channel){
-		case 1:
-
-			break;
-		case 2:
-
-			break;
-		case 3:
-
-			break;
-		case 4:
-
-			break;
-		}
-    }
+	    SET_BIT(RCC->APB1ENR, 0); // Enable TIM2 clock
+	    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN; // Enable GPIOA clock
+	    switch (channel) {
+	    case 1: // PA0
+	        GPIOA->CRL &= ~(GPIO_CRL_MODE0 | GPIO_CRL_CNF0);
+	        GPIOA->CRL |= (GPIO_CRL_MODE0_1 | GPIO_CRL_CNF0_1); // 2 MHz, AF PP
+	        break;
+	    case 2: // PA1
+	        GPIOA->CRL &= ~(GPIO_CRL_MODE1 | GPIO_CRL_CNF1);
+	        GPIOA->CRL |= (GPIO_CRL_MODE1_1 | GPIO_CRL_CNF1_1);
+	        break;
+	    case 3: // PA2
+	        GPIOA->CRL &= ~(GPIO_CRL_MODE2 | GPIO_CRL_CNF2);
+	        GPIOA->CRL |= (GPIO_CRL_MODE2_1 | GPIO_CRL_CNF2_1);
+	        break;
+	    case 4: // PA3
+	        GPIOA->CRL &= ~(GPIO_CRL_MODE3 | GPIO_CRL_CNF3);
+	        GPIOA->CRL |= (GPIO_CRL_MODE3_1 | GPIO_CRL_CNF3_1);
+	        break;
+	    }
+	} else if (TIMX == TIM3) {
+	    SET_BIT(RCC->APB1ENR, 1); // Enable TIM3 clock
+	    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN; // Enable GPIOA & GPIOB
+	    switch (channel) {
+	    case 1: // PA6
+	        GPIOA->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6);
+	        GPIOA->CRL |= (GPIO_CRL_MODE6_1 | GPIO_CRL_CNF6_1);
+	        break;
+	    case 2: // PA7
+	        GPIOA->CRL &= ~(GPIO_CRL_MODE7 | GPIO_CRL_CNF7);
+	        GPIOA->CRL |= (GPIO_CRL_MODE7_1 | GPIO_CRL_CNF7_1);
+	        break;
+	    case 3: // PB0
+	        GPIOB->CRL &= ~(GPIO_CRL_MODE0 | GPIO_CRL_CNF0);
+	        GPIOB->CRL |= (GPIO_CRL_MODE0_1 | GPIO_CRL_CNF0_1);
+	        break;
+	    case 4: // PB1
+	        GPIOB->CRL &= ~(GPIO_CRL_MODE1 | GPIO_CRL_CNF1);
+	        GPIOB->CRL |= (GPIO_CRL_MODE1_1 | GPIO_CRL_CNF1_1);
+	        break;
+	    }
+	} else if (TIMX == TIM4) {
+	    SET_BIT(RCC->APB1ENR, 2); // Enable TIM4 clock
+	    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN; // Enable GPIOB clock
+	    switch (channel) {
+	    case 1: // PB6
+	        GPIOB->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6);
+	        GPIOB->CRL |= (GPIO_CRL_MODE6_1 | GPIO_CRL_CNF6_1);
+	        break;
+	    case 2: // PB7
+	        GPIOB->CRL &= ~(GPIO_CRL_MODE7 | GPIO_CRL_CNF7);
+	        GPIOB->CRL |= (GPIO_CRL_MODE7_1 | GPIO_CRL_CNF7_1);
+	        break;
+	    case 3: // PB8
+	        GPIOB->CRH &= ~(GPIO_CRH_MODE8 | GPIO_CRH_CNF8);
+	        GPIOB->CRH |= (GPIO_CRH_MODE8_1 | GPIO_CRH_CNF8_1);
+	        break;
+	    case 4: // PB9
+	        GPIOB->CRH &= ~(GPIO_CRH_MODE9 | GPIO_CRH_CNF9);
+	        GPIOB->CRH |= (GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1);
+	        break;
+	    }
+	}
 
 	// direction
 	CLEAR_BIT(TIMX->CR1, 4);
