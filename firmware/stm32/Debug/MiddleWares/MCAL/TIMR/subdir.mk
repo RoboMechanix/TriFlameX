@@ -5,13 +5,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../MiddleWares/MCAL/TIMR/TIMR_2_program.c 
+../MiddleWares/MCAL/TIMR/TIM_program.c 
 
 C_DEPS += \
-./MiddleWares/MCAL/TIMR/TIMR_2_program.d 
+./MiddleWares/MCAL/TIMR/TIM_program.d 
 
 OBJS += \
-./MiddleWares/MCAL/TIMR/TIMR_2_program.o 
+./MiddleWares/MCAL/TIMR/TIM_program.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +21,7 @@ MiddleWares/MCAL/TIMR/%.o MiddleWares/MCAL/TIMR/%.su MiddleWares/MCAL/TIMR/%.cyc
 clean: clean-MiddleWares-2f-MCAL-2f-TIMR
 
 clean-MiddleWares-2f-MCAL-2f-TIMR:
-	-$(RM) ./MiddleWares/MCAL/TIMR/TIMR_2_program.cyclo ./MiddleWares/MCAL/TIMR/TIMR_2_program.d ./MiddleWares/MCAL/TIMR/TIMR_2_program.o ./MiddleWares/MCAL/TIMR/TIMR_2_program.su
+	-$(RM) ./MiddleWares/MCAL/TIMR/TIM_program.cyclo ./MiddleWares/MCAL/TIMR/TIM_program.d ./MiddleWares/MCAL/TIMR/TIM_program.o ./MiddleWares/MCAL/TIMR/TIM_program.su
 
 .PHONY: clean-MiddleWares-2f-MCAL-2f-TIMR
 
