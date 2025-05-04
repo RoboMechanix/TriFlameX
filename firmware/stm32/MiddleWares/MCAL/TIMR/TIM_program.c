@@ -7,10 +7,52 @@ void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
     // init clock
 	if (TIMX == TIM2) {
 		SET_BIT(RCC->APB1ENR, 0);
+		switch (channel){
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+		case 4:
+
+			break;
+		}
     } else if (TIMX == TIM3) {
 		SET_BIT(RCC->APB1ENR, 1);
+		switch (channel){
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+		case 4:
+
+			break;
+		}
     } else if (TIMX == TIM4) {
 		SET_BIT(RCC->APB1ENR, 2);
+		switch (channel){
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+		case 4:
+
+			break;
+		}
     }
 
 	// direction
@@ -28,20 +70,9 @@ void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
 	volatile uint32_t *CCMRX;
 	uint8_t modChannel = 1;
 	if (channel <= 2){
-
+		CCMRX = &TIMX->CCMR1;
+		modChannel = channel;
 	}else{
-
-	}
-	if (channel == 1) {
-		CCMRX = &TIMX->CCMR1;
-		modChannel = channel;
-	} else if (channel == 2) {
-		CCMRX = &TIMX->CCMR1;
-		modChannel = channel;
-	} else if (channel == 3) {
-		CCMRX = &TIMX->CCMR2;
-		modChannel = channel-2;
-	} else if (channel == 4) {
 		CCMRX = &TIMX->CCMR2;
 		modChannel = channel-2;
 	}
