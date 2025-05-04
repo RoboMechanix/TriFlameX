@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-=======
-../MiddleWares/MCAL/TIMR/TIM_program.c:3:6:TIM_initPWM	20
-../MiddleWares/MCAL/TIMR/TIM_program.c:118:6:TIM_writePWM	9
->>>>>>> parent of 121c72b (fixing small syntax error in the delay)
