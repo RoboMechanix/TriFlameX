@@ -1,2 +1,6 @@
 ../MiddleWares/MCAL/TIMR/TIM_program.c:3:6:TIM_initPWM	20
 ../MiddleWares/MCAL/TIMR/TIM_program.c:118:6:TIM_writePWM	9
+../MiddleWares/MCAL/TIMR/TIM_program.c:135:6:TIM_initDelay	2
+../MiddleWares/MCAL/TIMR/TIM_program.c:163:6:TIM_delay	2
+../MiddleWares/MCAL/TIMR/TIM_program.c:175:6:TIM_delay_long	2
+../MiddleWares/MCAL/TIMR/TIM_program.c:183:6:enableTimerClock	7
