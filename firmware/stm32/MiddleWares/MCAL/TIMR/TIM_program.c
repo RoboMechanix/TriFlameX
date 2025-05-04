@@ -133,10 +133,35 @@ void TIM_writePWM(TIM_TypeDef *TIMX, uint8_t channel, float dutyCycle){
 }
 
 void TIM_initDelay(TIM_TypeDef *TIMX, uint16_t minTime){
+		enableTimerClock(TIMX);
+		uint32_t clk_freq = 8000000; // 8 MHz
+		uint32_t target_ticks = minTime_ms * 1000; // Convert minTime_ms to microseconds
+
+	    uint16_t prescaler = 0;
+	    uint32_t arr = 0;
+
+	    // Try to find the smallest prescaler that gives ARR <= 65535
+	    for (prescaler = 1; prescaler <= 0xFFFF; prescaler++) {
+	        arr = (clk_freq / prescaler) * minTime_ms / 1000;
+	        if (arr <= 0xFFFF) break;
+	    }
+
+	    if (prescaler > 0xFFFF) {
+	        return;
+	    }
+
+	    TIMX->CR1 = 0;
+	    TIMX->PSC = prescaler - 1;
+	    TIMX->ARR = arr - 1;
+	    TIMX->EGR = TIM_EGR_UG;
+	    TIMX->CNT = 0;
+	    TIMX->SR &= ~TIM_SR_UIF;
+	    TIMX->CR1 |= TIM_CR1_CEN;
 
 }
 
 void TIM_delay(TIM_TypeDef *TIMX, uint32_t delay_ms){
+		enableTimerClock(TIMX);
 		TIMX->CR1 = 0;
 	    TIMX->CNT = 0;
 		TIMX->PSC = 8000-1;
@@ -154,4 +179,37 @@ void TIM_delay_long(TIM_TypeDef *TIMX, uint32_t delay_ms) { // use it when delay
         delay_ms -= chunk;
     }
 }
+
+void enableTimerClock(TIM_TypeDef *TIMx) {
+    switch ((uint32_t)TIMx) {
+        case (uint32_t)TIM1:
+            RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
+            break;
+        case (uint32_t)TIM2:
+            RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+            break;
+        case (uint32_t)TIM3:
+            RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+            break;
+        case (uint32_t)TIM4:
+            RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+            break;
+        case (uint32_t)TIM5:
+            RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+            break;
+        case (uint32_t)TIM6:
+            RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
+            break;
+        case (uint32_t)TIM7:
+            RCC->APB1ENR |= RCC_APB1ENR_TIM7EN;
+            break;
+        case (uint32_t)TIM8:
+            RCC->APB2ENR |= RCC_APB2ENR_TIM8EN;
+            break;
+        default:
+            break;
+    }
+}
+
+
 
