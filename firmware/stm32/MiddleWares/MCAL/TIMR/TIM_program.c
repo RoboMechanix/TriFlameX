@@ -131,3 +131,14 @@ void TIM_writePWM(TIM_TypeDef *TIMX, uint8_t channel, float dutyCycle){
     }
 	*CCRX = (dutyCycle/100)*(TIMX->ARR);
 }
+
+void TIM_initDelay(TIM_TypeDef *TIMX, int minTime){
+
+}
+void TIM_delay(TIM_TypeDef *TIMX, int delay_ms){
+		TIMX->PSC = 8000-1;
+		TIMX->ARR = t-1;
+		TIMX->CR1 |= TIM_CR1_CEN;
+		while(!(TIMX->SR & TIM_SR_UIF));
+		TIMX->SR &= ~TIM_SR_UIF;
+}
