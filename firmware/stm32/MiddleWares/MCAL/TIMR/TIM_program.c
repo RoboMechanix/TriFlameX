@@ -132,7 +132,7 @@ void TIM_writePWM(TIM_TypeDef *TIMX, uint8_t channel, float dutyCycle){
 	*CCRX = (dutyCycle/100)*(TIMX->ARR);
 }
 
-void TIM_initDelay(TIM_TypeDef *TIMX, uint16_t minTime){
+void TIM_initDelay(TIM_TypeDef *TIMX, uint16_t minTime_ms){
 		enableTimerClock(TIMX);
 		uint32_t clk_freq = 8000000; // 8 MHz
 		uint32_t target_ticks = minTime_ms * 1000; // Convert minTime_ms to microseconds
@@ -193,18 +193,6 @@ void enableTimerClock(TIM_TypeDef *TIMx) {
             break;
         case (uint32_t)TIM4:
             RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
-            break;
-        case (uint32_t)TIM5:
-            RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
-            break;
-        case (uint32_t)TIM6:
-            RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
-            break;
-        case (uint32_t)TIM7:
-            RCC->APB1ENR |= RCC_APB1ENR_TIM7EN;
-            break;
-        case (uint32_t)TIM8:
-            RCC->APB2ENR |= RCC_APB2ENR_TIM8EN;
             break;
         default:
             break;

@@ -38,14 +38,11 @@ int main(void)
 //	GPIOA->CRL |= 0x44444440; // pin A0 analog input
 //	ADC_init();
 //	GPIO_pinMode(GPIOA, 6, INPUT_PULLUP);
-	TIM_initPWM(TIM2, 1, 50);
-//	GPIO_pinMode(GPIOB, 12, OUTPUT);
-//	TIM_initDelay(TIM2, 10);
+//	TIM_initPWM(TIM4, 4, 100);
+	GPIO_pinMode(GPIOB, 12, OUTPUT);
+	TIM_initDelay(TIM2, 10);
 	while (1)
 	{
-
-		TIM_writePWM(TIM2, 1, 4.5);
-
 //		uint16_t reading = read_ADC();
 //		reading = map(reading, 0, 4095, 0, 100);
 //		if (GPIO_digitalRead(GPIOA, 6)){
@@ -53,10 +50,10 @@ int main(void)
 //		}if(!GPIO_digitalRead(GPIOA, 6)){
 //			TIM_writePWM(TIM4, 4, reading);
 //		}
-//		GPIO_digitalWrite(GPIOB, 12, HIGH);
-//		TIM_delay(TIM2, 100);
-//		GPIO_digitalWrite(GPIOB, 12, LOW);
-//		TIM_delay(TIM2, 100);
+		GPIO_digitalWrite(GPIOB, 12, HIGH);
+		TIM_delay(TIM2, 100);
+		GPIO_digitalWrite(GPIOB, 12, LOW);
+		TIM_delay(TIM2, 100);
 	}
 
 }
