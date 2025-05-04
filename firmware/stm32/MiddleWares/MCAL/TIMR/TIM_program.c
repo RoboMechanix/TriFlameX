@@ -1,4 +1,9 @@
 #include "TIM_interface.h"
+#include <STM32f103Xb.h>
+
+unint32_t millis=0;
+uint16_t trigTime_ms_global ;
+
 
 void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
 	if (channel < 1 || channel > 4){
@@ -180,7 +185,67 @@ void TIM_delay_long(TIM_TypeDef *TIMX, uint32_t delay_ms) { // use it when delay
     }
 }
 
+void TIM_initMillis(TIM_TypeDef *TIMx, uint16_t trigTime_ms)
+{
+		enableTimerClock(TIMx);
+		trigTime_ms_global = trigTime_ms;
+		TIMx->CCER|= TIM_CCER_CC1E;
+		TIMx->DIER |= TIM_DIER_CC1IE;
+		TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
+		TIMx->CCR1 = (trigTime_ms);
+		TIMx->CR1 = 0;
+	    TIMx->CNT = 0;
+		TIMx->PSC = 8000-1;
+		TIMx->ARR = (60000)-1;
+		switch (TIMx)
+		{
+		case TIM2:
+		NVIC_EnableIRQ(TIM2_IRQn);
+			break;
+			case TIM3:
+		NVIC_EnableIRQ(TIM3_IRQn);
+			break;
+			case TIM4:
+		NVIC_EnableIRQ(TIM4_IRQn);
+			break;
+		
+		default:
+			break;
+		}
+		TIMx->CR1 |= TIM_CR1_CEN;
+}
+
+uint32_t TIM_Millis()
+{
+    return millis;
+}
+void TIM2_IRQHandler(){
+ if (TIM2->SR & TIM_SR_CC1IF){
+	TIM2->SR &= ~TIM_SR_CC1IF;
+	TIM2->CCR1 += trigTime_ms_global;
+	millis++;
+ }
+}
+void TIM3_IRQHandler(){
+	if (TIM3->SR & TIM_SR_CC1IF){
+		TIM3->SR &= ~TIM_SR_CC1IF;
+		TIM3->CCR1 += trigTime_ms_global;
+	millis++;
+ }
+
+}
+void TIM4_IRQHandler(){
+	if (TIM4->SR & TIM_SR_CC1IF){
+		TIM4->SR &= ~TIM_SR_CC1IF;
+		TIM4->CCR1 += trigTime_ms_global;
+	millis++;
+ }
+
+}
+
+
 void enableTimerClock(TIM_TypeDef *TIMx) {
+
     switch ((uint32_t)TIMx) {
         case (uint32_t)TIM1:
             RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
@@ -198,6 +263,5 @@ void enableTimerClock(TIM_TypeDef *TIMx) {
             break;
     }
 }
-
 
 

@@ -10,6 +10,7 @@ void TIM_writePWM(TIM_TypeDef *TIMX, uint8_t channel, float dutyCycle);
 void TIM_initDelay(TIM_TypeDef *TIMX, uint16_t minTime_ms);
 void TIM_delay(TIM_TypeDef *TIMX, uint32_t delay_ms);
 void TIM_delay_long(TIM_TypeDef *TIMx, uint32_t delay_ms);
-
+void TIM_initMillis(TIM_TypeDef *TIMx, uint32_t trigTime_ms);
+uint32_t TIM_Millis();
 
 #endif
