@@ -15,6 +15,8 @@ volatile uint16_t counter4;
 volatile void (*callback2)();
 volatile void (*callback3)();
 volatile void (*callback4)();
+uint32_t millis=0;
+uint16_t trigTime_ms_global ;
 
 void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
 	if (channel < 1 || channel > 4){
@@ -288,8 +290,41 @@ void TIM_callback(TIM_TypeDef *TIMX, float minTimeMs, float timeMs, void (*appli
 	// start counting
 	SET_BIT(TIMX->CR1, 0);
 }
+void TIM_initMillis(TIM_TypeDef *TIMX, uint16_t trigTime_ms)
+{
+		enableTimerClock(TIMX);
+		trigTime_ms_global = trigTime_ms;
+		TIMX->CCER|= TIM_CCER_CC1E;
+		TIMX->DIER |= TIM_DIER_CC1IE;
+		TIMX->CCMR1 &= ~TIM_CCMR1_CC1S;
+		TIMX->CCR1 = (trigTime_ms);
+		TIMX->CR1 = 0;
+	    TIMX->CNT = 0;
+		TIMX->PSC = 8000-1;
+		TIMX->ARR = (60000)-1;
+		if (TIMX == TIM2) {
+			NVIC_EnableIRQ(TIM2_IRQn);
+		} else if (TIMX == TIM3) {
+			NVIC_EnableIRQ(TIM3_IRQn);
+		} else if (TIMX == TIM4) {
+			NVIC_EnableIRQ(TIM4_IRQn);
+		}
+		
+		TIMX->CR1 |= TIM_CR1_CEN;
+}
+
+uint32_t TIM_Millis()
+{
+    return millis;
+}
+
 
 void TIM2_IRQHandler(){
+	if (TIM2->SR & TIM_SR_CC1IF){
+		TIM2->SR &= ~TIM_SR_CC1IF;
+		TIM2->CCR1 += trigTime_ms_global;
+		millis++;
+	 }
 	if ((TIM2->SR & (1 << 0)) == 1){ // check the uif flag
 		TIM2->SR &= ~(1 << 0); // clear the uif
 		counter2 ++;
@@ -303,6 +338,11 @@ void TIM2_IRQHandler(){
 
 void TIM3_IRQHandler(){
 	if ((TIM3->SR & (1 << 0)) == 1){ // check the uif flag
+		if (TIM3->SR & TIM_SR_CC1IF){
+			TIM3->SR &= ~TIM_SR_CC1IF;
+			TIM3->CCR1 += trigTime_ms_global;
+		millis++;
+	 }
 		TIM3->SR &= ~(1 << 0); // clear the uif
 		counter3 ++;
 		if (counter3 == n3){
@@ -315,6 +355,11 @@ void TIM3_IRQHandler(){
 
 void TIM4_IRQHandler(){
 	if ((TIM4->SR & (1 << 0)) == 1){ // check the uif flag
+		if (TIM4->SR & TIM_SR_CC1IF){
+			TIM4->SR &= ~TIM_SR_CC1IF;
+			TIM4->CCR1 += trigTime_ms_global;
+		millis++;
+	 }
 		TIM4->SR &= ~(1 << 0); // clear the uif
 		counter4 ++;
 		if (counter4 == n4){
