@@ -11,6 +11,7 @@ RM := rm -rf
 -include sources.mk
 -include MiddleWares/MCAL/TIMR/subdir.mk
 -include MiddleWares/MCAL/GPIO/subdir.mk
+-include MiddleWares/HAL/SERVO/subdir.mk
 -include Drivers/STM32F1xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk

@@ -2,6 +2,7 @@
 #include "main.h"
 #include "../../MiddleWares/MCAL/TIMR/TIM_interface.h"
 #include "../../MiddleWares/MCAL/GPIO/GPIO_interface.h"
+#include "../../MiddleWares/HAL/SERVO/SER_interface.h"
 
 float map(float val, float from1, float to1, float from2, float to2){
 	return (val/(to1-from1)*(to2-from1));
@@ -32,28 +33,29 @@ uint16_t read_ADC(){
 
 int main(void)
 {
-//	RCC->APB2ENR |= (1 << 2) | (1 << 3); // CLK PA, PB
-//	GPIOA->CRL &= 0;
-//	GPIOB->CRL &= 0;
-//	GPIOA->CRL |= 0x44444440; // pin A0 analog input
-//	ADC_init();
-//	GPIO_pinMode(GPIOA, 6, INPUT_PULLUP);
-//	TIM_initPWM(TIM4, 4, 100);
-	GPIO_pinMode(GPIOB, 12, OUTPUT);
-	TIM_initDelay(TIM2, 10);
+	RCC->APB2ENR |= (1 << 2) | (1 << 3); // CLK PA, PB
+	GPIOA->CRL &= 0;
+	GPIOB->CRL &= 0;
+	GPIOA->CRL |= 0x44444440; // pin A0 analog input
+	ADC_init();
+//	TIM_initPWM(TIM2, 1, 50);
+	TIM_initDelay(TIM4, 1);
+//	float i = 2.5;
+	SER_init(TIM2, 1);
 	while (1)
 	{
-//		uint16_t reading = read_ADC();
-//		reading = map(reading, 0, 4095, 0, 100);
-//		if (GPIO_digitalRead(GPIOA, 6)){
-//			TIM_writePWM(TIM4, 4, reading);
-//		}if(!GPIO_digitalRead(GPIOA, 6)){
-//			TIM_writePWM(TIM4, 4, reading);
+		SER_write(TIM2, 1, 180);
+//		while (i <= 12.5){
+//			TIM_writePWM(TIM2, 1, i);
+//			i += 0.25;
+//			TIM_delay(TIM4, 50);
 //		}
-		GPIO_digitalWrite(GPIOB, 12, HIGH);
-		TIM_delay(TIM2, 100);
-		GPIO_digitalWrite(GPIOB, 12, LOW);
-		TIM_delay(TIM2, 100);
+//		while (i >= 2.5){
+//			TIM_writePWM(TIM2, 1, i);
+//			i -= 0.25;
+//			TIM_delay(TIM4, 50);
+//		}
+
 	}
 
 }
