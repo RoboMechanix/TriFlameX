@@ -1,5 +1,21 @@
 #include "TIM_interface.h"
 
+volatile uint16_t *preload;
+volatile uint16_t preload2;
+volatile uint16_t preload3;
+volatile uint16_t preload4;
+volatile uint16_t *n;
+volatile uint16_t n2;
+volatile uint16_t n3;
+volatile uint16_t n4;
+volatile uint16_t *counter;
+volatile uint16_t counter2;
+volatile uint16_t counter3;
+volatile uint16_t counter4;
+volatile void (*callback2)();
+volatile void (*callback3)();
+volatile void (*callback4)();
+
 void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
 	if (channel < 1 || channel > 4){
 		return;
@@ -70,7 +86,7 @@ void TIM_initPWM(TIM_TypeDef *TIMX, uint8_t channel, float frequency){
 	    }
 	}
 
-	// direction
+	// direction upward
 	CLEAR_BIT(TIMX->CR1, 4);
 	// mode 'edge aligned'
 	CLEAR_BIT(TIMX->CR1, 5);
@@ -199,5 +215,112 @@ void enableTimerClock(TIM_TypeDef *TIMx) {
     }
 }
 
+void TIM_callback(TIM_TypeDef *TIMX, float minTimeMs, float timeMs, void (*application)()){ // we can change the callback function to be anything
+	// till now the mintime doesn't do anything
+	// init clock and the corresponding timer's interrupt
+	if (TIMX == TIM2) {
+	    SET_BIT(RCC->APB1ENR, 0); // Enable TIM2 clock
+		SET_BIT(TIMX->DIER, 0);// Enable update interrupt (UIE)
+		// enable interrupt
+		NVIC_EnableIRQ(TIM2_IRQn);
+		// set interrupt priority
+		NVIC_SetPriority(TIM2_IRQn, 1);
+		counter = &counter2;
+		preload = &preload2;
+		n = &n2;
+		callback2 = application;
+	} else if (TIMX == TIM3) {
+	    SET_BIT(RCC->APB1ENR, 1); // Enable TIM3 clock
+		SET_BIT(TIMX->DIER, 0);// Enable update interrupt (UIE)
+		// enable interrupt
+		NVIC_EnableIRQ(TIM3_IRQn);
+		// set interrupt priority
+		NVIC_SetPriority(TIM3_IRQn, 1);
+		counter = &counter3;
+		preload = &preload3;
+		n = &n3;
+		callback3 = application;
+	} else if (TIMX == TIM4) {
+	    SET_BIT(RCC->APB1ENR, 2); // Enable TIM4 clock
+		SET_BIT(TIMX->DIER, 0);// Enable update interrupt (UIE)
+		// enable NVIC interrupt
+		NVIC_EnableIRQ(TIM4_IRQn);
+		// set interrupt priority
+		NVIC_SetPriority(TIM4_IRQn, 1);
+		counter = &counter4;
+		preload = &preload4;
+		n = &n4;
+		callback4 = application;
+	}
+	// direction upward
+	CLEAR_BIT(TIMX->CR1, 4);
+	// mode 'edge aligned'
+	CLEAR_BIT(TIMX->CR1, 5);
+	CLEAR_BIT(TIMX->CR1, 6);
 
+//	uint32_t prescaler = ((minTimeMs*4000.0) - 1);
+//	uint32_t arr = 1; // the arr should be >= 1
+//	if (prescaler > 65535){
+//		prescaler = 65535;
+//		arr = ((minTimeMs*8000)/(prescaler + 1)) - 1;
+//		if (arr > 65535){ // we won't reach this case unless the minimum time was more than 8 minutes
+//			arr = 65535;
+//		}
+//	}
 
+	uint32_t prescaler = 255;
+	uint32_t arr = 100;
+
+	TIMX->ARR = (uint16_t)arr;
+	TIMX->PSC = prescaler;
+	uint32_t arr_new = ((timeMs*8000)/(TIMX->PSC + 1)) - 1;
+	if (arr_new <= TIMX->ARR){
+		TIMX->ARR = (uint16_t)arr_new;
+		*n = 1;
+	}else{
+		float div = ((float)(arr_new + 1)) / ((float)(TIMX->ARR + 1));
+		*n = (uint16_t)div;
+		*preload = (uint16_t)(((1 - (div - (float)(*n)))) * ((float)(TIMX->ARR + 1))); // watch out we need old n
+		*n = *n + 1; // due to the preload the interrupt number should increase by 1
+		TIMX->CNT = *preload;
+	}
+
+	// start counting
+	SET_BIT(TIMX->CR1, 0);
+}
+
+void TIM2_IRQHandler(){
+	if ((TIM2->SR & (1 << 0)) == 1){ // check the uif flag
+		TIM2->SR &= ~(1 << 0); // clear the uif
+		counter2 ++;
+		if (counter2 == n2){
+			counter2 = 0;
+			TIM2->CNT = preload2; // set the preload
+			callback2();
+		}
+	}
+}
+
+void TIM3_IRQHandler(){
+	if ((TIM3->SR & (1 << 0)) == 1){ // check the uif flag
+		TIM3->SR &= ~(1 << 0); // clear the uif
+		counter3 ++;
+		if (counter3 == n3){
+			counter3 = 0;
+			TIM3->CNT = preload3; // set the preload
+			callback3();
+		}
+	}
+}
+
+void TIM4_IRQHandler(){
+	if ((TIM4->SR & (1 << 0)) == 1){ // check the uif flag
+		TIM4->SR &= ~(1 << 0); // clear the uif
+		counter4 ++;
+		if (counter4 == n4){
+			counter4 = 0;
+			TIM4->CNT = preload4; // set the preload
+			callback4();
+		}
+	}
+}

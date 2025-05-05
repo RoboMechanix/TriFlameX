@@ -30,29 +30,37 @@ uint16_t read_ADC(){
     return ADC1->DR;
 }
 
+void func(){
+	GPIOC->ODR ^= (1 << 14); // toggle the led PC14
+}
 
 int main(void)
 {
-	RCC->APB2ENR |= (1 << 2) | (1 << 3); // CLK PA, PB
-	GPIOA->CRL &= 0;
-	GPIOB->CRL &= 0;
-	GPIOA->CRL |= 0x44444440; // pin A0 analog input
-	ADC_init();
-//	TIM_initPWM(TIM2, 1, 50);
-	TIM_initDelay(TIM4, 1);
-//	float i = 2.5;
-	SER_init(TIM2, 1);
+//	RCC->APB2ENR |= (1 << 2) | (1 << 3); // CLK PA, PB
+//	GPIOA->CRL &= 0;
+//	GPIOB->CRL &= 0;
+//	GPIOA->CRL |= 0x44444440; // pin A0 analog input
+//	ADC_init();
+////	TIM_initPWM(TIM2, 1, 50);
+//	TIM_initDelay(TIM4, 1);
+//	float i = 0;
+//	SER_init(TIM2, 1);
+	RCC->APB2ENR |= (1 << 4);   // Enable GPIOC clock
+	GPIOC->CRH = 0;
+	GPIOC->CRH = 0x42444444;    // Set PC14 as output, others default
+	TIM_callback(TIM4, 200, 1000, &func); // we can change the callback function to be anything
 	while (1)
 	{
-		SER_write(TIM2, 1, 180);
-//		while (i <= 12.5){
-//			TIM_writePWM(TIM2, 1, i);
-//			i += 0.25;
+//		TIM_delay(TIM4, 1000);
+//		while (i <= 180){
+//			SER_write(TIM2, 1, i);
+//			i += 5;
 //			TIM_delay(TIM4, 50);
 //		}
-//		while (i >= 2.5){
-//			TIM_writePWM(TIM2, 1, i);
-//			i -= 0.25;
+//		TIM_delay(TIM4, 1000);
+//		while (i >= 0){
+//			SER_write(TIM2, 1, i);
+//			i -= 5;
 //			TIM_delay(TIM4, 50);
 //		}
 
