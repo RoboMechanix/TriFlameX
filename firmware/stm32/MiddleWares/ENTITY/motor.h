@@ -1,5 +1,5 @@
 #include "stm32f1xx.h"
-
+#include "MCAL/GPIO/GPIO_interface.h"
 
 
 typedef enum {
@@ -10,7 +10,9 @@ typedef enum {
 
 
 
-void initMotor(TIM_TypeDef TIMX, uint8_t Channel, float percentage, GPIO_TypeDef *ENPIN ,GPIO_TypeDef *IN1PIN , GPIO_TypeDef *IN2PIN);
+void initMotor(TIM_TypeDef TIMX, uint8_t Channel, float percentage, GPIO_TypeDef *EN , uint8_t ENNum,
+																	GPIO_TypeDef *IN1 ,uint8_t IN1Num,
+																	GPIO_TypeDef *IN2 ,uint8_t IN2Num);
 void setDir(DIR dir);
 void setSpeed(float velocityPercentage);
 void stop();
