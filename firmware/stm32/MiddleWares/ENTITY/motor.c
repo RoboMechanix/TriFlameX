@@ -4,7 +4,7 @@ struct motor {
 
 	uint8_t id;
 	DIR dir;
-	float pwm;
+	float speed; // PWM .... percentage .... duty cycle
 	uint8_t Ch;
 	GPIO_TypeDef *EN;
 	uint8_t ENNum;
@@ -16,8 +16,32 @@ struct motor {
 
 
 void initMotor(TIM_TypeDef TIMX, uint8_t Channel, float percentage, GPIO_TypeDef *ENPIN ,GPIO_TypeDef *IN1PIN , GPIO_TypeDef *IN2PIN);
-void setDir(DIR dir);
+
+
+
+void setDir(DIR dir){
+	motor-> dir = dir;
+
+	if (dir == reverse){ // IN1 IN2  -> 01
+		GPIO_digitalWrite(IN1,IN1Num,LOW);
+		GPIO_digitalWrite(IN2,IN2Num,HIGH);
+	}
+	else if (dir == forward){ // IN1 IN2  -> 10
+		GPIO_digitalWrite(IN1,IN1Num,HIGH);
+		GPIO_digitalWrite(IN2,IN2Num,LOW);
+	}
+
+}
+
+DIR getDir(){
+	return dir;
+}
+
 void setSpeed(float velocityPercentage);
+
+float getSpeed(){
+	return speed;
+}
 
 void stop(){
 	GPIO_digitalWrite(EN,ENNum,LOW);
