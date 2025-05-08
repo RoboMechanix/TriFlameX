@@ -1,10 +1,12 @@
 #include "motor.h"
 
 void initMotor(Motor *motor, float velocityPercentage,
+			   TIM_TypeDef *TIMX,
                GPIO_TypeDef *EN, uint8_t ENNum,
                GPIO_TypeDef *IN1, uint8_t IN1Num,
                GPIO_TypeDef *IN2, uint8_t IN2Num) {
-    motor->dir = FORWARD;
+
+    motor->dir = FORWARD;// default direction
     motor->speed = velocityPercentage;
     motor->EN = EN;
     motor->IN1 = IN1;
@@ -12,8 +14,9 @@ void initMotor(Motor *motor, float velocityPercentage,
     motor->ENNum = ENNum;
     motor->IN1Num = IN1Num;
     motor->IN2Num = IN2Num;
-
-    setDir(motor, FORWARD); // default direction
+    motor-> TIMX = TIMX;
+    TIM_initPWM( motor-> TIMX, motor-> Ch, velocityPercentage);
+    setDir(motor, FORWARD);
 }
 
 void setDir(Motor *motor, DIR dir) {
@@ -33,14 +36,14 @@ DIR getDir(Motor *motor) {
 
 void setSpeed(Motor *motor, float velocityPercentage) {
     motor->speed = velocityPercentage;
-
+    TIM_writePWM(motor-> TIMX, motor-> Ch, velocityPercentage);
 }
 
 float getSpeed(Motor *motor) {
     return motor->speed;
 }
 
-void stop(Motor *motor) {
+void stop(Motor *motor) {  // IN1 IN2  -> 11
     GPIO_digitalWrite(motor->EN, motor->ENNum, LOW);
     GPIO_digitalWrite(motor->IN1, motor->IN1Num, LOW);
     GPIO_digitalWrite(motor->IN2, motor->IN2Num, LOW);

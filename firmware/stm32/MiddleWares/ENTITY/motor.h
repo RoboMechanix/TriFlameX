@@ -19,9 +19,11 @@ typedef struct {
     uint8_t IN1Num;
     GPIO_TypeDef *IN2;
     uint8_t IN2Num;
+    TIM_TypeDef *TIMX;
 } Motor;
 
 void initMotor(Motor *motor, float velocityPercentage,
+			   TIM_TypeDef *TIMX,
                GPIO_TypeDef *EN, uint8_t ENNum,
                GPIO_TypeDef *IN1, uint8_t IN1Num,
                GPIO_TypeDef *IN2, uint8_t IN2Num);
