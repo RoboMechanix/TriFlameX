@@ -3,8 +3,8 @@
 
 
 typedef enum {
-	reverse = 0,
-	forward = 1
+	REVERSE = 0,
+	FORWARD = 1
 } DIR;
 
 
