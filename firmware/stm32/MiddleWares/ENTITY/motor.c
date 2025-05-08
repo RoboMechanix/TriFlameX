@@ -1,62 +1,47 @@
 #include "motor.h"
 
-struct motor {
+void initMotor(Motor *motor, float velocityPercentage,
+               GPIO_TypeDef *EN, uint8_t ENNum,
+               GPIO_TypeDef *IN1, uint8_t IN1Num,
+               GPIO_TypeDef *IN2, uint8_t IN2Num) {
+    motor->dir = FORWARD;
+    motor->speed = velocityPercentage;
+    motor->EN = EN;
+    motor->IN1 = IN1;
+    motor->IN2 = IN2;
+    motor->ENNum = ENNum;
+    motor->IN1Num = IN1Num;
+    motor->IN2Num = IN2Num;
 
-	uint8_t id;
-	DIR dir;
-	float speed; // PWM .... percentage .... duty cycle
-	uint8_t Ch;
-	GPIO_TypeDef *EN;
-	uint8_t ENNum;
-	GPIO_TypeDef *IN1;
-	uint8_t IN1Num;
-	GPIO_TypeDef *IN2;
-	uint8_t IN2Num;
-};
-
-
-void initMotor(TIM_TypeDef TIMX, uint8_t Channel, float percentage, GPIO_TypeDef *EN , uint8_t ENNum,
-																	GPIO_TypeDef *IN1 ,uint8_t IN1Num,
-																	GPIO_TypeDef *IN2 ,uint8_t IN2Num){
-
-	motor -> dir = FORWARD;
+    setDir(motor, FORWARD); // default direction
 }
 
-
-
-void setDir(DIR dir){
-	motor-> dir = dir;
-
-	if (dir == REVERSE){ // IN1 IN2  -> 01
-		GPIO_digitalWrite(IN1,IN1Num,LOW);
-		GPIO_digitalWrite(IN2,IN2Num,HIGH);
-	}
-	else if (dir == FORWARD){ // IN1 IN2  -> 10
-		GPIO_digitalWrite(IN1,IN1Num,HIGH);
-		GPIO_digitalWrite(IN2,IN2Num,LOW);
-	}
-
+void setDir(Motor *motor, DIR dir) {
+    motor->dir = dir;
+    if (dir == REVERSE) {  // IN1 IN2  -> 01
+        GPIO_digitalWrite(motor->IN1, motor->IN1Num, LOW);
+        GPIO_digitalWrite(motor->IN2, motor->IN2Num, HIGH);
+    } else { // IN1 IN2  -> 10
+        GPIO_digitalWrite(motor->IN1, motor->IN1Num, HIGH);
+        GPIO_digitalWrite(motor->IN2, motor->IN2Num, LOW);
+    }
 }
 
-DIR getDir(){
-	return dir;
+DIR getDir(Motor *motor) {
+    return motor->dir;
 }
 
-void setSpeed(float velocityPercentage){
-	motor -> speed = velocityPercentage;
+void setSpeed(Motor *motor, float velocityPercentage) {
+    motor->speed = velocityPercentage;
 
 }
 
-float getSpeed(){
-	return speed;
+float getSpeed(Motor *motor) {
+    return motor->speed;
 }
 
-void stop(){
-	GPIO_digitalWrite(EN,ENNum,LOW);
-	GPIO_digitalWrite(IN1,IN1Num,LOW);
-	GPIO_digitalWrite(IN2,IN2Num,LOW);
+void stop(Motor *motor) {
+    GPIO_digitalWrite(motor->EN, motor->ENNum, LOW);
+    GPIO_digitalWrite(motor->IN1, motor->IN1Num, LOW);
+    GPIO_digitalWrite(motor->IN2, motor->IN2Num, LOW);
 }
-
-
-
-
