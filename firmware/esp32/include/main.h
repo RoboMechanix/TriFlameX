@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <Wire.h>
+#include <HardwareSerial.h>
 
 
 #include "wifi_utils.h"
@@ -31,3 +32,4 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void setupMQTT(const char* server, const char* client_id, const char* topic);
 void connect_mqttServer();  
+

@@ -1,8 +1,6 @@
 #pragma once
-#include <HardwareSerial.h>
+#include <main.h>
 
 #define baudrate 115200
 
-void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
-    serial.begin(baudrate, SERIAL_8N1, rxPin, txPin);
-}
+void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
