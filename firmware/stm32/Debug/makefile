@@ -12,6 +12,8 @@ RM := rm -rf
 -include MiddleWares/MCAL/TIMR/subdir.mk
 -include MiddleWares/MCAL/GPIO/subdir.mk
 -include MiddleWares/HAL/SERVO/subdir.mk
+-include MiddleWares/HAL/CAR/subdir.mk
+-include MiddleWares/ENTITY/subdir.mk
 -include Drivers/STM32F1xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
@@ -87,8 +89,8 @@ all: main-build
 main-build: stm32.elf secondary-outputs
 
 # Tool invocations
-stm32.elf stm32.map: $(OBJS) $(USER_OBJS) D:\SCIENCE\TECH\roboMechanix\STM32BlazeRobot\firmware\stm32\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "stm32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\SCIENCE\TECH\roboMechanix\STM32BlazeRobot\firmware\stm32\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+stm32.elf stm32.map: $(OBJS) $(USER_OBJS) C:\Users\sheem\Desktop\STM\Project\STM32BlazeRobot\firmware\stm32\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "stm32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\sheem\Desktop\STM\Project\STM32BlazeRobot\firmware\stm32\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

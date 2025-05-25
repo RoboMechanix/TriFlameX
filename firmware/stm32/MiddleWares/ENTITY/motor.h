@@ -1,8 +1,8 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-#include "stm32f1xx.h"
-#include "MCAL/GPIO/GPIO_interface.h"
+#include "stm32f103xb.h"
+//#include "MCAL/GPIO/GPIO_interface.h"
 
 typedef enum {
     REVERSE = 0,

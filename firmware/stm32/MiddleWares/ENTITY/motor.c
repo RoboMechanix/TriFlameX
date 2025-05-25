@@ -1,4 +1,5 @@
 #include "motor.h"
+#include "../MCAL/GPIO/GPIO_interface.h"
 
 void initMotor(Motor *motor, float velocityPercentage,
 			   TIM_TypeDef *TIMX,
