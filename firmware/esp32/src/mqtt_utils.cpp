@@ -1,15 +1,6 @@
 #include <main.h>
 
 
-void mqttCallback(char* topic, byte* payload, unsigned int length) {
-    String command = "";
-    for (unsigned int i = 0; i < length; i++) {
-        command += (char)payload[i];
-    }
-    Serial.println("Received from laptop: " + command);
-    stm32Serial.println(command);  // Forward to STM32
-}
-
 void setupMQTT(const char* server, const char* client_id, const char* topic) {
     client.setServer(server, 1883);
     client.setCallback(mqttCallback);
@@ -42,24 +33,25 @@ void connect_mqttServer() {
     return;
 }
 
-void callback(char* topic, byte* message, unsigned int length) {
+void mqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.print("Message arrived on topic: ");
   Serial.print(topic);
   Serial.print(". Message: ");
-  String messageTemp;
+  String command = "";
   
-  for (int i = 0; i < length; i++) {
+  for (unsigned int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
+    command += (char)message[i];
   }
   Serial.println();
 
   if (String(topic).equals(mqtt_topic)) {
-      if(messageTemp == "10"){
+      if(command == "10"){
         Serial.println("Action: blink LED");
         blink_led(1,1250); //blink LED once (for 1250ms ON time)
       }
   }
+  Serial.println("Received from laptop: " + command);
 
 }
 

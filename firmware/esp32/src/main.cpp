@@ -17,10 +17,12 @@ HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 void setup() {
   setup_led(); 
   Serial.begin(115200);
-  //Wire.begin();
-  setupSTM32Serial(stm32Serial, 16, 17);
   connectToWiFi(ssid, password);
   setupMQTT(mqtt_server, mqtt_client_id, mqtt_topic);
+  
+  //Wire.begin();
+  //setupSTM32Serial(stm32Serial, 16, 17);
+  
 }
 
 void loop() {
