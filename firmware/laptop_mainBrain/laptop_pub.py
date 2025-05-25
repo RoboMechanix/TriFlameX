@@ -6,9 +6,12 @@ def on_publish(client, userdata, mid):
     print("message published")
 
 def publish_message(client):
+    i = 1
     while True:
-        msg = "Hello from Ubuntu"
-
+        msg = f"Hello from Ubuntu : {i} "
+        i += 1
+        if i >25:
+            i = 1
         pubMsg = client.publish(
             topic=MQTT_TOPIC,
             payload=msg.encode('utf-8'),

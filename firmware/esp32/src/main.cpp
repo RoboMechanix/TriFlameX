@@ -2,7 +2,7 @@
 
 const char* ssid = "SSH";
 const char* password = "AzabSSH359";
-const char* mqtt_server = "192.168.1.69"; //IP Address
+const char* mqtt_server = "192.168.0.69"; //IP Address
 
 const char* mqtt_client_id = "ESP32_BlueCar";
 const char* mqtt_topic = "sensor/esp32";

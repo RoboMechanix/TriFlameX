@@ -7,6 +7,7 @@ is_connected = False
 
 # === Callback when connected ===
 def on_connect(client, userdata, flags, reason_code, properties=None):
+   global is_connected
    if reason_code == 0:
         print("✅ Connected to MQTT Broker!")
         is_connected = True
