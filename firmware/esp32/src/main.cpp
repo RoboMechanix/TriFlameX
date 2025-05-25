@@ -30,5 +30,6 @@ void loop() {
         setupMQTT(mqtt_server, mqtt_client_id, mqtt_topic);
     }
     client.loop();
-    delay(1000);
+    //delay(1000);
+    millis();
 }
