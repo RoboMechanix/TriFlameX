@@ -1,7 +1,7 @@
 #pragma once
 #include <WiFi.h>
+#include <ledAsIndicator.h>
 
-#define ledPin 2
 
 void connectToWiFi(const char* ssid, const char* password) {
     delay(50);
@@ -26,13 +26,4 @@ void connectToWiFi(const char* ssid, const char* password) {
         }
     }
     Serial.println("\nWiFi connected: " + WiFi.localIP().toString());
-}
-
-void blink_led(unsigned int times, unsigned int duration){
-  for (int i = 0; i < times; i++) {
-    digitalWrite(ledPin, HIGH);
-    delay(duration);
-    digitalWrite(ledPin, LOW); 
-    delay(200);
-  }
 }

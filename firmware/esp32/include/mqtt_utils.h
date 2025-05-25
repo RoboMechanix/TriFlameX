@@ -1,6 +1,7 @@
 #pragma once
 #include <PubSubClient.h>
 #include <HardwareSerial.h>
+#include <ledAsIndicator.h>
 
 extern PubSubClient client;
 extern HardwareSerial stm32Serial;
@@ -20,13 +21,19 @@ void setupMQTT(const char* server, const char* client_id, const char* topic) {
 
     while (!client.connected()) {
         Serial.print("Connecting to MQTT...");
+
         if (client.connect(client_id)) {
             Serial.println("connected.");
             client.subscribe(topic);
         } else {
             Serial.print("failed. rc=");
             Serial.print(client.state());
-            delay(1000);
+             Serial.println(" trying again in 2 seconds");
+    
+            blink_led(3,200); //blink LED three times (200ms on duration) to show that MQTT server connection attempt failed
+            // Wait 2 seconds before retrying
+            delay(2000);
+          
         }
     }
 }

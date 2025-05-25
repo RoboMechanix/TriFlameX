@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <Wire.h>
+#include <ledAsIndicator.h>
+
 
 #include "wifi_utils.h"
 #include "mqtt_utils.h"
@@ -22,6 +23,7 @@ long lastMsg = 0;
 HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 
 void setup() {
+    setup_led(); 
     Serial.begin(115200);
     Wire.begin();
     setupSTM32Serial(stm32Serial, 16, 17);
@@ -30,13 +32,14 @@ void setup() {
 }
 
 void loop() {
+    connect_mqttServer();
+   
+}
+
+void connect_mqttServer() {
     if (!client.connected()) {
         setupMQTT(mqtt_server, mqtt_client_id, mqtt_topic);
     }
     client.loop();
-    //delay(1000);
-    millis();
+    delay(1000);
 }
-
-
-
