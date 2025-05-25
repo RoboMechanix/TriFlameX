@@ -32,3 +32,34 @@ void setupMQTT(const char* server, const char* client_id, const char* topic) {
         }
     }
 }
+
+void connect_mqttServer() {
+    if (!client.connected()) {
+        setupMQTT(mqtt_server, mqtt_client_id, mqtt_topic);
+    }
+    client.loop();
+    delay(1000);
+    return;
+}
+
+void callback(char* topic, byte* message, unsigned int length) {
+  Serial.print("Message arrived on topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
+  String messageTemp;
+  
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)message[i]);
+    messageTemp += (char)message[i];
+  }
+  Serial.println();
+
+  if (String(topic).equals(mqtt_topic)) {
+      if(messageTemp == "10"){
+        Serial.println("Action: blink LED");
+        blink_led(1,1250); //blink LED once (for 1250ms ON time)
+      }
+  }
+
+}
+
