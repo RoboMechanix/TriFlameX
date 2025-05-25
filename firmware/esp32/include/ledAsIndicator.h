@@ -1,4 +1,6 @@
 #define ledPin 2
+void blink_led(unsigned int times, unsigned int duration); 
+void setup_led();
 
 void blink_led(unsigned int times, unsigned int duration) {
     for (unsigned int i = 0; i < times; i++) {
