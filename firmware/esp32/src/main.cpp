@@ -23,6 +23,7 @@ void setup() {
   //Wire.begin();
   //setupSTM32Serial(stm32Serial, 16, 17);
   
+  
 }
 
 void loop() {
