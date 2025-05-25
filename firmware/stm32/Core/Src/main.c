@@ -1,70 +1,59 @@
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "../../MiddleWares/HAL/CAR/CAR_interface.h"
 #include "../../MiddleWares/MCAL/TIMR/TIM_interface.h"
 #include "../../MiddleWares/MCAL/GPIO/GPIO_interface.h"
-#include "../../MiddleWares/HAL/SERVO/SER_interface.h"
+#include <stdint.h>
 
-float map(float val, float from1, float to1, float from2, float to2){
-	return (val/(to1-from1)*(to2-from1));
+// Dummy delay function (replace with HAL_Delay or TIM delay if available)
+void delay_ms(uint32_t ms) {
+    for (volatile uint32_t i = 0; i < ms * 1000; i++) {
+        __asm("NOP");
+    }
 }
 
-void ADC_init(){
-	RCC->APB2ENR |= (1 << 9); // start the clock
-	ADC1->CR2 |= (1 << 0); // power the adc
-	for (volatile int i = 0; i < 1000; i++) {
-	    // Delay loop, intentionally empty
-	}
-	ADC1->CR2 |= (1 << 0); // repower the adc
-    ADC1->CR2 &= ~(1 << 11);   // Right alignment by default
-	ADC1->CR2 |= (1 << 1); // continuous conversion
-	ADC1->CR2 |= (1 << 2); // calibrate
-	while (ADC1->CR2 & (1 << 2)); // wait for the calibration
-	ADC1->SMPR2 |= (3 << 0); // sampling cycles of 28.5 cycles
-	ADC1->SQR1 &= ~(0xF << 20); // choose length of 1 conversion
-	ADC1->SQR3 |= (0 << 0); // choose the order
-	ADC1->CR2 |= (1 << 22); // start conversion
+int main(void) {
+    // Example hardware configuration (adjust if needed)
+    TIM_TypeDef *leftTimer = TIM3;    // PA6 (CH1)
+    TIM_TypeDef *rightTimer = TIM2;   // PA0 (CH1)
+
+    uint8_t leftChannel = 1;          // TIM3_CH1
+    uint8_t rightChannel = 1;         // TIM2_CH1
+
+    GPIO_TypeDef *dirPin1 = GPIOA;    // Direction pin for Right Motor
+    uint8_t dirPin1Num = 2;           // PA2 (no conflict with PWM)
+
+    GPIO_TypeDef *dirPin2 = GPIOA;    // Direction pin for Left Motor
+    uint8_t dirPin2Num = 3;           // PA3 (no conflict with PWM)
+
+    // Initialize the car system
+    CAR_init(leftTimer, leftChannel, 1000.0f, dirPin1, dirPin1Num,
+             rightTimer, rightChannel, 1000.0f, dirPin2, dirPin2Num);
+
+    // Test forward movement
+    CAR_forward(90.0f);  // 70% speed
+    delay_ms(2000);
+
+    // Test backward movement
+    CAR_backwards(90.0f);
+    delay_ms(2000);
+
+    // Test right turn
+    CAR_right(90.0f);
+    delay_ms(2000);
+
+    // Test left turn
+    CAR_left(90.0f);
+    delay_ms(2000);
+
+    // Test stop
+    CAR_stop();
+//STM32F103 Pin	Function	L298N Pin
+//    PA6	PWM Left Motor	ENA
+//    PA0	PWM Right Motor	ENB
+//    PA2	Dir for Right	IN1
+//    PA3	Dir for Left	IN2
+    while (1) {
+        // Infinite loop
+    }
+
+    return 0;
 }
-uint16_t read_ADC(){
-    while (!(ADC1->SR & (1 << 1))); // Wait for EOC
-    ADC1->SR &= ~(1 << 1);          // Clear EOC flag
-    return ADC1->DR;
-}
-
-void func(){
-	GPIOC->ODR ^= (1 << 14); // toggle the led PC14
-}
-
-int main(void)
-{
-//	RCC->APB2ENR |= (1 << 2) | (1 << 3); // CLK PA, PB
-//	GPIOA->CRL &= 0;
-//	GPIOB->CRL &= 0;
-//	GPIOA->CRL |= 0x44444440; // pin A0 analog input
-//	ADC_init();
-////	TIM_initPWM(TIM2, 1, 50);
-//	TIM_initDelay(TIM4, 1);
-//	float i = 0;
-//	SER_init(TIM2, 1);
-	RCC->APB2ENR |= (1 << 4);   // Enable GPIOC clock
-	GPIOC->CRH = 0;
-	GPIOC->CRH = 0x42444444;    // Set PC14 as output, others default
-	TIM_callback(TIM4, 200, 1000, &func); // we can change the callback function to be anything
-	while (1)
-	{
-//		TIM_delay(TIM4, 1000);
-//		while (i <= 180){
-//			SER_write(TIM2, 1, i);
-//			i += 5;
-//			TIM_delay(TIM4, 50);
-//		}
-//		TIM_delay(TIM4, 1000);
-//		while (i >= 0){
-//			SER_write(TIM2, 1, i);
-//			i -= 5;
-//			TIM_delay(TIM4, 50);
-//		}
-
-	}
-
-}
-
