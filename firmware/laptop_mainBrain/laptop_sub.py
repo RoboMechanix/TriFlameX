@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-import time
 
 from config import MQTT_TOPIC, MQTT_BROKER, MQTT_PORT
 

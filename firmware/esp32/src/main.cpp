@@ -1,11 +1,11 @@
-/*#include <main.h>
+#include <main.h>
 
-const char* ssid = "YOUR_SSID";
-const char* password = "YOUR_PASSWORD";
-const char* mqtt_server = "192.168.1.x"; //IP Address
+const char* ssid = "SSH";
+const char* password = "AzabSSH359";
+const char* mqtt_server = "192.168.1.69"; //IP Address
 
-const char* mqtt_client_id = "ESP32_Node";
-const char* mqtt_topic = "cmd/node1";
+const char* mqtt_client_id = "ESP32_BlueCar";
+const char* mqtt_topic = "sensor/esp32";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -43,17 +43,4 @@ void loop() {
     client.publish(mqtt_topic, message.c_str());
   }
    
-}*/
-
-#include <Arduino.h>
-
-void setup() {
-  pinMode(2, OUTPUT); 
-}
-
-void loop() {
-  digitalWrite(2, HIGH);
-  delay(500);
-  digitalWrite(2, LOW);
-  delay(500);
 }
