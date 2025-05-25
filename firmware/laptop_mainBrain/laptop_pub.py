@@ -1,12 +1,11 @@
 import time
 import paho.mqtt.client as mqtt
 from config import MQTT_TOPIC
-from mqtt_client import client
 
 def on_publish(client, userdata, mid):
     print("message published")
 
-def publish_message():
+def publish_message(client):
     while True:
         msg = "Hello from Ubuntu"
 
