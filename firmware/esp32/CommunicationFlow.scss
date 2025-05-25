@@ -1,0 +1,24 @@
+             [Laptop]
+                ↑
+          (Wi-Fi / MQTT)
+                ↑
+        [ESP32 #1] — UART — [STM32]
+        [ESP32 #2] — UART — [STM32]
+        [ESP32 #3] — UART — [STM32]
+
+
+Each ESP32:
+
+    Reads ToF sensor data.
+
+    Sends data to the Laptop over Wi-Fi.
+
+    Receives commands from the Laptop and forwards them to STM32 via UART.
+
+Laptop:
+
+    Central brain.
+
+    Receives data from ESPs (via MQTT).
+
+    Sends command(s) back to ESPs to control STM32.
