@@ -1,4 +1,4 @@
-#include <main.h>
+/*#include <main.h>
 
 const char* ssid = "YOUR_SSID";
 const char* password = "YOUR_PASSWORD";
@@ -43,4 +43,17 @@ void loop() {
     client.publish(mqtt_topic, message.c_str());
   }
    
+}*/
+
+#include <Arduino.h>
+
+void setup() {
+  pinMode(2, OUTPUT); 
+}
+
+void loop() {
+  digitalWrite(2, HIGH);
+  delay(500);
+  digitalWrite(2, LOW);
+  delay(500);
 }
