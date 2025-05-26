@@ -3,7 +3,8 @@ import paho.mqtt.client as mqtt
 from config import MQTT_TOPIC_PUB_BLACK, blackCar_data, MQTT_TOPIC_PUB_RED ,redCar_data, MQTT_TOPIC_PUB_BLUE, blueCar_data
 
 def on_publish(client, userdata, mid):
-    print("message published")
+    #print("message published")
+    pass
 
 def publish_message(client):
     while True:
