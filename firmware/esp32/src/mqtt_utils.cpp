@@ -35,23 +35,16 @@ void connect_mqttServer() {
 }
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
-    
+
     Serial.print("Message arrived on topic: ");
     Serial.print(topic);
     Serial.print(". Message: ");
     String command = "";
 
     for (unsigned int i = 0; i < length; i++) {
-      Serial.print((char)message[i]);
       command += (char)message[i];
     }
-    Serial.println();   
-    if (String(topic).equals(mqtt_sub_topic)) {
-        if(command == "10"){
-          Serial.println("Action: blink LED");
-          blink_led(1,1250); //blink LED once (for 1250ms ON time)
-        }
-    }
+    
     Serial.println("Received from laptop: " + command);
 
     if (command == "GO") {
@@ -63,6 +56,14 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
     } else {
         Serial.println("Unknown command received.");
     }
+
+    /*
+    if (String(topic).equals(mqtt_sub_topic)) {
+        if(command == "10"){
+          Serial.println("Action: blink LED");
+          blink_led(1,1250); //blink LED once (for 1250ms ON time)
+        }
+    }*/
 
 }
 
