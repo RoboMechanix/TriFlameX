@@ -30,19 +30,19 @@ int main(void) {
 
     // Test forward movement
     CAR_forward(90.0f);  // 70% speed
-    delay_ms(2000);
+    delay_ms(4000);
 
     // Test backward movement
     CAR_backwards(90.0f);
-    delay_ms(2000);
+    delay_ms(4000);
 
     // Test right turn
     CAR_right(90.0f);
-    delay_ms(2000);
+    delay_ms(4000);
 
     // Test left turn
     CAR_left(90.0f);
-    delay_ms(2000);
+    delay_ms(4000);
 
     // Test stop
     CAR_stop();

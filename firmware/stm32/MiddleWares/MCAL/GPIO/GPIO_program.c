@@ -32,6 +32,9 @@ void GPIO_pinMode(GPIO_TypeDef *GPIOX, uint8_t pinNumber, GPIO_MODE mode){
 	}else if (mode == INPUT_PULLDOWN){
 		*CRX |= (0x8 << (4*(pinIndex)));
 		CLEAR_BIT(GPIOX->ODR, pinNumber);
+	}else if (mode == AF_PP){
+		*CRX |= (0xB << (4*(pinIndex)));
+
 	}
 }
 
