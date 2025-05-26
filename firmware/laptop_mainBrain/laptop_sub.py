@@ -57,21 +57,24 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 
 # === Callback when a message is received ===
 def on_message(client, userdata, msg):
-    payload = msg.payload.decode('utf-8')
+     payload = msg.payload.decode('utf-8')
 
-    if payload.startswith("ESP32_BlueCar: "):
-        blueCar_data = int(payload.split(": ")[1])
+     if payload.startswith("ESP32_BlueCar: "):
+        data_str = payload.split(": ")[1].strip()  #  "100 cm"
+        blueCar_data = int(data_str.split()[0])    # "100"
         last_seen["blue"] = time.time()
 
-    elif payload.startswith("ESP32_RedCar: "):
-        redCar_data = int(payload.split(": ")[1])
+     elif payload.startswith("ESP32_RedCar: "):
+        data_str = payload.split(": ")[1].strip()
+        redCar_data = int(data_str.split()[0])
         last_seen["red"] = time.time()
 
-    elif payload.startswith("ESP32_BlackCar: "):
-        blackCar_data = int(payload.split(": ")[1])
+     elif payload.startswith("ESP32_BlackCar: "):
+        data_str = payload.split(": ")[1].strip()
+        blackCar_data = int(data_str.split()[0])
         last_seen["black"] = time.time()
 
-    print(f"📩 Received from ESP32 on topic '{msg.topic}': {payload}")
+     print(f"📩 Received from ESP32 on topic '{msg.topic}': {payload}")
 
 # === Start the monitoring thread ===
 threading.Thread(target=monitor_car_status, daemon=True).start()
