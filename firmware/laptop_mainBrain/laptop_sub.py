@@ -4,13 +4,9 @@ import threading
 
 from config import (
     MQTT_TOPIC_SUB,
-    blueCar_data,
-    redCar_data,
-    blackCar_data,
-    isBlueCar_live,
-    isRedCar_live,
-    isBlackCar_live,
 )
+
+import config
 
 is_connected = False
 
@@ -28,18 +24,17 @@ car_status = {
 
 # === Background thread to check car timeouts ===
 def monitor_car_status():
-     global isBlueCar_live, isRedCar_live, isBlackCar_live
      while True:
         now = time.time()
         for color in ["blue", "red", "black"]:
             if now - last_seen[color] > 2:
-                car_status[color] = False
+               car_status[color] = False
             else:
-                car_status[color] = True
+               car_status[color] = True
         
-        isBlueCar_live = car_status["blue"]
-        isRedCar_live = car_status["red"]
-        isBlackCar_live = car_status["black"]
+        config.isBlueCar_live = car_status["blue"]
+        config.isRedCar_live = car_status["red"]
+        config.isBlackCar_live = car_status["black"]
         
         time.sleep(0.5)  # check every 500ms
 
@@ -56,22 +51,21 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 
 # === Callback when a message is received ===
 def on_message(client, userdata, msg):
-     global blueCar_data, redCar_data, blackCar_data
      payload = msg.payload.decode('utf-8')
 
      if payload.startswith("ESP32_BlueCar: "):
         data_str = payload.split(": ")[1].strip()  #  "100 cm"
-        blueCar_data = int(data_str.split()[0])    # "100"
+        config.blueCar_data = int(data_str.split()[0])    # "100"
         last_seen["blue"] = time.time()
 
      elif payload.startswith("ESP32_RedCar: "):
         data_str = payload.split(": ")[1].strip()
-        redCar_data = int(data_str.split()[0])
+        config.redCar_data = int(data_str.split()[0])
         last_seen["red"] = time.time()
 
      elif payload.startswith("ESP32_BlackCar: "):
         data_str = payload.split(": ")[1].strip()
-        blackCar_data = int(data_str.split()[0])
+        config.blackCar_data = int(data_str.split()[0])
         last_seen["black"] = time.time()
 
      print(f"📩 Received from ESP32 on topic '{msg.topic}': {payload}")
