@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 
-from config import MQTT_TOPIC, MQTT_BROKER, MQTT_PORT
+from config import MQTT_TOPIC, MQTT_BROKER, MQTT_PORT, blueCar_data, redCar_data, blackCar_data
 
 
 is_connected = False
@@ -18,5 +18,17 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 
 # === Callback when a message is received ===
 def on_message(client, userdata, msg):
-    print(f"📩 Received from ESP32 on topic '{msg.topic}': {msg.payload.decode()}")
+     msg = msg.payload.decode('utf-8')
+     
+     if msg.startswith("ESP32_BlueCar: "):
+         blueCar_data = int(msg.split(": ")[1])
+     
+     if msg.startswith("ESP32_RedCar: "):
+         redCar_data = int(msg.split(": ")[1])
+     
+     if msg.startswith("ESP32_BlackCar: "):
+          blackCar_data = int(msg.split(": ")[1])
+         
+     
+     print(f"📩 Received from ESP32 on topic '{msg.topic}': {msg.payload.decode()}")
  

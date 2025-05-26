@@ -4,3 +4,9 @@ MQTT_PORT = 1883
 MQTT_TOPIC_SUB = "sensor/esp32"
 MQTT_TOPIC_PUB = "laptop/commands"
 MQTT_CLIENT_ID = "Ubuntu_Client"
+
+
+# === ESP Data ===
+blueCar_data = -69
+redCar_data = -69
+blackCar_data = -69
