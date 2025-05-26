@@ -19,7 +19,7 @@ extern const char* password;
 // ==== MQTT Server Config ====
 extern const char* mqtt_server;
 extern const char* mqtt_client_id;
-extern const char* mqtt_topic;
+extern const char* mqtt_sub_topic;
 
 // ==== Global Objects ====
 extern WiFiClient espClient;

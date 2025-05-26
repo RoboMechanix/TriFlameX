@@ -1,5 +1,6 @@
 #include <main.h>
 
+long lastMsg = 0;
 
 void setupMQTT(const char* server, const char* client_id, const char* topic) {
     client.setServer(server, 1883);
@@ -26,7 +27,7 @@ void setupMQTT(const char* server, const char* client_id, const char* topic) {
 
 void connect_mqttServer() {
     if (!client.connected()) {
-        setupMQTT(mqtt_server, mqtt_client_id, mqtt_topic);
+        setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_topic);
     }
     client.loop();
     delay(1000);
@@ -45,7 +46,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
   }
   Serial.println();
 
-  if (String(topic).equals(mqtt_topic)) {
+  if (String(topic).equals(mqtt_sub_topic)) {
       if(command == "10"){
         Serial.println("Action: blink LED");
         blink_led(1,1250); //blink LED once (for 1250ms ON time)
@@ -53,5 +54,20 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
   }
   Serial.println("Received from laptop: " + command);
 
+}
+
+void publishMessage(const char* topic, const String& payload) {
+
+  if (client.connected()) {
+
+    long now = millis();
+
+    if (now - lastMsg > 2000) { // Publish every 2 seconds
+      lastMsg = now;
+
+    client.publish(topic, payload.c_str());
+
+    }
+  }
 }
 

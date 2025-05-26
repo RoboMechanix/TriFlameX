@@ -8,4 +8,5 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 void setupMQTT(const char* server, const char* client_id, const char* topic);
 void callback(char* topic, byte* message, unsigned int length);
 void connect_mqttServer();
+void publishMessage(const char* topic, const String& payload);
 
