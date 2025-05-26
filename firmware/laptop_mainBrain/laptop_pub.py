@@ -18,9 +18,8 @@ redCar_prevState = False
 blackCar_prevState = False
 
 def on_publish(client, userdata, mid):
-    #print("message published")
+    global firstTime
     global blueCar_prevState, redCar_prevState, blackCar_prevState
-    
     if firstTime:
         firstTime = False
         blueCar_prevState = isBlueCar_live
@@ -29,9 +28,13 @@ def on_publish(client, userdata, mid):
         print_status()
     else:
         check_status()
+            
+    #print("message published")
+    #pass
     
 
 def publish_message(client):
+    
     while True:
         if (blueCar_data < redCar_data and blueCar_data < blackCar_data):
             msg = "GO"
@@ -51,9 +54,9 @@ def publish_message(client):
         else:
             msg = "STOP"
             pubMsg(msg, MQTT_TOPIC_PUB_BLACK, client)
-
-        time.sleep(5)
-
+            
+        time.sleep(0.5)
+        
 def pubMsg(msg, topic, client):
     pubMsg = client.publish(
             topic=topic,
