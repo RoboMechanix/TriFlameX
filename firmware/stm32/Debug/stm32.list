@@ -719,38 +719,42 @@ int main(void) {
     CAR_forward(90.0f);  // 70% speed
  80007b4:	4812      	ldr	r0, [pc, #72]	@ (8000800 <main+0x98>)
  80007b6:	f000 f8df 	bl	8000978 <CAR_forward>
-    delay_ms(2000);
- 80007ba:	f44f 60fa 	mov.w	r0, #2000	@ 0x7d0
+    delay_ms(4000);
+ 80007ba:	f44f 607a 	mov.w	r0, #4000	@ 0xfa0
  80007be:	f7ff ffb9 	bl	8000734 <delay_ms>
 
     // Test backward movement
     CAR_backwards(90.0f);
  80007c2:	480f      	ldr	r0, [pc, #60]	@ (8000800 <main+0x98>)
  80007c4:	f000 f910 	bl	80009e8 <CAR_backwards>
-    delay_ms(2000);
- 80007c8:	f44f 60fa 	mov.w	r0, #2000	@ 0x7d0
+    delay_ms(4000);
+ 80007c8:	f44f 607a 	mov.w	r0, #4000	@ 0xfa0
  80007cc:	f7ff ffb2 	bl	8000734 <delay_ms>
 
     // Test right turn
     CAR_right(90.0f);
  80007d0:	480b      	ldr	r0, [pc, #44]	@ (8000800 <main+0x98>)
  80007d2:	f000 f941 	bl	8000a58 <CAR_right>
-    delay_ms(2000);
- 80007d6:	f44f 60fa 	mov.w	r0, #2000	@ 0x7d0
+    delay_ms(4000);
+ 80007d6:	f44f 607a 	mov.w	r0, #4000	@ 0xfa0
  80007da:	f7ff ffab 	bl	8000734 <delay_ms>
 
     // Test left turn
     CAR_left(90.0f);
  80007de:	4808      	ldr	r0, [pc, #32]	@ (8000800 <main+0x98>)
  80007e0:	f000 f974 	bl	8000acc <CAR_left>
-    delay_ms(2000);
- 80007e4:	f44f 60fa 	mov.w	r0, #2000	@ 0x7d0
+    delay_ms(4000);
+ 80007e4:	f44f 607a 	mov.w	r0, #4000	@ 0xfa0
  80007e8:	f7ff ffa4 	bl	8000734 <delay_ms>
 
     // Test stop
     CAR_stop();
  80007ec:	f000 f9a8 	bl	8000b40 <CAR_stop>
-
+//STM32F103 Pin	Function	L298N Pin
+//    PA6	PWM Left Motor	ENA
+//    PA0	PWM Right Motor	ENB
+//    PA2	Dir for Right	IN1
+//    PA3	Dir for Left	IN2
     while (1) {
  80007f0:	bf00      	nop
  80007f2:	e7fd      	b.n	80007f0 <main+0x88>

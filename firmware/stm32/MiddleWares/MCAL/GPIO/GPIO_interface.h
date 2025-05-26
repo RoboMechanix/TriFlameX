@@ -2,14 +2,15 @@
 #define GPIO_INTERFACE_H
 
 #include "stm32f1xx_hal.h"
-#include "stm32f1xx.h"
+#include "stm32f103xb.h"
 #include "../../UTIL/BIT_MATH.h"
 
 typedef enum{
 	INPUT_PULLUP,
 	INPUT_PULLDOWN,
 	INPUT_FLOAT,
-	OUTPUT
+	OUTPUT,
+	AF_PP
 }GPIO_MODE;
 
 typedef enum{
