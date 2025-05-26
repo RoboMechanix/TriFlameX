@@ -3,7 +3,7 @@
 
 void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
     serial.begin(baudrate, SERIAL_8N1, rxPin, txPin);
-    sendCommandToSTM32(MoveCommand::STOP);
+    sendCommandToSTM32(MOVECOMMAND::STOP);
 }
 
 void sendDistanceToSTM32(int distance_cm){
@@ -17,10 +17,10 @@ void sendDistanceToSTM32(int distance_cm){
     stm32Serial.println(" cm");
 }
 
-void sendCommandToSTM32(MoveCommand command){
-    if (command == MoveCommand::GO) {
+void sendCommandToSTM32(MOVECOMMAND command){
+    if (command == MOVECOMMAND::GO) {
         stm32Serial.println("GO");
-    } else if (command == MoveCommand::STOP) {
+    } else if (command == MOVECOMMAND::STOP) {
         stm32Serial.println("STOP");
     } else {
         Serial.println("Unknown command");
