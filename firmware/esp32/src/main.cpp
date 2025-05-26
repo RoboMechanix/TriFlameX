@@ -6,14 +6,14 @@ const char* mqtt_server = "192.168.0.69"; //IP Address
 
 const char* mqtt_client_id = "ESP32_BlueCar";
 const char* mqtt_sub_topic = "laptop/commands/bluecar"; 
-const char* mqtt_pub_topic = "sensor/esp32";
+const char* mqtt_pub_topic = "sensor/bluecar";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 
-int dummydistance_cm = 100; 
+int dummydistance_cm = -100; 
 
 void setup() {
   setup_led(); 
