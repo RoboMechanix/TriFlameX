@@ -1,5 +1,14 @@
 # === Configuration ===
 MQTT_BROKER = "192.168.0.69"      
 MQTT_PORT = 1883
-MQTT_TOPIC = "sensor/esp32"
+MQTT_TOPIC_SUB = "sensor/esp32"
+MQTT_TOPIC_PUB_BLUE = "laptop/commands/bluecar"
+MQTT_TOPIC_PUB_RED = "laptop/commands/redcar"
+MQTT_TOPIC_PUB_BLACK = "laptop/commands/blackcar"
 MQTT_CLIENT_ID = "Ubuntu_Client"
+
+
+# === ESP Data ===
+blueCar_data = -69
+redCar_data = -69
+blackCar_data = -69

@@ -1,5 +1,6 @@
 #include <main.h>
 
+long lastMsg = 0;
 
 void setupMQTT(const char* server, const char* client_id, const char* topic) {
     client.setServer(server, 1883);
@@ -26,7 +27,7 @@ void setupMQTT(const char* server, const char* client_id, const char* topic) {
 
 void connect_mqttServer() {
     if (!client.connected()) {
-        setupMQTT(mqtt_server, mqtt_client_id, mqtt_topic);
+        setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_topic);
     }
     client.loop();
     delay(1000);
@@ -34,24 +35,46 @@ void connect_mqttServer() {
 }
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
-  String command = "";
-  
-  for (unsigned int i = 0; i < length; i++) {
-    Serial.print((char)message[i]);
-    command += (char)message[i];
-  }
-  Serial.println();
 
-  if (String(topic).equals(mqtt_topic)) {
-      if(command == "10"){
-        Serial.println("Action: blink LED");
-        blink_led(1,1250); //blink LED once (for 1250ms ON time)
+    Serial.print("Message arrived on topic: ");
+    Serial.print(topic);
+    Serial.print(". Message: ");
+    String command = "";
+
+    for (unsigned int i = 0; i < length; i++) {
+      command += (char)message[i];
+    }
+    
+    Serial.println("Received from laptop: " + command);
+
+    if (command == "GO") {
+        sendCommandToSTM32(MOVECOMMAND::GO);
+        Serial.println("Sent command to STM32: GO");
+    } else if (command == "STOP") {
+        sendCommandToSTM32(MOVECOMMAND::STOP);
+        Serial.println("Sent command to STM32: STOP");
+    } else {
+        Serial.println("Unknown command received.");
+    }
+
+    /*
+    if (String(topic).equals(mqtt_sub_topic)) {
+        if(command == "10"){
+          Serial.println("Action: blink LED");
+          blink_led(1,1250); //blink LED once (for 1250ms ON time)
+        }
+    }*/
+
+}
+
+void publishMessage(const char* topic, const String& payload) {
+
+    if (client.connected()) {   
+      long now = millis();  
+      if (now - lastMsg > 2000) { // Publish every 2 seconds
+        lastMsg = now;  
+      client.publish(topic, payload.c_str());   
       }
-  }
-  Serial.println("Received from laptop: " + command);
-
+    }
 }
 
