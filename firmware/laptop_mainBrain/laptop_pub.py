@@ -20,6 +20,7 @@ blackCar_prevState = False
 def on_publish(client, userdata, mid):
     global firstTime
     global blueCar_prevState, redCar_prevState, blackCar_prevState
+    global blueCar_prevState, redCar_prevState, blackCar_prevState
     if firstTime:
         firstTime = False
         blueCar_prevState = isBlueCar_live
@@ -68,6 +69,7 @@ def pubMsg(msg, topic, client):
 
 def check_status():
     global blueCar_prevState, redCar_prevState, blackCar_prevState
+    global blueCar_prevState, redCar_prevState, blackCar_prevState
     changed = False
     if blueCar_prevState != isBlueCar_live:
         blueCar_prevState = isBlueCar_live
@@ -82,6 +84,7 @@ def check_status():
         print_status()
 
 def print_status():   
+    print()
     print ("Blue Car is live ✅" if isBlueCar_live else "Blue Car is Dead 🛑") 
     print ("Red Car is live ✅" if isRedCar_live else "Red Car is Dead 🛑")
     print ("Black Car is live ✅" if isBlackCar_live else "Black Car is Dead 🛑")

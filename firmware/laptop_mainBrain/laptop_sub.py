@@ -4,8 +4,6 @@ import threading
 
 from config import (
     MQTT_TOPIC_SUB,
-    MQTT_BROKER,
-    MQTT_PORT,
     blueCar_data,
     redCar_data,
     blackCar_data,
@@ -30,7 +28,8 @@ car_status = {
 
 # === Background thread to check car timeouts ===
 def monitor_car_status():
-    while True:
+     global isBlueCar_live, isRedCar_live, isBlackCar_live
+     while True:
         now = time.time()
         for color in ["blue", "red", "black"]:
             if now - last_seen[color] > 2:
@@ -57,6 +56,7 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 
 # === Callback when a message is received ===
 def on_message(client, userdata, msg):
+     global blueCar_data, redCar_data, blackCar_data
      payload = msg.payload.decode('utf-8')
 
      if payload.startswith("ESP32_BlueCar: "):
