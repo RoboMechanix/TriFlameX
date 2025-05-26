@@ -1,7 +1,7 @@
 #include "UART_interface.h"
 #include "stm32f103xb.h"
 #include "../../UTIL/BIT_MATH.h"
-#include "../MCAL/GPIO/GPIO_program.c"
+#include "../GPIO/GPIO_interface.h"
 
 void UART_init(int UART_pref_num, int baudrate)
 {
