@@ -11,8 +11,9 @@ const char* mqtt_pub_topic = "sensor/esp32";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-
 HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
+
+int dummydistance_cm = 100; 
 
 void setup() {
   setup_led(); 
@@ -34,10 +35,9 @@ void loop() {
   }
   client.loop();
   
-  String message = String("Hello from ") + mqtt_client_id;
+  String message = mqtt_client_id + String(": ") + dummydistance_cm + String(" cm");
   publishMessage(mqtt_pub_topic, message);
   
-   
 }
 
 
