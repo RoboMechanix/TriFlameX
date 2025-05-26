@@ -12,3 +12,6 @@ MQTT_CLIENT_ID = "Ubuntu_Client"
 blueCar_data = -69
 redCar_data = -69
 blackCar_data = -69
+isBlueCar_live = False
+isRedCar_live = False
+isBlackCar_live = False
