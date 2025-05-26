@@ -1,6 +1,6 @@
 import time
 import paho.mqtt.client as mqtt
-from config import MQTT_TOPIC
+from config import MQTT_TOPIC_PUB
 
 def on_publish(client, userdata, mid):
     print("message published")
@@ -13,7 +13,7 @@ def publish_message(client):
         if i >25:
             i = 1
         pubMsg = client.publish(
-            topic=MQTT_TOPIC,
+            topic=MQTT_TOPIC_PUB,
             payload=msg.encode('utf-8'),
             qos=0,
         )
