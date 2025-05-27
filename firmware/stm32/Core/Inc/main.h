@@ -22,11 +22,6 @@
 
 
 
-typedef enum {
-    CMD_NONE,
-    GO,
-    STOP
-} MOVECOMMAND;
 
 extern MOVECOMMAND currentCommand;
 

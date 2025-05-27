@@ -85,61 +85,22 @@ int UART_Receive(int UART_pref_num)
     return USARTx->DR & 0xFF;
 }
 
-float UART_receive_distance(int UART_pref_num)
+UARTMessage UART_receive_message(int UART_pref_num)
 {
-    static char rx_buffer[RX_BUFFER_LEN];
+    static char rx_buffer[64];
     static uint8_t rx_index = 0;
 
     USART_TypeDef *USARTx;
 
     switch (UART_pref_num)
     {
-    case 1: USARTx = USART1; break;
-    case 2: USARTx = USART2; break;
-    case 3: USARTx = USART3; break;
-    default: return -1.0f;
+        case 1: USARTx = USART1; break;
+        case 2: USARTx = USART2; break;
+        case 3: USARTx = USART3; break;
+        default: return (UARTMessage){ .type = MSG_NONE };
     }
 
-    // Wait for a new character
-    if (!(USARTx->SR & (1 << 5))) return -1.0f; // No data yet
-
-    char c = USARTx->DR & 0xFF;
-
-    if (c == '\n')
-    {
-        rx_buffer[rx_index] = '\0'; // Null-terminate the string
-        rx_index = 0;
-        return parse_distance_message(rx_buffer); // Use external parser
-    }
-    else if (rx_index < RX_BUFFER_LEN - 1)
-    {
-        rx_buffer[rx_index++] = c;
-    }
-    else
-    {
-        rx_index = 0; // Reset on overflow
-    }
-
-    return -1.0f; // No complete message yet
-}
-
-MOVECOMMAND UART_receive_command(int UART_pref_num)
-{
-    static char rx_buffer[32];
-    static uint8_t rx_index = 0;
-
-    USART_TypeDef *USARTx;
-
-    switch (UART_pref_num)
-    {
-    case 1: USARTx = USART1; break;
-    case 2: USARTx = USART2; break;
-    case 3: USARTx = USART3; break;
-    default: return CMD_NONE;
-    }
-
-    // Wait for character
-    if (!(USARTx->SR & (1 << 5))) return CMD_NONE;
+    if (!(USARTx->SR & USART_SR_RXNE)) return (UARTMessage){ .type = MSG_NONE };
 
     char c = USARTx->DR & 0xFF;
 
@@ -147,7 +108,18 @@ MOVECOMMAND UART_receive_command(int UART_pref_num)
     {
         rx_buffer[rx_index] = '\0';
         rx_index = 0;
-        return parse_command_message(rx_buffer);
+
+        // Decide message type based on first character
+        if (isdigit(rx_buffer[0]) || rx_buffer[0] == '-' || rx_buffer[0] == '.')
+        {
+            float value = atof(rx_buffer);
+            return (UARTMessage){ .type = MSG_DISTANCE, .distance = value };
+        }
+        else
+        {
+            MOVECOMMAND cmd = parse_command_message(rx_buffer);
+            return (UARTMessage){ .type = MSG_COMMAND, .command = cmd };
+        }
     }
     else if (rx_index < sizeof(rx_buffer) - 1)
     {
@@ -155,12 +127,10 @@ MOVECOMMAND UART_receive_command(int UART_pref_num)
     }
     else
     {
-        rx_index = 0; // Reset if overflow
+        rx_index = 0; // Overflow
     }
 
-    return CMD_NONE;
+    return (UARTMessage){ .type = MSG_NONE };
 }
-
-
 
 

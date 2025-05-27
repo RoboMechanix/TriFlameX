@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00002004  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00001e28  00000000  00000000  0000202d  2**0
+ 12 .debug_info   00001f80  00000000  00000000  0000202d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00000990  00000000  00000000  00003e55  2**0
+ 13 .debug_abbrev 00000a6d  00000000  00000000  00003fad  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000002a8  00000000  00000000  000047e8  2**3
+ 14 .debug_aranges 000002a8  00000000  00000000  00004a20  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 000001e3  00000000  00000000  00004a90  2**0
+ 15 .debug_rnglists 000001ef  00000000  00000000  00004cc8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0001665c  00000000  00000000  00004c73  2**0
+ 16 .debug_macro  000166c6  00000000  00000000  00004eb7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00004175  00000000  00000000  0001b2cf  2**0
+ 17 .debug_line   00004518  00000000  00000000  0001b57d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0007f126  00000000  00000000  0001f444  2**0
+ 18 .debug_str    0007f1b0  00000000  00000000  0001fa95  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0009e56a  2**0
+ 19 .comment      00000043  00000000  00000000  0009ec45  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000008f0  00000000  00000000  0009e5b0  2**2
+ 20 .debug_frame  000008f0  00000000  00000000  0009ec88  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000061  00000000  00000000  0009eea0  2**0
+ 21 .debug_line_str 00000061  00000000  00000000  0009f578  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -520,7 +520,9 @@ Disassembly of section .text:
  8000646:	bf00      	nop
 
 08000648 <main>:
-#include <main.h>
+
+
+MOVECOMMAND currentCommand = CMD_NONE;
 
 
 int main(void) {
@@ -531,6 +533,8 @@ int main(void) {
  800064c:	f44f 31e1 	mov.w	r1, #115200	@ 0x1c200
  8000650:	2001      	movs	r0, #1
  8000652:	f000 fa1b 	bl	8000a8c <UART_init>
+
+
 
 
     while (1) {
@@ -1364,13 +1368,13 @@ void UART_init(int UART_pref_num, int baudrate)
  8000ab6:	4b50      	ldr	r3, [pc, #320]	@ (8000bf8 <UART_init+0x16c>)
  8000ab8:	699b      	ldr	r3, [r3, #24]
  8000aba:	4a4f      	ldr	r2, [pc, #316]	@ (8000bf8 <UART_init+0x16c>)
- 8000abc:	f043 030e 	orr.w	r3, r3, #14
+ 8000abc:	f443 4380 	orr.w	r3, r3, #16384	@ 0x4000
  8000ac0:	6193      	str	r3, [r2, #24]
         SET_BIT(RCC->APB2ENR, 2);             // GPIOA
  8000ac2:	4b4d      	ldr	r3, [pc, #308]	@ (8000bf8 <UART_init+0x16c>)
  8000ac4:	699b      	ldr	r3, [r3, #24]
  8000ac6:	4a4c      	ldr	r2, [pc, #304]	@ (8000bf8 <UART_init+0x16c>)
- 8000ac8:	f043 0302 	orr.w	r3, r3, #2
+ 8000ac8:	f043 0304 	orr.w	r3, r3, #4
  8000acc:	6193      	str	r3, [r2, #24]
         GPIO_pinMode(GPIOA, 9, AF_PP);        // TX
  8000ace:	2204      	movs	r2, #4
@@ -1391,13 +1395,13 @@ void UART_init(int UART_pref_num, int baudrate)
  8000ae8:	4b43      	ldr	r3, [pc, #268]	@ (8000bf8 <UART_init+0x16c>)
  8000aea:	69db      	ldr	r3, [r3, #28]
  8000aec:	4a42      	ldr	r2, [pc, #264]	@ (8000bf8 <UART_init+0x16c>)
- 8000aee:	f043 0311 	orr.w	r3, r3, #17
+ 8000aee:	f443 3300 	orr.w	r3, r3, #131072	@ 0x20000
  8000af2:	61d3      	str	r3, [r2, #28]
         SET_BIT(RCC->APB2ENR, 2);            // GPIOA
  8000af4:	4b40      	ldr	r3, [pc, #256]	@ (8000bf8 <UART_init+0x16c>)
  8000af6:	699b      	ldr	r3, [r3, #24]
  8000af8:	4a3f      	ldr	r2, [pc, #252]	@ (8000bf8 <UART_init+0x16c>)
- 8000afa:	f043 0302 	orr.w	r3, r3, #2
+ 8000afa:	f043 0304 	orr.w	r3, r3, #4
  8000afe:	6193      	str	r3, [r2, #24]
         GPIO_pinMode(GPIOA, 2, AF_PP);       // TX
  8000b00:	2204      	movs	r2, #4
@@ -1418,13 +1422,13 @@ void UART_init(int UART_pref_num, int baudrate)
  8000b1a:	4b37      	ldr	r3, [pc, #220]	@ (8000bf8 <UART_init+0x16c>)
  8000b1c:	69db      	ldr	r3, [r3, #28]
  8000b1e:	4a36      	ldr	r2, [pc, #216]	@ (8000bf8 <UART_init+0x16c>)
- 8000b20:	f043 0312 	orr.w	r3, r3, #18
+ 8000b20:	f443 2380 	orr.w	r3, r3, #262144	@ 0x40000
  8000b24:	61d3      	str	r3, [r2, #28]
         SET_BIT(RCC->APB2ENR, 3);             // GPIOB
  8000b26:	4b34      	ldr	r3, [pc, #208]	@ (8000bf8 <UART_init+0x16c>)
  8000b28:	699b      	ldr	r3, [r3, #24]
  8000b2a:	4a33      	ldr	r2, [pc, #204]	@ (8000bf8 <UART_init+0x16c>)
- 8000b2c:	f043 0303 	orr.w	r3, r3, #3
+ 8000b2c:	f043 0308 	orr.w	r3, r3, #8
  8000b30:	6193      	str	r3, [r2, #24]
         GPIO_pinMode(GPIOB, 10, AF_PP);       // TX
  8000b32:	2204      	movs	r2, #4
@@ -1501,19 +1505,19 @@ void UART_init(int UART_pref_num, int baudrate)
     SET_BIT(USARTx->CR1, 13); // UE
  8000bc6:	697b      	ldr	r3, [r7, #20]
  8000bc8:	68db      	ldr	r3, [r3, #12]
- 8000bca:	f043 020d 	orr.w	r2, r3, #13
+ 8000bca:	f443 5200 	orr.w	r2, r3, #8192	@ 0x2000
  8000bce:	697b      	ldr	r3, [r7, #20]
  8000bd0:	60da      	str	r2, [r3, #12]
     SET_BIT(USARTx->CR1, 3);  // TE
  8000bd2:	697b      	ldr	r3, [r7, #20]
  8000bd4:	68db      	ldr	r3, [r3, #12]
- 8000bd6:	f043 0203 	orr.w	r2, r3, #3
+ 8000bd6:	f043 0208 	orr.w	r2, r3, #8
  8000bda:	697b      	ldr	r3, [r7, #20]
  8000bdc:	60da      	str	r2, [r3, #12]
     SET_BIT(USARTx->CR1, 2);  // RE
  8000bde:	697b      	ldr	r3, [r7, #20]
  8000be0:	68db      	ldr	r3, [r3, #12]
- 8000be2:	f043 0202 	orr.w	r2, r3, #2
+ 8000be2:	f043 0204 	orr.w	r2, r3, #4
  8000be6:	697b      	ldr	r3, [r7, #20]
  8000be8:	60da      	str	r2, [r3, #12]
  8000bea:	e000      	b.n	8000bee <UART_init+0x162>
