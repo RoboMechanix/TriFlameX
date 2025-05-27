@@ -21,3 +21,5 @@
 "./MiddleWares/HAL/SERVO/SER_program.o"
 "./MiddleWares/MCAL/GPIO/GPIO_program.o"
 "./MiddleWares/MCAL/TIMR/TIM_program.o"
+"./MiddleWares/MCAL/UART/UART_program.o"
+"./MiddleWares/UTIL/parsing.o"

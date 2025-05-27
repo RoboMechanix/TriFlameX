@@ -1,3 +1,4 @@
-../MiddleWares/MCAL/UART/UART_program.c:6:6:UART_init	5
-../MiddleWares/MCAL/UART/UART_program.c:55:6:UART_send	6
-../MiddleWares/MCAL/UART/UART_program.c:70:5:UART_Receive	6
+../MiddleWares/MCAL/UART/UART_program.c:8:6:UART_init	5
+../MiddleWares/MCAL/UART/UART_program.c:57:6:UART_send	6
+../MiddleWares/MCAL/UART/UART_program.c:72:5:UART_Receive	6
+../MiddleWares/MCAL/UART/UART_program.c:88:7:UART_receive_distance	8
