@@ -12,9 +12,9 @@ void sendDistanceToSTM32(int distance_cm){
         return;
     }
     
-    stm32Serial.print("Distance: ");
+    //stm32Serial.print("Distance: ");
     stm32Serial.print(distance_cm);
-    stm32Serial.println(" cm");
+    //stm32Serial.println(" cm");
 }
 
 void sendCommandToSTM32(MOVECOMMAND command){
