@@ -47,5 +47,4 @@ MiddleWares/HAL/SERVO \
 MiddleWares/MCAL/GPIO \
 MiddleWares/MCAL/TIMR \
 MiddleWares/MCAL/UART \
-MiddleWares/UTIL \
 
