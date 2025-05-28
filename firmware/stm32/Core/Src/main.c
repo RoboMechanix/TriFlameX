@@ -2,16 +2,60 @@
 
 MOVECOMMAND currentCommand = CMD_NONE;
 uint64_t x = 0;
+
+void turnON(char i);
+void turnOFF(char i);
+char y =0;
+
+
+
 int main(void) {
 
-	TIM_initMillis(TIM2, 1);
-	TIM2->CNT=59000;
+	RCC->APB2ENR |= 0xFFFFF;
+	GPIOB -> CRH = 0x44442244;
+	GPIOA -> CRL = 0x24444444;
+	//turnON(0);
+
+	UART_init(1,BAUDRATE);
 	while (1) {
-
-		x = TIM_Millis();
-
-//TIM_delay(TIM3, 2000);
+		UARTMessage msg = UART_receive_message(1);
+		    switch (msg.type) {
+		        case MSG_DISTANCE:
+		            break;
+		        case MSG_COMMAND:
+		            if (msg.command == GO) {
+		            	y= 1;
+		                turnON(1);
+		                turnOFF(0);
+		            } else if (msg.command == STOP) {
+		            	turnON(0);
+		            	turnOFF(1);
+		            	y = 2;
+		            }
+		            break;
+		        default:
+		            // No complete message yet
+		            break;
+		    }
 
 	}
 
+}
+
+void turnON(char i){
+
+	switch (i){
+	case 0 : GPIOB ->ODR = (1<<10); return;
+	case 1 : GPIOB ->ODR = (1<<11); return;
+	default : return;
+	}
+}
+
+void turnOFF(char i){
+
+	switch (i){
+	case 0 : GPIOB ->ODR = ~(1<<10); return;
+	case 1 : GPIOB ->ODR = ~(1<<11); return;
+	default : return;
+	}
 }
