@@ -13,15 +13,15 @@ void sendDistanceToSTM32(int distance_cm){
     }
     
     //stm32Serial.print("Distance: ");
-    stm32Serial.print(distance_cm);
+    //stm32Serial.print(distance_cm);
     //stm32Serial.println(" cm");
 }
 
 void sendCommandToSTM32(MOVECOMMAND command){
     if (command == MOVECOMMAND::GO) {
-        stm32Serial.println("GO");
+        //stm32Serial.println("GO");
     } else if (command == MOVECOMMAND::STOP) {
-        stm32Serial.println("STOP");
+        //stm32Serial.println("STOP");
     } else {
         Serial.println("Unknown command");
     }

@@ -71,7 +71,7 @@ void publishMessage(const char* topic, const String& payload) {
 
     if (client.connected()) {   
       long now = millis();  
-      if (now - lastMsg > 2000) { // Publish every 2 seconds
+      if (now - lastMsg > 2000) { 
         lastMsg = now;  
       client.publish(topic, payload.c_str());   
       }

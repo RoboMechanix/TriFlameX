@@ -18,9 +18,20 @@ int main(void) {
 
 	UART_init(1,BAUDRATE);
 	while (1) {
-		UARTMessage msg = UART_receive_message(1);
+		UARTMessage msg;
+		do {
+		    msg = UART_receive_message(1);
+		} while (msg.type == MSG_NONE);
+
 		    switch (msg.type) {
 		        case MSG_DISTANCE:
+		        	if (msg.distance == 0.0f) {
+		        	                turnON(0);
+		        	                turnOFF(1);
+		        	} else if (msg.distance == 1.0f) {
+		        	                turnON(1);
+		        	                turnOFF(0);
+		        	}
 		            break;
 		        case MSG_COMMAND:
 		            if (msg.command == GO) {
