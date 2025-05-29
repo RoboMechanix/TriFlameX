@@ -111,7 +111,7 @@ UARTMessage UART_receive_message(int UART_pref_num) {
         int distance = packed_value & 0x7FFF;
 
         UARTMessage msg;
-        msg.type = MSG_DISTANCE;
+        msg.type = MSG_COMMAND_DISTANCE;
         msg.distance = distance;
         msg.command = command;
         return msg;
@@ -123,3 +123,5 @@ UARTMessage UART_receive_message(int UART_pref_num) {
 
     return (UARTMessage){ .type = MSG_NONE };
 }
+
+

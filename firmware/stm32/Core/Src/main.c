@@ -6,6 +6,7 @@ uint64_t x = 0;
 void turnON(char i);
 void turnOFF(char i);
 char y =0;
+uint16_t distance;
 
 
 
@@ -24,7 +25,7 @@ int main(void) {
 		} while (msg.type == MSG_NONE);
 
 		    switch (msg.type) {
-		        case MSG_DISTANCE:
+		        case MSG_COMMAND_DISTANCE:
 		        if (msg.command == 1) {
 		        	                // GO
 		         turnON(1);
@@ -35,6 +36,7 @@ int main(void) {
 		        turnOFF(1);
 		        }
 
+		        distance = msg.distance;
 		            break;
 		        default:
 		            break;
