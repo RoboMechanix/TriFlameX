@@ -9,5 +9,12 @@ enum class MOVECOMMAND{
 };
 
 void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
-void sendDistanceToSTM32(int distance_cm);
-void sendCommandToSTM32(MOVECOMMAND command);
+void setCommandSTM32(MOVECOMMAND command);
+void sendPackedToSTM32(int distance_cm);
+
+/*
+* Bit layout: [Command Bit][15-bit Distance]
+* min distance = 0
+* max distance = 32767
+* Command Bit: 0 = STOP, 1 = GO
+*/

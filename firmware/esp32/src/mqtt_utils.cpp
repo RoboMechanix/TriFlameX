@@ -48,22 +48,14 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
     Serial.println("Received from laptop: " + command);
 
     if (command == "GO") {
-        sendCommandToSTM32(MOVECOMMAND::GO);
+        setCommandSTM32(MOVECOMMAND::GO);
         Serial.println("Sent command to STM32: GO");
     } else if (command == "STOP") {
-        sendCommandToSTM32(MOVECOMMAND::STOP);
+        setCommandSTM32(MOVECOMMAND::STOP);
         Serial.println("Sent command to STM32: STOP");
     } else {
         Serial.println("Unknown command received.");
     }
-
-    /*
-    if (String(topic).equals(mqtt_sub_topic)) {
-        if(command == "10"){
-          Serial.println("Action: blink LED");
-          blink_led(1,1250); //blink LED once (for 1250ms ON time)
-        }
-    }*/
 
 }
 

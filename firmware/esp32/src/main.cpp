@@ -14,6 +14,7 @@ PubSubClient client(espClient);
 HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 
 float dummydistance_cm = 5.3; 
+bool go_command = false;
 
 void setup() {
   setup_led(); 
@@ -39,11 +40,10 @@ void loop() {
   delay(50);
   dummydistance_cm++;
 
-  sendValueToSTM32(1.0);
+  sendPackedToSTM32(dummydistance_cm);
 
-  //String message = mqtt_client_id + String(": ") + dummydistance_cm + String(" cm");
   String message = String(dummydistance_cm, 0);
-  //message+= String(" cm");
+
   publishMessage(mqtt_pub_topic, message);
   
 }

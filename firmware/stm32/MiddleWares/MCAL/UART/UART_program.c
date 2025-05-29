@@ -86,7 +86,7 @@ int UART_Receive(int UART_pref_num)
 }
 
 UARTMessage UART_receive_message(int UART_pref_num) {
-    static char rx_buffer[64];
+    static char rx_buffer[16];
     static uint8_t rx_index = 0;
 
     USART_TypeDef *USARTx;
@@ -106,15 +106,20 @@ UARTMessage UART_receive_message(int UART_pref_num) {
         rx_buffer[rx_index] = '\0';
         rx_index = 0;
 
-        float value = atof(rx_buffer);
-        return (UARTMessage){ .type = MSG_DISTANCE, .distance = value };
+        int packed_value = atoi(rx_buffer);
+        int command = (packed_value >> 15) & 0x01;
+        int distance = packed_value & 0x7FFF;
+
+        UARTMessage msg;
+        msg.type = MSG_DISTANCE;
+        msg.distance = distance;
+        msg.command = command;
+        return msg;
     } else if (rx_index < sizeof(rx_buffer) - 1) {
         rx_buffer[rx_index++] = c;
     } else {
-        rx_index = 0; // overflow
+        rx_index = 0;
     }
 
     return (UARTMessage){ .type = MSG_NONE };
 }
-
-
