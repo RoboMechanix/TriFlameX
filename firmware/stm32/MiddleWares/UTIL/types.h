@@ -10,11 +10,10 @@ typedef enum {
 } MessageType;
 
 typedef struct {
-    MessageType type;
-    union {
-        float distance;
-        MOVECOMMAND command;
-    };
+	MessageType type;
+    float distance;
+    int command; // 0 = STOP, 1 = GO
 } UARTMessage;
+
 
 #endif

@@ -11,9 +11,9 @@ MQTT_CLIENT_ID = "Ubuntu_Client"
 
 
 # === ESP Data ===
-blueCar_data = -69.0
-redCar_data = -69.0
-blackCar_data = -69.0
+blueCar_data = 69
+redCar_data = 69
+blackCar_data = 69
 isBlueCar_live = False
 isRedCar_live = False
 isBlackCar_live = False

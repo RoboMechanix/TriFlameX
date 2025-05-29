@@ -6,7 +6,7 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
     setCommandSTM32(MOVECOMMAND::STOP);
 }
 
-void sendPackedToSTM32(int distance_cm) {
+void sendPackedToSTM32(u16_t distance_cm) {
     if (distance_cm < 0 || distance_cm > 32767) {
         Serial.println("Distance out of range (0-32767)");  //2^15 - 1
         return;

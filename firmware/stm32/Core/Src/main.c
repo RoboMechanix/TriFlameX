@@ -25,27 +25,18 @@ int main(void) {
 
 		    switch (msg.type) {
 		        case MSG_DISTANCE:
-		        	if (msg.distance == 0.0f) {
-		        	                turnON(0);
-		        	                turnOFF(1);
-		        	} else if (msg.distance == 1.0f) {
-		        	                turnON(1);
-		        	                turnOFF(0);
-		        	}
-		            break;
-		        case MSG_COMMAND:
-		            if (msg.command == GO) {
-		            	y= 1;
-		                turnON(1);
-		                turnOFF(0);
-		            } else if (msg.command == STOP) {
-		            	turnON(0);
-		            	turnOFF(1);
-		            	y = 2;
-		            }
+		        if (msg.command == 1) {
+		        	                // GO
+		         turnON(1);
+		         turnOFF(0);
+		        } else {
+		        	                // STOP
+		        turnON(0);
+		        turnOFF(1);
+		        }
+
 		            break;
 		        default:
-		            // No complete message yet
 		            break;
 		    }
 

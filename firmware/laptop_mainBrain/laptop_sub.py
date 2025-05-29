@@ -59,24 +59,23 @@ def on_message(client, userdata, msg):
     topic = msg.topic
      
     try:
-        value = float(payload)  # parse directly as float
+        value = int(payload)  # parse directly as int
     except ValueError:
         print(f"⚠️ Invalid payload: '{payload}'")
-        
+        return  # Exit early if payload is invalid
 
     if topic == MQTT_TOPIC_SUB_BLUE:
-        config.blueCar_data = float(value)
+        config.blueCar_data = value
         last_seen["blue"] = time.time()
         
     elif topic == MQTT_TOPIC_SUB_RED:
-        config.redCar_data = float(value)
+        config.redCar_data = value
         last_seen["red"] = time.time()
 
     elif topic == MQTT_TOPIC_SUB_BLACK:
-        config.blackCar_data = float(value)
+        config.blackCar_data = value
         last_seen["black"] = time.time()
 
-     #print(f"📩 Received from ESP32 on topic '{msg.topic}': {payload}")
 
 # === Start the monitoring thread ===
 threading.Thread(target=monitor_car_status, daemon=True).start()
