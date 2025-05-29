@@ -25,7 +25,7 @@ int main(void) {
 		} while (msg.type == MSG_NONE);
 
 		    switch (msg.type) {
-		        case MSG_COMMAND_DISTANCE:
+		        case MSG_COMMAND_DISTANCE_ANGLE:
 		        if (msg.command == 1) {
 		        	                // GO
 		         turnON(1);
