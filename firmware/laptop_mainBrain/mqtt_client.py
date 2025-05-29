@@ -4,7 +4,11 @@ print(CallbackAPIVersion)
 from config import MQTT_BROKER, MQTT_PORT, MQTT_CLIENT_ID
 from laptop_pub import publish_message, on_publish
 from laptop_sub import on_connect, on_message
+from checkWifi import validate_network
 
+
+# === Validate Network Connection ===
+validate_network()
 
 # === Setup MQTT Client ===
 client = mqtt.Client(
@@ -31,4 +35,10 @@ except KeyboardInterrupt:
     client.disconnect()
 
 except Exception as e:
+    print("🛑 Exiting...")
+    print("\nStopping MQTT client")
     print(e)
+
+finally:
+    client.loop_stop()
+    client.disconnect()
