@@ -49,8 +49,8 @@ int main(void) {
 void turnON(char i){
 
 	switch (i){
-	case 0 : GPIOB ->ODR = (1<<10); return;
-	case 1 : GPIOB ->ODR = (1<<11); return;
+	case 0 : GPIOB ->ODR |= (1<<10); return;
+	case 1 : GPIOB ->ODR |= (1<<11); return;
 	default : return;
 	}
 }
@@ -58,8 +58,8 @@ void turnON(char i){
 void turnOFF(char i){
 
 	switch (i){
-	case 0 : GPIOB ->ODR = ~(1<<10); return;
-	case 1 : GPIOB ->ODR = ~(1<<11); return;
+	case 0 : GPIOB ->ODR &= ~(1<<10); return;
+	case 1 : GPIOB ->ODR &= ~(1<<11); return;
 	default : return;
 	}
 }

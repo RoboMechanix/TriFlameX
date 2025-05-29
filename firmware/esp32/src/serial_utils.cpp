@@ -6,31 +6,46 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
     setCommandSTM32(MOVECOMMAND::STOP);
 }
 
-void sendPackedToSTM32(uint16_t distance_cm, int8_t angle_deg) {
-    if (distance_cm > 32767) {
-        Serial.println("❌ Distance out of range (0–32767)");
+void sendPackedToSTM32(uint16_t distance, int8_t angle) {
+    if (distance > 32767 || angle < -127 || angle > 127) {
+        Serial.println("Invalid distance or angle range");
         return;
     }
 
-    if (angle_deg < -127 || angle_deg > 127) {
-        Serial.println("❌ Angle out of range (-127 to 127)");
-        return;
-    }
-
-    uint8_t angle_sign = (angle_deg < 0) ? 1 : 0;
-    uint8_t angle_mag = abs(angle_deg) & 0x7F;
+    uint8_t buffer[6];
+    buffer[0] = START_BYTE;
 
     // Pack data
+    // Pack bits: [command(1)] [distance(15)] [sign(1)] [angle(7)]
     uint32_t packed = 0;
-    packed |= ((go_command ? 1 : 0) << 23);       // Command bit
-    packed |= ((distance_cm & 0x7FFF) << 8);      // 15-bit distance
-    packed |= ((angle_sign & 0x01) << 7);         // Sign bit
-    packed |= (angle_mag & 0x7F);                 // Angle magnitude
+    packed |= ((go_command ? 1 : 0) & 0x01) << 23;
+    packed |= (distance & 0x7FFF) << 8;
+    packed |= ((angle < 0 ? 1 : 0) & 0x01) << 7;
+    packed |= (abs(angle) & 0x7F);
 
-    // Send as 3 bytes (MSB first)
-    stm32Serial.write((packed >> 16) & 0xFF);
-    stm32Serial.write((packed >> 8) & 0xFF);
-    stm32Serial.write(packed & 0xFF);
+    buffer[1] = (packed >> 16) & 0xFF;
+    buffer[2] = (packed >> 8) & 0xFF;
+    buffer[3] = packed & 0xFF;
+
+    // Calculate checksum (XOR of payload bytes only)
+    buffer[4] = buffer[1] ^ buffer[2] ^ buffer[3];
+    buffer[5] = END_BYTE;
+
+    // Send packet
+    stm32Serial.write(buffer, sizeof(buffer));
+
+    // Optional: Wait for ACK
+    unsigned long start = millis();
+    while (millis() - start < 100) {
+        if (stm32Serial.available()) {
+            uint8_t ack = stm32Serial.read();
+            if (ack == ACK_BYTE) {
+                //Serial.println("ACK received from STM32");
+                return;
+            }
+        }
+    }
+    Serial.println("⚠️ No ACK received");
 }
 
 

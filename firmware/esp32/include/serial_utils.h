@@ -1,6 +1,10 @@
 #pragma once
 #include <main.h>
 
+#define START_BYTE 0xAA
+#define END_BYTE   0x55
+#define ACK_BYTE   0xCC
+
 #define baudrate 115200
 
 enum class MOVECOMMAND{
