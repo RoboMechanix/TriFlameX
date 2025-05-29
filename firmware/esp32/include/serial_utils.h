@@ -10,7 +10,7 @@ enum class MOVECOMMAND{
 
 void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
 void setCommandSTM32(MOVECOMMAND command);
-void sendPackedToSTM32(u16_t distance_cm);
+void sendPackedToSTM32(u16_t distance_cm, int8_t angle_deg);
 
 /*
 * Bit layout: [Command Bit][15-bit Distance]

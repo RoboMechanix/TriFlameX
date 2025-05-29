@@ -40,7 +40,7 @@ void loop() {
   delay(100);
   dummydistance_cm++;
 
-  sendPackedToSTM32(dummydistance_cm);
+  sendPackedToSTM32(dummydistance_cm,-45);
 
   String message = String(dummydistance_cm);
 
