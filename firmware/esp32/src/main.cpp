@@ -37,7 +37,7 @@ void loop() {
     connect_mqttServer();
   }
   client.loop();
-  delay(100);
+  //delay(100);
   dummydistance_cm++;
 
   sendPackedToSTM32(dummydistance_cm,-45);

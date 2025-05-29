@@ -36,25 +36,25 @@ void connect_mqttServer() {
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
 
-    Serial.print("Message arrived on topic: ");
-    Serial.print(topic);
-    Serial.print(". Message: ");
+    //Serial.print("Message arrived on topic: ");
+    //Serial.print(topic);
+    //Serial.print(". Message: ");
     String command = "";
 
     for (unsigned int i = 0; i < length; i++) {
       command += (char)message[i];
     }
     
-    Serial.println("Received from laptop: " + command);
+    //Serial.println("Received from laptop: " + command);
 
     if (command == "GO") {
         setCommandSTM32(MOVECOMMAND::GO);
-        Serial.println("Sent command to STM32: GO");
+        //Serial.println("Sent command to STM32: GO");
     } else if (command == "STOP") {
         setCommandSTM32(MOVECOMMAND::STOP);
-        Serial.println("Sent command to STM32: STOP");
+        //Serial.println("Sent command to STM32: STOP");
     } else {
-        Serial.println("Unknown command received.");
+        //Serial.println("Unknown command received.");
     }
 
 }
