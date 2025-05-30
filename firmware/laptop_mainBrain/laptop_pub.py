@@ -1,5 +1,4 @@
 import time
-import paho.mqtt.client as mqtt
 from config import (
     MQTT_TOPIC_PUB_BLACK,
     MQTT_TOPIC_PUB_RED,

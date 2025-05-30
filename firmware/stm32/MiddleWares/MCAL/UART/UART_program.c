@@ -85,15 +85,14 @@ int UART_Receive(int UART_pref_num)
     return USARTx->DR & 0xFF;
 }
 
-UARTMessage UART_receive_message(int UART_pref_num)
-{
-    static char rx_buffer[64];
-    static uint8_t rx_index = 0;
+UARTMessage UART_receive_message(int UART_pref_num) {
+    static enum { WAIT_START, READ_DATA, READ_CHECKSUM, WAIT_END } state = WAIT_START;
+    static uint8_t buffer[3];
+    static uint8_t index = 0;
+    static uint8_t checksum = 0;
 
     USART_TypeDef *USARTx;
-
-    switch (UART_pref_num)
-    {
+    switch (UART_pref_num) {
         case 1: USARTx = USART1; break;
         case 2: USARTx = USART2; break;
         case 3: USARTx = USART3; break;
@@ -101,36 +100,58 @@ UARTMessage UART_receive_message(int UART_pref_num)
     }
 
     if (!(USARTx->SR & USART_SR_RXNE)) return (UARTMessage){ .type = MSG_NONE };
+    uint8_t byte = USARTx->DR & 0xFF;
 
-    char c = USARTx->DR & 0xFF;
+    switch (state) {
+        case WAIT_START:
+            if (byte == 0xAA) {
+                index = 0;
+                checksum = 0;
+                state = READ_DATA;
+            }
+            break;
 
-    if (c == '\n')
-    {
-        rx_buffer[rx_index] = '\0';
-        rx_index = 0;
+        case READ_DATA:
+            buffer[index++] = byte;
+            checksum ^= byte;
+            if (index == 3) state = READ_CHECKSUM;
+            break;
 
-        // Decide message type based on first character
-        if (isdigit(rx_buffer[0]) || rx_buffer[0] == '-' || rx_buffer[0] == '.')
-        {
-            float value = atof(rx_buffer);
-            return (UARTMessage){ .type = MSG_DISTANCE, .distance = value };
-        }
-        else
-        {
-            MOVECOMMAND cmd = parse_command_message(rx_buffer);
-            return (UARTMessage){ .type = MSG_COMMAND, .command = cmd };
-        }
-    }
-    else if (rx_index < sizeof(rx_buffer) - 1)
-    {
-        rx_buffer[rx_index++] = c;
-    }
-    else
-    {
-        rx_index = 0; // Overflow
+        case READ_CHECKSUM:
+            if (byte == checksum) {
+                state = WAIT_END;
+            } else {
+                state = WAIT_START;
+            }
+            break;
+
+        case WAIT_END:
+            if (byte == 0x55) {
+                // Acknowledge
+                while (!(USARTx->SR & USART_SR_TXE));
+                USARTx->DR = 0xCC;
+
+                uint32_t packed = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
+                int command = (packed >> 23) & 0x01;
+                int distance = (packed >> 8) & 0x7FFF;
+                int sign = (packed >> 7) & 0x01;
+                int angle = packed & 0x7F;
+                if (sign) angle = -angle;
+
+                UARTMessage msg = {
+                    .type = MSG_COMMAND_DISTANCE_ANGLE,
+                    .command = command,
+                    .distance = distance,
+                    .angle = angle
+                };
+                state = WAIT_START;
+                return msg;
+            } else {
+                state = WAIT_START;
+            }
+            break;
     }
 
     return (UARTMessage){ .type = MSG_NONE };
 }
-
 

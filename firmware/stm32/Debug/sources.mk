@@ -43,8 +43,10 @@ Core/Startup \
 Drivers/STM32F1xx_HAL_Driver/Src \
 MiddleWares/ENTITY \
 MiddleWares/HAL/CAR \
+MiddleWares/HAL/CONTROL \
 MiddleWares/HAL/SERVO \
 MiddleWares/MCAL/GPIO \
 MiddleWares/MCAL/TIMR \
 MiddleWares/MCAL/UART \
+MiddleWares/UTIL \
 
