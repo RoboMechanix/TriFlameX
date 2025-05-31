@@ -7,6 +7,8 @@ from std_msgs.msg import UInt32
 import paho.mqtt.publish as publish
 from UTIL import pack_payload, Car
 
+from UTIL import ENDC, COLOR_CODES
+
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from config import MQTT_BROKER
@@ -49,8 +51,11 @@ class JoyToCmd(Node):
             
         if self.selected_car is None:
             return 
+        
         if prev_selected_car != self.selected_car:
-            self.get_logger().info(f'Selected car: {self.selected_car.name}')
+            color = COLOR_CODES.get(self.selected_car, "")
+            self.get_logger().info(f'{color}Selected car: {self.selected_car.name}{ENDC}')
+
 
         # Axes to movement
         throttle = int(abs(msg.axes[1]) * 1000)  # Distance
