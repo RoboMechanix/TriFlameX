@@ -1,0 +1,16 @@
+package.xml
+setup.cfg
+setup.py
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/PKG-INFO
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/SOURCES.txt
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/dependency_links.txt
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/entry_points.txt
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/requires.txt
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/top_level.txt
+build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/zip-safe
+resource/triFlameX_ros2_pkg
+src/__init__.py
+src/joy_to_cmd_node.py
+test/test_copyright.py
+test/test_flake8.py
+test/test_pep257.py

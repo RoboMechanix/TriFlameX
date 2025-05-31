@@ -1,0 +1,3 @@
+[console_scripts]
+joyToCmdNode = src.joy_to_cmd_node:main
+
