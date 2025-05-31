@@ -29,7 +29,7 @@ def monitor_car_status():
      while True:
         now = time.time()
         for color in ["blue", "red", "black"]:
-            if now - last_seen[color] > 5:  # 5 seconds timeout
+            if now - last_seen[color] > 2:  # 2 seconds timeout
                car_status[color] = False
             else:
                car_status[color] = True
