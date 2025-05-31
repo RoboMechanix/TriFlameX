@@ -5,7 +5,10 @@ import threading
 from config import (
     MQTT_TOPIC_SUB_BLUE,
     MQTT_TOPIC_SUB_RED,
-    MQTT_TOPIC_SUB_BLACK
+    MQTT_TOPIC_SUB_BLACK,
+    MQTT_TOPIC_SUB_BLUE_ROS,
+    MQTT_TOPIC_SUB_RED_ROS,
+    MQTT_TOPIC_SUB_BLACK_ROS
 )
 
 import config
