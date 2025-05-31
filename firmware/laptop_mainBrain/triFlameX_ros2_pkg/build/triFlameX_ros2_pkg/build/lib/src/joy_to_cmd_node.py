@@ -64,10 +64,9 @@ class JoyToCmd(Node):
         command = 1 if abs(throttle) > 50 else 0
 
         packed_data = pack_payload(command, throttle, sign, angle)
-        topic = f'{self.selected_car}car/cmd'
+        topic = f"{self.selected_car.name.lower()}car/cmd"
         try:
-            #publish.single(topic, payload=packed_data.to_bytes(3, 'big'), hostname=MQTT_BROKER)
-            x =5
+            publish.single(topic, payload=packed_data.to_bytes(3, 'big'), hostname=MQTT_BROKER)
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
        
