@@ -4,9 +4,9 @@ const char* ssid = "SSH";
 const char* password = "AzabSSH359";
 const char* mqtt_server = "192.168.0.69"; //IP Address
 
-const char* mqtt_client_id = "ESP32_BlueCar";
-const char* mqtt_sub_topic = "laptop/commands/bluecar"; 
-const char* mqtt_pub_topic = "sensor/bluecar";
+const char* mqtt_client_id = "ESP32_REDCar";
+const char* mqtt_sub_topic = "laptop/commands/redcar"; 
+const char* mqtt_pub_topic = "sensor/redcar";
 
 WiFiClient espClient;
 PubSubClient client(espClient);

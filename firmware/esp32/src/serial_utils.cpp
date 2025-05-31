@@ -45,7 +45,7 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
             }
         }
     }
-    Serial.println("⚠️ No ACK received");
+    //Serial.println("⚠️ No ACK received");
 }
 
 
