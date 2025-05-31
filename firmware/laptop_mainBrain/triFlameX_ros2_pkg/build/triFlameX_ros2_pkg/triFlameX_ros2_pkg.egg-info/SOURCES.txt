@@ -9,6 +9,7 @@ build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/requires.txt
 build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/top_level.txt
 build/triFlameX_ros2_pkg/triFlameX_ros2_pkg.egg-info/zip-safe
 resource/triFlameX_ros2_pkg
+src/UTIL.py
 src/__init__.py
 src/joy_to_cmd_node.py
 test/test_copyright.py

@@ -5,21 +5,21 @@ from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from std_msgs.msg import UInt32
 import paho.mqtt.publish as publish
+from UTIL import pack_payload, Car
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-
-
 from config import MQTT_BROKER
+
+
 
 class JoyToCmd(Node):
     def __init__(self):
         super().__init__('joy_to_cmd')
-        self.create_subscription(Joy, '/joy', self.joy_callback, 10)
         self.selected_car = None
-        
+        self.first_run = True
         self.get_logger().info('JoyToCmd Node has been started.')
-        
+       
         self.subscription = self.create_subscription(
             Joy,
             '/joy',
@@ -29,18 +29,26 @@ class JoyToCmd(Node):
     
     def joy_callback(self, msg):
         
-        if not msg.buttons[6]:
+        if self.selected_car is None and self.first_run: 
+            self.get_logger().info('No car selected. Press LB to select a car.')
+            self.first_run = False
+        
+        if not msg.buttons[4]: #LB
+            self.selected_car = None
+            #self.get_logger().info('Car selection has been cleared.')
             return
         
         prev_selected_car = self.selected_car
         # Button mapping
         if msg.buttons[2]:  # X
             self.selected_car = Car.BLUE
-        elif msg.buttons[3]:  # Y
+        elif msg.buttons[0]:  # A
             self.selected_car = Car.RED
-        elif msg.buttons[4]:  # LB
+        elif msg.buttons[1]:  # B
             self.selected_car = Car.BLACK
             
+        if self.selected_car is None:
+            return 
         if prev_selected_car != self.selected_car:
             self.get_logger().info(f'Selected car: {self.selected_car.name}')
 
@@ -51,9 +59,14 @@ class JoyToCmd(Node):
         command = 1 if abs(throttle) > 50 else 0
 
         packed_data = pack_payload(command, throttle, sign, angle)
-        topic = f'car{self.selected_car}/cmd'
-        publish.single(topic, payload=packed_data.to_bytes(3, 'big'), hostname=MQTT_BROKER)
-        self.get_logger().info(f'Sent to {topic}: {packed_data:#08x}')
+        topic = f'{self.selected_car}car/cmd'
+        try:
+            #publish.single(topic, payload=packed_data.to_bytes(3, 'big'), hostname=MQTT_BROKER)
+            x =5
+        except Exception as e:
+            self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
+       
+            
 
 
 def main(args=None):
@@ -70,16 +83,3 @@ def main(args=None):
 if __name__ == '__main__':
     main()
     
-    
-
-def pack_payload(command, distance, sign, angle):
-    payload = (command << 23) | (distance << 8) | (sign << 7) | angle
-    return payload
-
-
-from enum import Enum
-
-class Car(Enum):
-    BLUE = 1
-    RED = 2                                                                                                                                 
-    BLACK = 3
