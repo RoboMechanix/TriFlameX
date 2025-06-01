@@ -10,9 +10,7 @@ from triflamex_ros2_pkg.UTIL import pack_payload, Car
 from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from config import MQTT_BROKER
-
+MQTT_BROKER = "192.168.0.69" 
 
 
 class JoyToCmd(Node):
