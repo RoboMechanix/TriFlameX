@@ -129,7 +129,6 @@ def ros_takeOver(msg):
         config.isBlackCarAutonomous = True
         config.isRedCarAutonomous = True
         last_ros_seen["blue"] = time.time()
-        print("IT WORKED")
         
     elif topic == MQTT_TOPIC_SUB_RED_ROS:
         config.redCar_data = value
@@ -137,7 +136,6 @@ def ros_takeOver(msg):
         config.isBlackCarAutonomous = True
         config.isRedCarAutonomous = False
         last_ros_seen["red"] = time.time()
-        print("IT WORKED")
 
     elif topic == MQTT_TOPIC_SUB_BLACK_ROS:
         config.blackCar_data = value
@@ -145,4 +143,3 @@ def ros_takeOver(msg):
         config.isBlackCarAutonomous = False
         config.isRedCarAutonomous = True
         last_ros_seen["black"] = time.time()
-        print("IT WORKED")
