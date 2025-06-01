@@ -28,6 +28,7 @@ extern HardwareSerial stm32Serial;
 
 // ==== Global Variables ====
 extern bool go_command; 
+extern bool isAutonomous;
 
 // ==== Function Declarations ====
 void connectToWiFi(const char* ssid, const char* password);

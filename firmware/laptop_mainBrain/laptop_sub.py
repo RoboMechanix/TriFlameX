@@ -58,13 +58,13 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 
 # === Callback when a message is received ===
 def on_message(client, userdata, msg):
+    topic = msg.topic
     
     if topic in [MQTT_TOPIC_SUB_BLUE_ROS, MQTT_TOPIC_SUB_RED_ROS, MQTT_TOPIC_SUB_BLACK_ROS]:
         ros_takeOver(msg)
         return
     
     payload = msg.payload.decode('utf-8')
-    topic = msg.topic
      
     try:
         value = int(payload)  # parse directly as int

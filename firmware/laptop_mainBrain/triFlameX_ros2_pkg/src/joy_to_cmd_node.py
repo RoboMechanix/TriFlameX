@@ -71,7 +71,7 @@ class JoyToCmd(Node):
         command = 1 if abs(throttle) > 50 else 0
 
         packed_data = pack_payload(command, throttle, sign, angle)
-        topic = f"{self.selected_car.name.lower()}car/cmd"
+        topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
         try:
             publish.single(topic, payload=packed_data.to_bytes(3, 'big'), hostname=MQTT_BROKER)
         except Exception as e:
