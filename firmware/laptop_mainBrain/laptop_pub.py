@@ -29,7 +29,6 @@ def on_publish(client, userdata, mid):
 
 def publish_message(client):
     while True:
-        
         if is_all_autonomous():
             winner = get_lowest_data_car()
             if winner == "blue":

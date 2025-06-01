@@ -12,7 +12,6 @@ from UTIL import ENDC, COLOR_CODES
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from config import MQTT_BROKER
-import config
 
 
 
@@ -38,9 +37,6 @@ class JoyToCmd(Node):
         
         if not msg.buttons[4]: #LB
             self.selected_car = None
-            config.isBlueCarAutonomous = True
-            config.isRedCarAutonomous = True
-            config.isBlackCarAutonomous = True
             #self.get_logger().info('Car selection has been cleared.')
             return
         
@@ -48,13 +44,10 @@ class JoyToCmd(Node):
         # Button mapping
         if msg.buttons[2]:  # X
             self.selected_car = Car.BLUE
-            config.isBlueCarAutonomous = False
         elif msg.buttons[0]:  # A
             self.selected_car = Car.RED
-            config.isRedCarAutonomous = False
         elif msg.buttons[1]:  # B
             self.selected_car = Car.BLACK
-            config.isBlackCarAutonomous = False
             
         if self.selected_car is None:
             return 
@@ -71,9 +64,10 @@ class JoyToCmd(Node):
         command = 1 if abs(throttle) > 50 else 0
 
         packed_data = pack_payload(command, throttle, sign, angle)
+        payload = str(packed_data)
         topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
         try:
-            publish.single(topic, payload=packed_data.to_bytes(3, 'big'), hostname=MQTT_BROKER)
+            publish.single(topic, payload=payload, hostname=MQTT_BROKER)
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
        
