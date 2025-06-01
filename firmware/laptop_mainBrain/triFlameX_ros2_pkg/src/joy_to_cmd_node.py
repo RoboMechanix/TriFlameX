@@ -12,6 +12,7 @@ from UTIL import ENDC, COLOR_CODES
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from config import MQTT_BROKER
+import config
 
 
 
@@ -37,6 +38,9 @@ class JoyToCmd(Node):
         
         if not msg.buttons[4]: #LB
             self.selected_car = None
+            config.isBlueCarAutonomous = True
+            config.isRedCarAutonomous = True
+            config.isBlackCarAutonomous = True
             #self.get_logger().info('Car selection has been cleared.')
             return
         
@@ -44,10 +48,13 @@ class JoyToCmd(Node):
         # Button mapping
         if msg.buttons[2]:  # X
             self.selected_car = Car.BLUE
+            config.isBlueCarAutonomous = False
         elif msg.buttons[0]:  # A
             self.selected_car = Car.RED
+            config.isRedCarAutonomous = False
         elif msg.buttons[1]:  # B
             self.selected_car = Car.BLACK
+            config.isBlackCarAutonomous = False
             
         if self.selected_car is None:
             return 

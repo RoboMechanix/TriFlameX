@@ -60,7 +60,7 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 def on_message(client, userdata, msg):
     
     if topic in [MQTT_TOPIC_SUB_BLUE_ROS, MQTT_TOPIC_SUB_RED_ROS, MQTT_TOPIC_SUB_BLACK_ROS]:
-        takeOver_ros(msg)
+        ros_takeOver(msg)
         return
     
     payload = msg.payload.decode('utf-8')
@@ -88,7 +88,7 @@ def on_message(client, userdata, msg):
 # === Start the monitoring thread ===
 threading.Thread(target=monitor_car_status, daemon=True).start()
 
-def takeOver_ros(msg):
+def ros_takeOver(msg):
     payload = msg.payload
     topic = msg.topic
     
