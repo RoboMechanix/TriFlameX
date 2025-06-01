@@ -73,14 +73,20 @@ def on_message(client, userdata, msg):
         return  
 
     if topic == MQTT_TOPIC_SUB_BLUE:
+        if not config.isBlueCarAutonomous:
+            return
         config.blueCar_data = value
         last_seen["blue"] = time.time()
         
     elif topic == MQTT_TOPIC_SUB_RED:
+        if not config.isRedCarAutonomous:
+            return
         config.redCar_data = value
         last_seen["red"] = time.time()
 
     elif topic == MQTT_TOPIC_SUB_BLACK:
+        if not config.isBlackCarAutonomous:
+            return
         config.blackCar_data = value
         last_seen["black"] = time.time()
 
