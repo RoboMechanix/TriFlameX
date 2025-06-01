@@ -1,2 +1,4 @@
-../MiddleWares/HAL/CONTROL/CONTROL_program.c:8:6:PD_init	1
-../MiddleWares/HAL/CONTROL/CONTROL_program.c:14:6:PD_update_from_distance	5
+../MiddleWares/HAL/CONTROL/CONTROL_program.c:15:6:PD_init_angle	1
+../MiddleWares/HAL/CONTROL/CONTROL_program.c:21:6:PD_update_angle	13
+../MiddleWares/HAL/CONTROL/CONTROL_program.c:72:6:PD_init	1
+../MiddleWares/HAL/CONTROL/CONTROL_program.c:78:6:PD_update_from_distance	9
