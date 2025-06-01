@@ -19,7 +19,8 @@ extern const char* password;
 // ==== MQTT Server Config ====
 extern const char* mqtt_server;
 extern const char* mqtt_client_id;
-extern const char* mqtt_sub_topic;
+extern const char* mqtt_sub_laptopCMD;
+extern const char* mqtt_sub_joyRos;
 
 // ==== Global Objects ====
 extern WiFiClient espClient;
@@ -29,6 +30,8 @@ extern HardwareSerial stm32Serial;
 // ==== Global Variables ====
 extern bool go_command; 
 extern bool isAutonomous;
+extern int Sensordistance;
+extern int Sensorangle;
 
 // ==== Function Declarations ====
 void connectToWiFi(const char* ssid, const char* password);
