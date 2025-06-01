@@ -62,6 +62,8 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         int angleSign = (raw >> 7) & 0x01;
         int angleMag = raw & 0x7F;
 
+        go_command = (command == 1);
+
         int angle = angleSign ? -angleMag : angleMag;
 
         sendPackedToSTM32(distance, angle);
