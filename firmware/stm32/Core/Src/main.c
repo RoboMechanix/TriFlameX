@@ -14,14 +14,14 @@ uint64_t current_time_ms=1 ;
 
 // Simulated distance values (cm)
 float simulated_distances[] = {
-    35.0f, 35.0f, 35.0f, 35.0f, 35.0f, 35.0f, 35.5f, 35.1f, 35.0f,
-	35.9f, 35.5f, 35.0f
+    20.0f, 20.0f, 20.0f, 20.0f, 20.0f, 20.0f, 20.5f, 20.1f, 20.0f,
+	15.9f, 15.5f, 15.0f, 15.0f, 15.0f, 15.0f
 };
 int distance_count = sizeof(simulated_distances) / sizeof(simulated_distances[0]);
 
 // Simulated angle values (degrees)
 float simulated_angles[] = {
-    10.0f, 8.0f, 5.0f, 2.0f, 1.0f, 0.0f, -1.0f, -2.0f, -5.0f, -8.0f, -10.0f
+    10.0f, 10.0f,8.0f,8.0f,5.0f, 5.0f, 5.0f, 2.0f, 1.0f, 0.0f, -1.0f, -2.0f, -5.0f, -5.0f, -5.0f, -8.0f, -8.0f, -10.0f, -10.0f
 };
 int angle_count = sizeof(simulated_angles) / sizeof(simulated_angles[0]);
 
@@ -43,7 +43,7 @@ int main(void) {
 
     // === Right Motor (TIM4, PB6/PB7) ===
     TIM_TypeDef *rightTimer = TIM4;
-    uint8_t rightChannel = 1;
+    uint8_t rightChannel = 2;
     GPIO_TypeDef *rightDir1Port = GPIOA; uint8_t rightDir1Pin = 2;
     GPIO_TypeDef *rightDir2Port = GPIOA; uint8_t rightDir2Pin = 3;
 
@@ -55,15 +55,15 @@ int main(void) {
 
     // === Init Millisecond Timer (TIM2 used for timing) ===
     TIM_initMillis(TIM2, 1);  // 1ms resolution
-    delay_ms(500);
+    delay_ms(50);
 
     // === Initialize PD controllers ===
     PD_init(6.0f, 3.0f);        // Distance PD
-    PD_init_angle(8.0f, 1.0f);  // Angle control gains
+    PD_init_angle(5.0f, 1.0f);  // Angle control gains
 
     for (int i = 0; i < distance_count; i++) {
         float distance = simulated_distances[i];
-        float angle = simulated_angles[i % angle_count]; // Loop angles if fewer
+        float angle = simulated_angles[i]; // Loop angles if fewer
 
         current_time_ms = TIM_Millis();
         // Update distance control (forward/backward speed)
