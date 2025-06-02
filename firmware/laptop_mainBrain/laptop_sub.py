@@ -21,6 +21,13 @@ last_seen = {
     "black": time.time()
 }
 
+last_ros_seen = {
+    "blue": time.time(),
+    "red": time.time(),
+    "black": time.time()
+}
+
+
 car_status = {
     "blue": True,
     "red": True,
@@ -36,6 +43,14 @@ def monitor_car_status():
                car_status[color] = False
             else:
                car_status[color] = True
+               
+            if now - last_ros_seen[color] > 2:
+                if color == "blue":
+                    config.isBlueCarAutonomous = True
+                elif color == "red":
+                    config.isRedCarAutonomous = True
+                elif color == "black":
+                    config.isBlackCarAutonomous = True
         
         config.isBlueCar_live = car_status["blue"]
         config.isRedCar_live = car_status["red"]
@@ -52,6 +67,9 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
         client.subscribe(MQTT_TOPIC_SUB_BLUE)
         client.subscribe(MQTT_TOPIC_SUB_RED)
         client.subscribe(MQTT_TOPIC_SUB_BLACK)
+        client.subscribe(MQTT_TOPIC_SUB_BLUE_ROS)
+        client.subscribe(MQTT_TOPIC_SUB_RED_ROS)
+        client.subscribe(MQTT_TOPIC_SUB_BLACK_ROS)
     else:
         print(f"❌ Failed to connect, return code {reason_code}")
         is_connected = False
@@ -95,23 +113,33 @@ def on_message(client, userdata, msg):
 threading.Thread(target=monitor_car_status, daemon=True).start()
 
 def ros_takeOver(msg):
+    print("ROS")
     payload = msg.payload
     topic = msg.topic
     
     try:
-        value = int.from_bytes(payload, 'big')      # Convert 3 bytes to integer
+        value = int(payload)   
     except ValueError:
         print(f"⚠️ Invalid payload: '{payload}'")
         return 
 
     if topic == MQTT_TOPIC_SUB_BLUE_ROS:
         config.blueCar_data = value
-        last_seen["blue"] = time.time()
+        config.isBlueCarAutonomous = False
+        config.isBlackCarAutonomous = True
+        config.isRedCarAutonomous = True
+        last_ros_seen["blue"] = time.time()
         
     elif topic == MQTT_TOPIC_SUB_RED_ROS:
         config.redCar_data = value
-        last_seen["red"] = time.time()
+        config.isBlueCarAutonomous = True
+        config.isBlackCarAutonomous = True
+        config.isRedCarAutonomous = False
+        last_ros_seen["red"] = time.time()
 
     elif topic == MQTT_TOPIC_SUB_BLACK_ROS:
         config.blackCar_data = value
-        last_seen["black"] = time.time()
+        config.isBlueCarAutonomous = True
+        config.isBlackCarAutonomous = False
+        config.isRedCarAutonomous = True
+        last_ros_seen["black"] = time.time()

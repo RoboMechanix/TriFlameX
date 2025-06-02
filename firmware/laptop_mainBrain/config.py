@@ -23,6 +23,8 @@ blackCar_data = 69
 isBlueCar_live = False
 isRedCar_live = False
 isBlackCar_live = False
+
+# === Mode Data ===
 isBlueCarAutonomous = True
 isRedCarAutonomous = True
 isBlackCarAutonomous = True

@@ -15,8 +15,7 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
     uint8_t buffer[6];
     buffer[0] = START_BYTE;
 
-    // Pack data
-    // Pack bits: [command(1)] [distance(15)] [sign(1)] [angle(7)]
+    // Pack bits: [command(1)][distance(15)][sign(1)][angle(7)]
     uint32_t packed = 0;
     packed |= ((go_command ? 1 : 0) & 0x01) << 23;
     packed |= (distance & 0x7FFF) << 8;
@@ -52,8 +51,14 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
 void setCommandSTM32(MOVECOMMAND command) {
     if (command == MOVECOMMAND::GO) {
         go_command = true;
+        isAutonomous = true;
     } else if (command == MOVECOMMAND::STOP) {
         go_command = false;
+        isAutonomous = true;
+    }
+    else if (command == MOVECOMMAND::ManualMode) {
+        isAutonomous = false;
+        go_command = true;
     }
     else {
         Serial.println("Unknown command");
