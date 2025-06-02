@@ -3,7 +3,7 @@
 extern TOF_Parameter TOF_0;
 Servo servo;
 volatile float current_angle;
-float span = 90.0, step_size = 0.25;
+float span = 75.0, step_size = 1.75;
 float min_angle = 0, max_angle = 0;
 void setup() {
   Serial.begin(460800);//Initialize the USB serial port baud rate to 115200 初始化USB串口波特率到115200
@@ -48,7 +48,7 @@ void servo_task(void *parameter){
 
     for (float i = min_angle; i <= max_angle; i += step_size) {
       servo.write(i);
-      vTaskDelay(2 / portTICK_PERIOD_MS);  // Allow servo to reach position
+      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
 
       current_angle = i;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
@@ -67,7 +67,7 @@ void servo_task(void *parameter){
     min_dist = 9999;  // set high starting value
     for(float i = max_angle; i >= min_angle; i-=step_size){
       servo.write(i);
-      vTaskDelay(2 / portTICK_PERIOD_MS);  // Allow servo to reach position
+      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
 
       current_angle = i;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
