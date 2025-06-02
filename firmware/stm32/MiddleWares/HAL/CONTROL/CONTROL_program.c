@@ -9,8 +9,8 @@ float kd_angle = 0;
 float prev_angle_error = 0;
 float prev_angle_time = 0;
 float servo_output = 0;
-#define maxDistance 5 //5cm from target
-#define mainAngle 0
+#define maxDistance 20 //5cm from target
+#define mainAngle 90
 
 void PD_init_angle(float Kp, float Kd) {
     kp_angle = Kp;
@@ -79,7 +79,7 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 {
     float error = actualDistance - maxDistance;
     float p = kp_global * error;
-    float d = (error - prev_error) / ((time_ms - prev_time) / 1000.0f);
+    float d = kd_global*(error - prev_error) / ((time_ms - prev_time) / 1000.0f);
     prev_error = error;
     prev_time = time_ms;
 
@@ -93,17 +93,19 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
     }
 
     // Apply deadband threshold
-    if (speed > 0.0f && speed < 30.0f) {
-        speed = 30.0f;  // Minimum forward speed
-    } else if (speed < 0.0f && speed > -30.0f) {
-        speed = -30.0f; // Minimum backward speed
-    }
-
+//    if (speed > 0.0f && speed < 30.0f) {
+//        speed = 30.0f;  // Minimum forward speed
+//    } else if (speed < 0.0f && speed > -30.0f) {
+//        speed = -30.0f; // Minimum backward speed
+//    }
+if(fabs(error)<10){
+	speed=0;
+}
     // Movement logic
     if (speed > 0) {
         CAR_forward(speed,speed);
     } else if (speed < 0) {
-        CAR_backwards(speed,speed);
+        CAR_backwards(-speed,-speed);
     } else {
         CAR_stop();
     }

@@ -3,11 +3,14 @@
 extern TOF_Parameter TOF_0;
 Servo servo;
 volatile float current_angle;
-float span = 75.0, step_size = 1.75;
+float span = 0.0, step_size = 1.75;
 float min_angle = 0, max_angle = 0;
+HardwareSerial MySerial(2);  // Use UART2
+String dataToSend ;
 void setup() {
   Serial.begin(460800);//Initialize the USB serial port baud rate to 115200 初始化USB串口波特率到115200
   TOF_UART.begin(1500000, SERIAL_8N1, TOF_RX_PIN, TOF_TX_PIN);//Initialize the TOF serial port baud rate to 1500000 and specify the pin 初始化TOF串口波特率到921600,并指定引脚
+    MySerial.begin(500000, SERIAL_8N1, 5, 4);
   servo.setPeriodHertz(50);
   servo.attach(12);
   min_angle = 0.0 + ((180.0-span)/2.0);
@@ -47,8 +50,8 @@ void servo_task(void *parameter){
     uint32_t min_dist = 9999;  // set high starting value
 
     for (float i = min_angle; i <= max_angle; i += step_size) {
-      servo.write(i);
-      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
+   //   servo.write(i);
+//      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
 
       current_angle = i;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
@@ -63,11 +66,17 @@ void servo_task(void *parameter){
     Serial.print(",");
     Serial.print(min_dist);
     Serial.println(")");
+
+       dataToSend = String(min_dist) + "," + String((int)min_dist_at_angle-6)+ "\r\n";
+
+  // Send the data over UART2
+  MySerial.print(dataToSend);
+
     min_dist_at_angle = 181;
     min_dist = 9999;  // set high starting value
     for(float i = max_angle; i >= min_angle; i-=step_size){
-      servo.write(i);
-      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
+   //   servo.write(i);
+//      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
 
       current_angle = i;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
@@ -82,6 +91,14 @@ void servo_task(void *parameter){
     Serial.print(",");
     Serial.print(min_dist);
     Serial.println(")");
+
+      dataToSend = String(min_dist) + "," + String((int)min_dist_at_angle+6) + "\r\n";
+
+  // Send the data over UART2
+      Serial.println(dataToSend);
+
+  MySerial.print(dataToSend);
+
        
   }
 }
