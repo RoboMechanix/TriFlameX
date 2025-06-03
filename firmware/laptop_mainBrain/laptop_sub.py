@@ -113,7 +113,6 @@ def on_message(client, userdata, msg):
 threading.Thread(target=monitor_car_status, daemon=True).start()
 
 def ros_takeOver(msg):
-    print("ROS")
     payload = msg.payload
     topic = msg.topic
     
