@@ -56,7 +56,7 @@ class JoyToCmd(Node):
 
 
         # Axes to movement
-        throttle = int(msg.axes[1] * 32767)  # Distance
+        throttle = int(abs(msg.axes[1] * 32767))  # Distance #moving forward only, backward movement?
         angle = int(abs(msg.axes[0]) * 90)       # Angle
         sign = 0 if msg.axes[0] >= 0 else 1
         command = 1 if abs(throttle) > 50 else 0
