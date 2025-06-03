@@ -76,5 +76,4 @@ void *_sbrk(ptrdiff_t incr)
   __sbrk_heap_end += incr;
 
   return (void *)prev_heap_end;
-  float angle = 0.0f;
- }
+}

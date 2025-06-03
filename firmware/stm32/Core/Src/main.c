@@ -1,22 +1,14 @@
-#include "../../MiddleWares/HAL/CAR/CAR_interface.h"
-#include "../../MiddleWares/HAL/CONTROL/CONTROL_interface.h"
-#include "../../MiddleWares/MCAL/TIMR/TIM_interface.h"
-#include "../../MiddleWares/MCAL/GPIO/GPIO_interface.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>  // for atof()
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+// === Globals ===
+uint64_t current_time_ms = 1;
 
-// === Constants ===
-#define SIMULATION_DELAY_MS 70  // Delay between updates (ms)
-#define PWM_FREQ_HZ 1000.0f      // PWM frequency
-#define UART_BUFFER_SIZE 64
+
+// === Variables ===
 float distance = 0.0f;
 float angle = 0.0f;
 float realangle = 0.0f;
 
-// === Globals ===
-uint64_t current_time_ms = 1;
 char c;
 // UART buffer for receiving data
 char uart_rx_buffer[UART_BUFFER_SIZE];

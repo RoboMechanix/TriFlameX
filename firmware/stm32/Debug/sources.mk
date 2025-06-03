@@ -41,12 +41,16 @@ SUBDIRS := \
 Core/Src \
 Core/Startup \
 Drivers/STM32F1xx_HAL_Driver/Src \
-MiddleWares/ENTITY \
-MiddleWares/HAL/CAR \
-MiddleWares/HAL/CONTROL \
-MiddleWares/HAL/SERVO \
-MiddleWares/MCAL/GPIO \
-MiddleWares/MCAL/TIMR \
-MiddleWares/MCAL/UART \
-MiddleWares/UTIL \
+Middlewares/ENTITY \
+Middlewares/HAL/CAR \
+Middlewares/HAL/CONTROL \
+Middlewares/HAL/SERVO \
+Middlewares/MCAL/GPIO \
+Middlewares/MCAL/TIMR \
+Middlewares/MCAL/UART \
+Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
+Middlewares/Third_Party/FreeRTOS/Source \
+Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 \
+Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang \
+Middlewares/UTIL \
 

@@ -1,0 +1,6 @@
+../Middlewares/ENTITY/motor.c:4:6:initMotor	1
+../Middlewares/ENTITY/motor.c:23:6:setDir	2
+../Middlewares/ENTITY/motor.c:34:5:getDir	1
+../Middlewares/ENTITY/motor.c:38:6:setSpeed	1
+../Middlewares/ENTITY/motor.c:43:7:getSpeed	1
+../Middlewares/ENTITY/motor.c:47:6:stop	1
