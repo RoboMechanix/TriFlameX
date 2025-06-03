@@ -20,7 +20,7 @@ void MQTTTask(void *pvParameters) {
     String message = String(Sensordistance++);
     publishMessage(mqtt_pub_topic, message);
 
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
 

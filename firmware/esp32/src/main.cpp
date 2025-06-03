@@ -25,15 +25,16 @@ volatile int Sensorangle = 45;
 void setup() {
   Serial.begin(115200);
   setup_led();
-  // Blocking the flow till the wi-fi is connected
-  connectToWiFi(ssid, password);
-  setupSTM32Serial(stm32Serial, 16, 17);
-  setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
-
+  
   xSharedDataMutex = xSemaphoreCreateMutex();
     if (xSharedDataMutex == NULL) {
         Serial.println("Failed to create mutex");
     }
+
+  // Blocking the flow till the wi-fi is connected
+  connectToWiFi(ssid, password);
+  setupSTM32Serial(stm32Serial, 16, 17);
+  setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
 
   xTaskCreatePinnedToCore(WiFiTask, "WiFiTask", 4096, NULL, 1, NULL, 0);
   xTaskCreatePinnedToCore(MQTTTask, "MQTTTask", 8192, NULL, 2, NULL, 1);
@@ -41,7 +42,7 @@ void setup() {
   
 }
 
-void loop();
+void loop(){}
 
     
 
