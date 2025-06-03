@@ -14,39 +14,34 @@ PubSubClient client(espClient);
 
 HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 
+SemaphoreHandle_t xSharedDataMutex;
+
 u16_t dummydistance_cm = 12; 
-bool go_command = false;
-bool isAutonomous = true; 
-int Sensordistance= 0;
-int Sensorangle = 45;
+volatile bool go_command = false;
+volatile bool isAutonomous = true; 
+volatile int Sensordistance= 0;
+volatile int Sensorangle = 45;
 
 void setup() {
-  setup_led(); 
-
-  Serial.begin(115200); 
-
+  Serial.begin(115200);
+  setup_led();
+  // Blocking the flow till the wi-fi is connected
   connectToWiFi(ssid, password);
+  setupSTM32Serial(stm32Serial, 16, 17);
   setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
 
-  Wire.begin();
-  setupSTM32Serial(stm32Serial, 16, 17);
+  xSharedDataMutex = xSemaphoreCreateMutex();
+    if (xSharedDataMutex == NULL) {
+        Serial.println("Failed to create mutex");
+    }
+
+  xTaskCreatePinnedToCore(WiFiTask, "WiFiTask", 4096, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(MQTTTask, "MQTTTask", 8192, NULL, 2, NULL, 1);
+  xTaskCreatePinnedToCore(SerialTask, "SerialTask", 4096, NULL, 2, NULL, 1);
   
 }
 
-void sendValueToSTM32(float value);
-
-void loop() {
-
-  if (!client.connected()) {
-    connect_mqttServer();
-  }
-  client.loop();
-
-  String message = String(Sensordistance++);
-
-  publishMessage(mqtt_pub_topic, message);
-  
-}
+void loop();
 
     
 

@@ -12,13 +12,14 @@ void setupMQTT(const char* server, const char* client_id, const char* topic, con
         if (client.connect(client_id)) {
             Serial.println("connected.");
             client.subscribe(topic);
+            client.subscribe(topic2);
         } else {
             Serial.print("failed. rc=");
             Serial.print(client.state());
             Serial.println(" trying again in 2 seconds");
     
             blink_led(3,200); //blink LED three times (200ms on duration) to show that MQTT server connection attempt failed
-            // Wait 2 seconds before retrying
+            
             delay(2000);
           
         }
@@ -31,12 +32,10 @@ void connect_mqttServer() {
     }
     client.loop();
     delay(1000);
-    return;
 }
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
     String msg = "";
-
     for (unsigned int i = 0; i < length; i++) {
       msg += (char)message[i];
     }
@@ -45,12 +44,13 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         if (msg == "GO") {
             setCommandSTM32(MOVECOMMAND::GO);
             sendPackedToSTM32(Sensordistance, Sensorangle); 
+        }   
+        else if (msg == "STOP") {
+            setCommandSTM32(MOVECOMMAND::STOP);
 
-    } else if (msg == "STOP") {
-        setCommandSTM32(MOVECOMMAND::STOP);
-
-    } else if (msg == "Manual Mode") {
-       setCommandSTM32(MOVECOMMAND::ManualMode);
+        } 
+        else if (msg == "Manual Mode") {
+            setCommandSTM32(MOVECOMMAND::ManualMode);
     }
     }
 
@@ -62,7 +62,9 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         int angleSign = (raw >> 7) & 0x01;
         int angleMag = raw & 0x7F;
 
+        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         go_command = (command == 1);
+        xSemaphoreGive(xSharedDataMutex);
 
         int angle = angleSign ? -angleMag : angleMag;
 
@@ -73,12 +75,10 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 
 void publishMessage(const char* topic, const String& payload) {
 
-    if (client.connected()) {   
-      long now = millis();  
-      if (now - lastMsg > 2000) { 
-        lastMsg = now;  
-      client.publish(topic, payload.c_str());   
-      }
+    long now = millis();
+    if (client.connected() && (now - lastMsg > 1000)) {
+        lastMsg = now;
+        client.publish(topic, payload.c_str());
     }
 }
 

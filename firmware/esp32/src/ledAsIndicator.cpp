@@ -6,7 +6,7 @@ void blink_led(unsigned int times, unsigned int duration) {
         digitalWrite(ledPin, HIGH);
         delay(duration);
         digitalWrite(ledPin, LOW);
-        delay(200);
+        vTaskDelay(pdMS_TO_TICKS(200));
     }
 }
 

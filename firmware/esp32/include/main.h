@@ -5,7 +5,8 @@
 #include <PubSubClient.h>
 #include <Wire.h>
 #include <HardwareSerial.h>
-
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 
 #include "wifi_utils.h"
 #include "mqtt_utils.h"
@@ -21,6 +22,7 @@ extern const char* mqtt_server;
 extern const char* mqtt_client_id;
 extern const char* mqtt_sub_laptopCMD;
 extern const char* mqtt_sub_joyRos;
+extern const char* mqtt_pub_topic;
 
 // ==== Global Objects ====
 extern WiFiClient espClient;
@@ -28,10 +30,13 @@ extern PubSubClient client;
 extern HardwareSerial stm32Serial;
 
 // ==== Global Variables ====
-extern bool go_command; 
-extern bool isAutonomous;
-extern int Sensordistance;
-extern int Sensorangle;
+extern volatile bool go_command; 
+extern volatile bool isAutonomous;
+extern volatile int Sensordistance;
+extern volatile int Sensorangle;
+
+// ==== FreeRTOS Variables ====
+extern SemaphoreHandle_t xSharedDataMutex;
 
 // ==== Function Declarations ====
 void connectToWiFi(const char* ssid, const char* password);
@@ -39,4 +44,7 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void setupMQTT(const char* server, const char* client_id, const char* topic);
 void connect_mqttServer();  
+void WiFiTask(void *pvParameters);
+void MQTTTask(void *pvParameters);
+void SerialTask(void *pvParameters);
 
