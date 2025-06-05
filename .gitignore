@@ -50,4 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-Debug
+
+# Ignore STM32CubeIDE debug files
+firmware/stm32/Debug/
+firmware/stm32/.settings/

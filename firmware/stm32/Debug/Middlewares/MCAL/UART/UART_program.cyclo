@@ -1,4 +1,0 @@
-../Middlewares/MCAL/UART/UART_program.c:8:6:UART_init	5
-../Middlewares/MCAL/UART/UART_program.c:57:6:UART_send	6
-../Middlewares/MCAL/UART/UART_program.c:72:5:UART_Receive	6
-../Middlewares/MCAL/UART/UART_program.c:88:13:UART_receive_message	16

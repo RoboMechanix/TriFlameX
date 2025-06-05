@@ -57,8 +57,8 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(0.6f, 0.8f);        // Distance PD
-	PD_init_angle(5.0f, 1.0f);  // Angle control gains
+	PD_init(1.0f, 0.5f);        // Distance PD
+	PD_init_angle(2.0f, 1.0f);  // Angle control gains
 
 	while (1) {
 		// Read one line from UART (blocking until '\n')
@@ -81,8 +81,8 @@ int main(void) {
 
 		// Use received values instead of simulated
 		if(distance!=0)
-		PD_update_from_distance(distance, current_time_ms);
-		//PD_update_angle(angle, current_time_ms);
+		//PD_update_from_distance(distance, current_time_ms);
+		PD_update_angle(10, current_time_ms);
 
 		delay_ms(1);
 	}
