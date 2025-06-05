@@ -55,7 +55,7 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
     if (right_motor_speed < -100) right_motor_speed = -100;
     if(fabs(error)<3){
     	right_motor_speed=0;
-    	left_motor_speed=0
+    	left_motor_speed=0;
     }
 
 
