@@ -57,7 +57,7 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(0.6f, 0.8f);        // Distance PD
+	PD_init(1.0f, 0.5f);        // Distance PD
 	PD_init_angle(5.0f, 1.0f);  // Angle control gains
 
 	while (1) {
