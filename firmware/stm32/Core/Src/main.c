@@ -42,7 +42,7 @@ int main(void) {
 				        }
 
 				        distance = msg.distance;
-				        if (distance < 1000 && distance >= 0){
+				        if (distance < 70 && distance >= 0){
 				        	turnON(1);
 				        	turnOFF(0);
 				        }
