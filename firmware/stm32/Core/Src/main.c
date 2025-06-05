@@ -57,7 +57,7 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(1.0f, 0.5f);        // Distance PD
+	PD_init(1.0f, 3.0f);        // Distance PD
 	PD_init_angle(2.0f, 1.0f);  // Angle control gains
 
 	while (1) {
@@ -81,8 +81,8 @@ int main(void) {
 
 		// Use received values instead of simulated
 		if(distance!=0)
-		//PD_update_from_distance(distance, current_time_ms);
-		PD_update_angle(88, current_time_ms);
+		PD_update_from_distance(distance, current_time_ms);
+		//PD_update_angle(88, current_time_ms);
 
 		delay_ms(1);
 	}
