@@ -1,6 +1,0 @@
-../Middlewares/HAL/CAR/CAR_program.c:21:6:CAR_init	1
-../Middlewares/HAL/CAR/CAR_program.c:54:6:CAR_forward	1
-../Middlewares/HAL/CAR/CAR_program.c:66:6:CAR_backwards	1
-../Middlewares/HAL/CAR/CAR_program.c:78:6:CAR_right	1
-../Middlewares/HAL/CAR/CAR_program.c:90:6:CAR_left	1
-../Middlewares/HAL/CAR/CAR_program.c:102:6:CAR_stop	1
