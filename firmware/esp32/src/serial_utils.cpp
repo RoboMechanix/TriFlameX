@@ -51,18 +51,18 @@ void setCommandSTM32(MOVECOMMAND command) {
     switch (command) {
 
     case MOVECOMMAND::GO:
-        setGoCommand(true);
+        go_command = true;
         isAutonomous = true;
         break;
 
     case MOVECOMMAND::STOP:
-        setGoCommand(false);
+        go_command = false;
         isAutonomous = true;
         break;
 
     case MOVECOMMAND::ManualMode:
         isAutonomous = false;
-        //go_command = true;
+        go_command = false;
         break;
 
     default:

@@ -28,8 +28,7 @@ void SerialTask(void *pvParameters) {
   while (true) {
     bool command = false;
     //sendPackedToSTM32(30,20);
-    command = getGoCommand();
-    if (command){
+    if (go_command){
       sendPackedToSTM32(Sensordistance, Sensorangle);
     }
     vTaskDelay(pdMS_TO_TICKS(300));
