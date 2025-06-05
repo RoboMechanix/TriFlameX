@@ -38,15 +38,12 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
         if (stm32Serial.available()) {
             uint8_t ack = stm32Serial.read();
             if (ack == ACK_BYTE) {
-                //Serial.println("ACK received from STM32");
+                Serial.println("ACK received from STM32");
+                return;
             }
-            else {
-                //Serial.println("Received unexpected byte: " + String(ack, HEX));
-            }
-            return;
         }
     }
-    //Serial.println("⚠️ No ACK received");
+    Serial.println("⚠️ No ACK received");
 }
 
 
@@ -54,24 +51,18 @@ void setCommandSTM32(MOVECOMMAND command) {
     switch (command) {
 
     case MOVECOMMAND::GO:
-        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
-        go_command = true;
+        setGoCommand(true);
         isAutonomous = true;
-        xSemaphoreGive(xSharedDataMutex);
         break;
 
     case MOVECOMMAND::STOP:
-        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
-        go_command = false;
+        setGoCommand(false);
         isAutonomous = true;
-        xSemaphoreGive(xSharedDataMutex);
         break;
 
     case MOVECOMMAND::ManualMode:
-        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         isAutonomous = false;
-        go_command = true;
-        xSemaphoreGive(xSharedDataMutex);
+        //go_command = true;
         break;
 
     default:

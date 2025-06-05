@@ -17,10 +17,10 @@ HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 SemaphoreHandle_t xSharedDataMutex;
 
 u16_t dummydistance_cm = 12; 
-volatile bool go_command = false;
-volatile bool isAutonomous = true; 
-volatile int Sensordistance= 0;
-volatile int Sensorangle = 45;
+bool go_command = false;
+bool isAutonomous = true; 
+int Sensordistance= 0;
+int Sensorangle = 45;  
 
 void setup() {
   Serial.begin(115200);
@@ -28,7 +28,9 @@ void setup() {
   
   xSharedDataMutex = xSemaphoreCreateMutex();
     if (xSharedDataMutex == NULL) {
+      while (1) {
         Serial.println("Failed to create mutex");
+      }
     }
 
   // Blocking the flow till the wi-fi is connected
@@ -36,9 +38,9 @@ void setup() {
   setupSTM32Serial(stm32Serial, 16, 17);
   setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
 
-  xTaskCreatePinnedToCore(WiFiTask, "WiFiTask", 4096, NULL, 1, NULL, 0);
-  xTaskCreatePinnedToCore(MQTTTask, "MQTTTask", 8192, NULL, 2, NULL, 1);
-  xTaskCreatePinnedToCore(SerialTask, "SerialTask", 4096, NULL, 2, NULL, 1);
+  xTaskCreatePinnedToCore(WiFiTask, "WiFiTask", 4096, NULL, 1, NULL, 0); // core 0
+  xTaskCreatePinnedToCore(MQTTTask, "MQTTTask", 8192, NULL, 2, NULL, 0); // core 0
+  xTaskCreatePinnedToCore(SerialTask, "SerialTask", 4096, NULL, 2, NULL, 0);
   
 }
 
