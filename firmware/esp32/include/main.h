@@ -12,6 +12,7 @@
 #include "mqtt_utils.h"
 #include "serial_utils.h"
 #include <ledAsIndicator.h>
+#include "util.h"
 
 // ==== Wi-Fi Credentials ====
 extern const char* ssid;
@@ -30,10 +31,10 @@ extern PubSubClient client;
 extern HardwareSerial stm32Serial;
 
 // ==== Global Variables ====
-extern volatile bool go_command; 
-extern volatile bool isAutonomous;
-extern volatile int Sensordistance;
-extern volatile int Sensorangle;
+extern bool go_command; 
+extern bool isAutonomous;
+extern int Sensordistance;
+extern int Sensorangle;
 
 // ==== FreeRTOS Variables ====
 extern SemaphoreHandle_t xSharedDataMutex;

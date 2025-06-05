@@ -31,7 +31,7 @@ void connect_mqttServer() {
         setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
     }
     client.loop();
-    delay(1000);
+    delay(50);
 }
 
 void mqttCallback(char* topic, byte* message, unsigned int length) {
@@ -51,7 +51,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         } 
         else if (msg == "Manual Mode") {
             setCommandSTM32(MOVECOMMAND::ManualMode);
-    }
+        }
     }
 
     if (strcmp(topic, mqtt_sub_joyRos) == 0) {

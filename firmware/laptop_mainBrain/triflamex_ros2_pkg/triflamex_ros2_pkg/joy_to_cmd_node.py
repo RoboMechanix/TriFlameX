@@ -60,7 +60,10 @@ class JoyToCmd(Node):
         angle = int(abs(msg.axes[0]) * 90)       # Angle
         sign = 0 if msg.axes[0] >= 0 else 1
         command = 1 if abs(throttle) > 50 else 0
-
+        
+        throttle = 19
+        angle = 98
+        
         packed_data = pack_payload(command, throttle, sign, angle)
         payload = str(packed_data)
         topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
