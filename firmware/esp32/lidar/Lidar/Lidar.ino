@@ -3,7 +3,7 @@
 extern TOF_Parameter TOF_0;
 Servo servo;
 volatile float current_angle;
-float span = 0.0, step_size = 1.75;
+float span = 75.0, step_size = 1.75;
 float min_angle = 0, max_angle = 0;
 HardwareSerial MySerial(2);  // Use UART2
 String dataToSend ;
@@ -50,9 +50,8 @@ void servo_task(void *parameter){
     uint32_t min_dist = 9999;  // set high starting value
 
     for (float i = min_angle; i <= max_angle; i += step_size) {
-   //   servo.write(i);
-//      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
-
+      servo.write(i);
+      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
       current_angle = i;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
 
@@ -75,9 +74,8 @@ void servo_task(void *parameter){
     min_dist_at_angle = 181;
     min_dist = 9999;  // set high starting value
     for(float i = max_angle; i >= min_angle; i-=step_size){
-   //   servo.write(i);
-//      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
-
+      servo.write(i);
+      vTaskDelay(15 / portTICK_PERIOD_MS);  // Allow servo to reach position
       current_angle = i;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
 
