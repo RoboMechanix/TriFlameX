@@ -2,14 +2,11 @@ import time
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
-from std_msgs.msg import UInt32
-import paho.mqtt.publish as publish
 from triflamex_ros2_pkg.UTIL import pack_payload, Car
-
 from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
+from triflamex_ros2_pkg.UTIL import reliable_publish
+from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-
-MQTT_BROKER = "192.168.0.69" 
 
 
 class JoyToCmd(Node):
@@ -100,14 +97,3 @@ def main(args=None):
 if __name__ == '__main__':
     main()
     
-
-def reliable_publish(topic, payload, retries=3, delay=0.2):
-    for attempt in range(retries):
-        try:
-            publish.single(topic, payload=payload, hostname=MQTT_BROKER)
-            return
-        except Exception as e:
-            if attempt < retries - 1:
-                time.sleep(delay)
-            else:
-                raise e
