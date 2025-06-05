@@ -52,5 +52,5 @@ Mkfile.old
 dkms.conf
 
 # Ignore STM32CubeIDE debug files
-firmware/stm32/Debug/
-firmware/stm32/.settings/
+firmware/stm32/Debug/*
+firmware/stm32/.settings/*
