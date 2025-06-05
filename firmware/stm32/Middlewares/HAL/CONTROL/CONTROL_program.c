@@ -53,7 +53,10 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
     if (left_motor_speed < -100) left_motor_speed = -100;
     if (right_motor_speed > 100) right_motor_speed = 100;
     if (right_motor_speed < -100) right_motor_speed = -100;
-
+    if(fabs(error)<3){
+    	right_motor_speed=0;
+    	left_motor_speed=0
+    }
 
 
     // Drive motors forward with computed speeds

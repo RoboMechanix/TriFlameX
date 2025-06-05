@@ -1737,7 +1737,7 @@ int main(void) {
  80012d2:	2b00      	cmp	r3, #0
  80012d4:	d105      	bne.n	80012e2 <main+0x146>
 		//PD_update_from_distance(distance, current_time_ms);
-		PD_update_angle(10, current_time_ms);
+		PD_update_angle(88, current_time_ms);
  80012d6:	4b0f      	ldr	r3, [pc, #60]	@ (8001314 <main+0x178>)
  80012d8:	e9d3 2300 	ldrd	r2, r3, [r3]
  80012dc:	480e      	ldr	r0, [pc, #56]	@ (8001318 <main+0x17c>)
@@ -1760,7 +1760,7 @@ int main(void) {
  800130c:	42b40000 	.word	0x42b40000
  8001310:	200001fc 	.word	0x200001fc
  8001314:	20000000 	.word	0x20000000
- 8001318:	41200000 	.word	0x41200000
+ 8001318:	42b00000 	.word	0x42b00000
 
 0800131c <UART_Init>:
 volatile uint8_t uart_line_ready = 0;

@@ -82,7 +82,7 @@ int main(void) {
 		// Use received values instead of simulated
 		if(distance!=0)
 		//PD_update_from_distance(distance, current_time_ms);
-		PD_update_angle(10, current_time_ms);
+		PD_update_angle(88, current_time_ms);
 
 		delay_ms(1);
 	}
