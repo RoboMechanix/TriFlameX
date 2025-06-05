@@ -9,14 +9,18 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include MiddleWares/UTIL/subdir.mk
--include MiddleWares/MCAL/UART/subdir.mk
--include MiddleWares/MCAL/TIMR/subdir.mk
--include MiddleWares/MCAL/GPIO/subdir.mk
--include MiddleWares/HAL/SERVO/subdir.mk
--include MiddleWares/HAL/CONTROL/subdir.mk
--include MiddleWares/HAL/CAR/subdir.mk
--include MiddleWares/ENTITY/subdir.mk
+-include Middlewares/UTIL/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
+-include Middlewares/MCAL/UART/subdir.mk
+-include Middlewares/MCAL/TIMR/subdir.mk
+-include Middlewares/MCAL/GPIO/subdir.mk
+-include Middlewares/HAL/SERVO/subdir.mk
+-include Middlewares/HAL/CONTROL/subdir.mk
+-include Middlewares/HAL/CAR/subdir.mk
+-include Middlewares/ENTITY/subdir.mk
 -include Drivers/STM32F1xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk

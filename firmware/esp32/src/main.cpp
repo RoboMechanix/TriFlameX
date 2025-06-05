@@ -4,56 +4,45 @@ const char* ssid = "SSH";
 const char* password = "AzabSSH359";
 const char* mqtt_server = "192.168.0.69"; //IP Address
 
-const char* mqtt_client_id = "ESP32_BlueCar";
-const char* mqtt_sub_topic = "laptop/commands/bluecar"; 
-const char* mqtt_pub_topic = "sensor/bluecar";
+const char* mqtt_client_id = "ESP32_REDCar";
+const char* mqtt_sub_laptopCMD = "laptop/commands/redcar"; 
+const char* mqtt_pub_topic = "sensor/redcar";
+const char* mqtt_sub_joyRos = "joyROS/redcar/cmd";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 
+SemaphoreHandle_t xSharedDataMutex;
+
 u16_t dummydistance_cm = 12; 
-bool go_command = false;
+volatile bool go_command = false;
+volatile bool isAutonomous = true; 
+volatile int Sensordistance= 0;
+volatile int Sensorangle = 45;
 
 void setup() {
-  setup_led(); 
+  Serial.begin(115200);
+  setup_led();
+  
+  xSharedDataMutex = xSemaphoreCreateMutex();
+    if (xSharedDataMutex == NULL) {
+        Serial.println("Failed to create mutex");
+    }
 
-  Serial.begin(115200); 
-
+  // Blocking the flow till the wi-fi is connected
   connectToWiFi(ssid, password);
-  setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_topic);
-
-  Wire.begin();
   setupSTM32Serial(stm32Serial, 16, 17);
+  setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
+
+  xTaskCreatePinnedToCore(WiFiTask, "WiFiTask", 4096, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(MQTTTask, "MQTTTask", 8192, NULL, 2, NULL, 1);
+  xTaskCreatePinnedToCore(SerialTask, "SerialTask", 4096, NULL, 2, NULL, 1);
   
 }
 
-void sendValueToSTM32(float value);
-
-void loop() {
-
-  if (!client.connected()) {
-    connect_mqttServer();
-  }
-  client.loop();
-  //delay(100);
-  dummydistance_cm++;
-
-  sendPackedToSTM32(dummydistance_cm,-45);
-
-  String message = String(dummydistance_cm);
-
-  publishMessage(mqtt_pub_topic, message);
-  
-}
-
-
-void sendValueToSTM32(float value) {
-    stm32Serial.println(value, 1); 
-}
-
-
+void loop(){}
 
     
 

@@ -15,8 +15,7 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
     uint8_t buffer[6];
     buffer[0] = START_BYTE;
 
-    // Pack data
-    // Pack bits: [command(1)] [distance(15)] [sign(1)] [angle(7)]
+    // Pack bits: [command(1)][distance(15)][sign(1)][angle(7)]
     uint32_t packed = 0;
     packed |= ((go_command ? 1 : 0) & 0x01) << 23;
     packed |= (distance & 0x7FFF) << 8;
@@ -26,37 +25,57 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
     buffer[1] = (packed >> 16) & 0xFF;
     buffer[2] = (packed >> 8) & 0xFF;
     buffer[3] = packed & 0xFF;
+    buffer[5] = END_BYTE;
 
     // Calculate checksum (XOR of payload bytes only)
     buffer[4] = buffer[1] ^ buffer[2] ^ buffer[3];
-    buffer[5] = END_BYTE;
-
-    // Send packet
+    
     stm32Serial.write(buffer, sizeof(buffer));
 
-    // Optional: Wait for ACK
+    // Wait for ACK
     unsigned long start = millis();
     while (millis() - start < 100) {
         if (stm32Serial.available()) {
             uint8_t ack = stm32Serial.read();
             if (ack == ACK_BYTE) {
                 //Serial.println("ACK received from STM32");
-                return;
             }
+            else {
+                //Serial.println("Received unexpected byte: " + String(ack, HEX));
+            }
+            return;
         }
     }
-    Serial.println("⚠️ No ACK received");
+    //Serial.println("⚠️ No ACK received");
 }
 
 
 void setCommandSTM32(MOVECOMMAND command) {
-    if (command == MOVECOMMAND::GO) {
+    switch (command) {
+
+    case MOVECOMMAND::GO:
+        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         go_command = true;
-    } else if (command == MOVECOMMAND::STOP) {
+        isAutonomous = true;
+        xSemaphoreGive(xSharedDataMutex);
+        break;
+
+    case MOVECOMMAND::STOP:
+        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         go_command = false;
-    }
-    else {
+        isAutonomous = true;
+        xSemaphoreGive(xSharedDataMutex);
+        break;
+
+    case MOVECOMMAND::ManualMode:
+        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
+        isAutonomous = false;
+        go_command = true;
+        xSemaphoreGive(xSharedDataMutex);
+        break;
+
+    default:
         Serial.println("Unknown command");
-    }
+  }
 }
 

@@ -1,0 +1,4 @@
+../Middlewares/MCAL/GPIO/GPIO_program.c:3:6:GPIO_pinMode	13
+../Middlewares/MCAL/GPIO/GPIO_program.c:41:6:GPIO_digitalWrite	4
+../Middlewares/MCAL/GPIO/GPIO_program.c:52:9:GPIO_digitalRead	2
+../Middlewares/MCAL/GPIO/GPIO_program.c:59:6:GPIO_digitalToggle	2
