@@ -54,6 +54,7 @@ void stepper_task(void *parameter){
   int counter = 0;
   float min_angle = 0.0 + ((180.0-span)/2.0);
   float max_angle = 180.0 - ((180.0-span)/2.0);
+  float angle1 = 0.0, angle2 = 0.0, dist1 = 0.0, dist2 = 0.0;
   while(1){
     ////////////////////////////////////// Calibration //////////////////////////////////////
     if (!digitalRead(calibration_pin) && !mask){
@@ -101,15 +102,16 @@ void stepper_task(void *parameter){
         angle_at_min_dist = current_angle;
       }
     }
-    Serial.print("(");
-    // Serial.print(angle_at_min_dist-6);
-    Serial.print(angle_at_min_dist);
-    Serial.print(",");
-    Serial.print(min_dist);
-    Serial.println(")");
+    // Serial.print("(");
+    // Serial.print(angle_at_min_dist);
+    // Serial.print(",");
+    // Serial.print(min_dist);
+    // Serial.println(")");
+    angle1 = angle_at_min_dist - 3;
+    dist1 = min_dist;
 
-    // angle_at_min_dist = 181;
-    // min_dist = 9999;  // set high starting value
+    angle_at_min_dist = 181;
+    min_dist = 9999;  // set high starting value
     digitalWrite(dir_pin, LOW); // clockwise
     vTaskDelay(50 / portTICK_PERIOD_MS);  // for stability 
     for (int i = max_angle_steps; i >= min_angle_steps; i --){
@@ -117,19 +119,27 @@ void stepper_task(void *parameter){
       vTaskDelay(1 / portTICK_PERIOD_MS);  
       digitalWrite(step_pin, LOW);
       vTaskDelay(1 / portTICK_PERIOD_MS);  
-      // current_angle = i*resolution;
-      // uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
-      // if (current_dist < min_dist) {
-      //   min_dist = current_dist;
-      //   angle_at_min_dist = current_angle;
-      // }
+      current_angle = i*resolution;
+      uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
+      if (current_dist < min_dist) {
+        min_dist = current_dist;
+        angle_at_min_dist = current_angle;
+      }
     }
     // Serial.print("(");
-    // Serial.print(angle_at_min_dist+6);
-    // // Serial.print(angle_at_min_dist);
+    // Serial.print(angle_at_min_dist);
     // Serial.print(",");
     // Serial.print(min_dist);
     // Serial.println(")");
+    angle2 = angle_at_min_dist + 3;
+    dist2 = min_dist;
+
+    Serial.print("(");
+    Serial.print((angle1 + angle2)/2.0);
+    Serial.print(",");
+    Serial.print((dist1 + dist2)/2.0);
+    Serial.println(")");
+
   }
 }
 
