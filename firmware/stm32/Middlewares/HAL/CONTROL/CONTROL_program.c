@@ -23,7 +23,7 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
     float dt = (time_ms - prev_angle_time) / 1000.0f;
     if (dt <= 0) dt = 0.001f;
 
-    float derivative = (error - prev_angle_error) / dt;
+    float derivative = (error - prev_angle_error) ;
 
     prev_angle_error = error;
     prev_angle_time = time_ms;
@@ -35,12 +35,9 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
     else if (steering_correction < -100) steering_correction = -100;
 
     // Use global forward speed (assumed non-negative)
-    float base_speed = (speed >= 0) ? speed : 0;
-
-    // Calculate motor speeds by adding/subtracting steering correction
-    float left_motor_speed = base_speed;
-    float right_motor_speed = base_speed;
-
+    float base_speed = speed;
+    float right_motor_speed;
+	float left_motor_speed;
     if (error > 0) {
         // Turn left: right motor faster, left motor slower
         right_motor_speed = base_speed + steering_correction;
@@ -53,18 +50,25 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
 
     // Clamp motor speeds to [0, 100]
     if (left_motor_speed > 100) left_motor_speed = 100;
-    if (left_motor_speed < 0) left_motor_speed = 0;
+    if (left_motor_speed < -100) left_motor_speed = -100;
     if (right_motor_speed > 100) right_motor_speed = 100;
-    if (right_motor_speed < 0) right_motor_speed = 0;
+    if (right_motor_speed < -100) right_motor_speed = -100;
 
-    // If speeds are almost equal and near zero, just stop or go straight
-    if (left_motor_speed < 1 && right_motor_speed < 1) {
-        CAR_stop();
-        return;
-    }
+
 
     // Drive motors forward with computed speeds
+    if(right_motor_speed>0 && left_motor_speed>0){
     CAR_forward(right_motor_speed, left_motor_speed);
+    }
+    else if(right_motor_speed<0 && left_motor_speed<0){
+    	CAR_backwards(-right_motor_speed, -left_motor_speed);
+    }
+    else if(right_motor_speed>0 && left_motor_speed<0){
+        	CAR_left(right_motor_speed, -left_motor_speed);
+        }
+    else if(right_motor_speed<0 && left_motor_speed>0){
+        	CAR_right(left_motor_speed, -right_motor_speed);
+        }
 }
 
 
