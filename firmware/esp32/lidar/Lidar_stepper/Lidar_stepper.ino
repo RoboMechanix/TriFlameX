@@ -2,17 +2,24 @@
 #define dir_pin 14
 #define step_pin 12
 #define en_pin 18
-#define calibration_pin 5
+#define calibration_pin 19
+#define rx_pin 5
+#define tx_pin 4
 #define steps (200*2)
 #define resolution (1.8/2.0) // degree per step
+
 extern TOF_Parameter TOF_0;
 volatile float current_angle;
+
+HardwareSerial MySerial(2);  // Use UART2
+String dataToSend ;
 
 void setup() {
   pinMode(dir_pin, OUTPUT);
   pinMode(step_pin, OUTPUT);
   Serial.begin(460800);
   TOF_UART.begin(1500000, SERIAL_8N1, TOF_RX_PIN, TOF_TX_PIN);
+  MySerial.begin(500000, SERIAL_8N1, rx_pin, tx_pin);
   pinMode(calibration_pin, INPUT_PULLUP);
   pinMode(en_pin, OUTPUT);
   digitalWrite(en_pin, LOW); // activate the stepper
@@ -54,7 +61,9 @@ void stepper_task(void *parameter){
   int counter = 0;
   float min_angle = 0.0 + ((180.0-span)/2.0);
   float max_angle = 180.0 - ((180.0-span)/2.0);
-  float angle1 = 0.0, angle2 = 0.0, dist1 = 0.0, dist2 = 0.0;
+  float angle1 = 0.0, angle2 = 0.0, dist1 = 0.0, dist2 = 0.0, prev_distance = 0.0, prev_angle = 0.0;
+  uint8_t distance_tolerance = 10, angle_tolerance = 3;
+  float avg_dist = 0.0, avg_angle = 0.0;
   while(1){
     ////////////////////////////////////// Calibration //////////////////////////////////////
     if (!digitalRead(calibration_pin) && !mask){
@@ -131,14 +140,30 @@ void stepper_task(void *parameter){
     // Serial.print(",");
     // Serial.print(min_dist);
     // Serial.println(")");
+
     angle2 = angle_at_min_dist + 3;
     dist2 = min_dist;
 
+    avg_dist = (dist1 + dist2)/2.0;
+    avg_angle = (angle1 + angle2)/2.0;
+    
+    if(fabs(prev_distance - avg_dist) < distance_tolerance){
+      avg_dist = prev_distance;
+    }
+    if(fabs(prev_angle - avg_angle) < angle_tolerance){
+      avg_angle = prev_angle;
+    }
+    prev_distance = avg_dist;
+    prev_angle = avg_angle;
+
     Serial.print("(");
-    Serial.print((angle1 + angle2)/2.0);
+    Serial.print(avg_angle);
     Serial.print(",");
-    Serial.print((dist1 + dist2)/2.0);
+    Serial.print(avg_dist);
     Serial.println(")");
+
+    dataToSend = String(avg_dist) + "," + String(avg_angle) + "\r\n";
+    MySerial.print(dataToSend);
 
   }
 }
