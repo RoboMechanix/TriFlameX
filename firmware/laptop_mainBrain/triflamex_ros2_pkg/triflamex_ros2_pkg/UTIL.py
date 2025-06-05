@@ -21,7 +21,7 @@ COLOR_CODES = {
 ENDC = "\033[0m" 
 
 
-def reliable_publish(topic, payload, retries=3, delay=0.2):
+def reliable_publish(topic, payload, retries=3, delay=0.5):
     for attempt in range(retries):
         try:
             publish.single(topic, payload=payload, hostname=MQTT_BROKER)

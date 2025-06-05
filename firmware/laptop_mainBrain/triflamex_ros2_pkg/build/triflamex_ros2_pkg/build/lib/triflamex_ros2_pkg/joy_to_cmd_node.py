@@ -1,4 +1,3 @@
-import time
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
@@ -54,21 +53,19 @@ class JoyToCmd(Node):
         # Validate and clamp joystick axes
         raw_throttle = msg.axes[1]
         raw_angle = msg.axes[3]
-        raw_sign = msg.axes[0]
     
-        # Normalize and clamp
-        raw_throttle = max(-1.0, min(1.0, raw_throttle))
-        raw_angle = max(-1.0, min(1.0, raw_angle))
-
         # Convert to meaningful values
-        throttle = int(abs(raw_throttle) * 32767)
+        throttle = int(abs(raw_throttle) * 8500)
         angle = int(abs(raw_angle) * 90)
-        sign = 0 if raw_sign >= 0 else 1
+        sign = 0 if raw_angle >= 0 else 1
         command = 1 if throttle > 50 else 0
         
+        throttle = 50
+        angle = 99
         
         if command == 0:
-            return  
+            #return
+            pass  
         
         try:
             packed_data = pack_payload(command, throttle, sign, angle)
