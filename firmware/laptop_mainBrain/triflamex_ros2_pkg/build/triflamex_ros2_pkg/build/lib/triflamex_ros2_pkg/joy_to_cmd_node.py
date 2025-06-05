@@ -1,5 +1,4 @@
-import os
-import sys
+import time
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
@@ -55,20 +54,32 @@ class JoyToCmd(Node):
             self.get_logger().info(f'{color}Selected car: {self.selected_car.name}{ENDC}')
 
 
-        # Axes to movement
-        throttle = int(abs(msg.axes[1] * 32767))  # Distance #moving forward only, backward movement?
-        angle = int(abs(msg.axes[0]) * 90)       # Angle
-        sign = 0 if msg.axes[0] >= 0 else 1
-        command = 1 if abs(throttle) > 50 else 0
+        # Validate and clamp joystick axes
+        raw_throttle = msg.axes[1]
+        raw_angle = msg.axes[3]
+        raw_sign = msg.axes[0]
+    
+        # Normalize and clamp
+        raw_throttle = max(-1.0, min(1.0, raw_throttle))
+        raw_angle = max(-1.0, min(1.0, raw_angle))
+
+        # Convert to meaningful values
+        throttle = int(abs(raw_throttle) * 32767)
+        angle = int(abs(raw_angle) * 90)
+        sign = 0 if raw_sign >= 0 else 1
+        command = 1 if throttle > 50 else 0
         
-        throttle = 19
-        angle = 98
         
-        packed_data = pack_payload(command, throttle, sign, angle)
-        payload = str(packed_data)
-        topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
+        if command == 0:
+            return  
+        
         try:
-            publish.single(topic, payload=payload, hostname=MQTT_BROKER)
+            packed_data = pack_payload(command, throttle, sign, angle)
+            payload = str(packed_data)
+            topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
+            
+            reliable_publish(topic, payload)
+            
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
        
@@ -89,3 +100,14 @@ def main(args=None):
 if __name__ == '__main__':
     main()
     
+
+def reliable_publish(topic, payload, retries=3, delay=0.2):
+    for attempt in range(retries):
+        try:
+            publish.single(topic, payload=payload, hostname=MQTT_BROKER)
+            return
+        except Exception as e:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                raise e
