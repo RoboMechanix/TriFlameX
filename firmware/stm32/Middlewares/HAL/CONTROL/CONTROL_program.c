@@ -9,9 +9,6 @@ float kd_angle = 0;
 float prev_angle_error = 0;
 float prev_angle_time = 0;
 float servo_output = 0;
-#define maxDistance 10 // 10 cm from target
-#define mainAngle 90.0
-#define angle_error_thresh 10
 
 void PD_init_angle(float Kp, float Kd) {
     kp_angle = Kp;
@@ -79,18 +76,20 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
 
 void PD_init( float Kp, float Kd)
 {
-kp_global=Kp;
-kd_global=Kd;
-
+	kp_global = Kp;
+	kd_global = Kd;
 }
+
 void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 {
     float error = actualDistance - maxDistance;
+
+    // in the backward case
     if(error<0){
     	kp_global=5;
     	kd_global=5;
-
     }
+
     float p = kp_global * error;
     float d = kd_global*(error - prev_error) ;
     prev_error = error;
@@ -98,7 +97,7 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 
     speed = p + d;
 
-    // Clamp speed to [-100, 100]
+    // Clamp speed to [-MAX_LINEAR_SPEED_CORRECTION, MAX_LINEAR_SPEED_CORRECTION]
     if (speed > MAX_LINEAR_SPEED_CORRECTION) {
         speed = MAX_LINEAR_SPEED_CORRECTION;
     } else if (speed < -MAX_LINEAR_SPEED_CORRECTION) {
@@ -111,8 +110,8 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 //    } else if (speed < 0.0f && speed > -30.0f) {
 //        speed = -30.0f; // Minimum backward speed
 //    }
-	if(fabs(error)<6){
-		speed=0;
+	if(fabs(error) < DISTANCE_ERROR_THRESH){
+		speed = 0;
 	}
     // Movement logic
     if (speed > 0) {
@@ -126,7 +125,7 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 
 
 // Update angle control, currentAngle and targetAngle in degrees it returns 1 if the error is less than a certain threshold else 0
-uint8_t PD_update_angle_ret(float currentAngle, uint64_t time_ms) {
+uint8_t PD_update_angle_ret(float currentAngle) {
     float error = mainAngle - currentAngle;  // desired - current
     float derivative = (error - prev_angle_error) ;
 
@@ -145,6 +144,6 @@ uint8_t PD_update_angle_ret(float currentAngle, uint64_t time_ms) {
     	CAR_left(-1*steering_correction, -1*steering_correction);
     }
 
-    return (fabs(error) < angle_error_thresh) ? 1 : 0;
+    return (fabs(error) < ANGLE_ERROR_THRESH) ? 1 : 0;
 }
 
