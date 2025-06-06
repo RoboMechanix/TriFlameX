@@ -19,7 +19,11 @@ int x=0;
 void UART_Init(void);
 char UART_ReadChar(void);
 int UART_ReadLine(char *buffer, int max_len);
-
+void UART_SendInt(int32_t num);
+void UART_SendString(const char *str);
+void UART_SendUInt(uint32_t num);
+void IntToStr(int32_t value, char *str);
+void FloatToStr(float value, char *str, uint8_t precision);
 // Dummy delay (for simulation only)
 void delay_ms(uint32_t ms) {
 	for (volatile uint32_t i = 0; i < ms * 1000; i++) {
@@ -33,7 +37,7 @@ int main(void) {
 
 	// === Left Motor (TIM3, PA4/PA5) ===
 	TIM_TypeDef *leftTimer = TIM3;
-	uint8_t leftChannel = 1;
+	uint8_t leftChannel = 2;
 	GPIO_TypeDef *leftDir1Port = GPIOA;
 	uint8_t leftDir1Pin = 4;
 	GPIO_TypeDef *leftDir2Port = GPIOA;
@@ -57,8 +61,8 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(1.0f, 0.5f);        // Distance PD
-	PD_init_angle(2.0f, 1.0f);  // Angle control gains
+	PD_init(2.0f, 2.5f);        // Distance PD
+	PD_init_angle(1.0f, 3.3f);  // Angle control gains
 
 	while (1) {
 		// Read one line from UART (blocking until '\n')
@@ -71,7 +75,7 @@ int main(void) {
 				*comma_pos = 0; // Null terminate distance part
 				distance = atof(uart_rx_buffer)/10;
 				angle = atof(comma_pos + 1);
-				realangle=angle-90;
+//				realangle=angle-90;
 
 				// Optional: Validate values (e.g., distance > 0)
 			}
@@ -79,12 +83,24 @@ int main(void) {
 
 		current_time_ms = TIM_Millis();
 
-		// Use received values instead of simulated
-		if(distance!=0)
-		//PD_update_from_distance(distance, current_time_ms);
-		PD_update_angle(88, current_time_ms);
+//		UART_SendString("");
 
-		delay_ms(1);
+		if(PD_update_angle_ret(angle, current_time_ms)){
+			if(distance!=0){
+				PD_update_from_distance(distance, current_time_ms);
+			}
+		}
+//
+//		// Use received values instead of simulated
+//		if(distance!=0)
+//			PD_update_from_distance(distance, current_time_ms);
+
+//		char string[10];
+//		FloatToStr(angle, string, 3);
+//		UART_SendString("Number: ");
+//		UART_SendString(string);
+//		UART_SendString("\r\n");
+//		delay_ms(1);
 	}
 
 	CAR_stop();
@@ -167,6 +183,110 @@ int UART_ReadLine(char *buffer, int max_len) {
     return 0;
 }
 
+void UART_SendChar(char c) {
+    while (!(USART1->SR & USART_SR_TXE));  // Wait until TX buffer is empty
+    USART1->DR = c;                        // Send the character
+}
 
+void UART_SendString(const char *str) {
+    while (*str) {
+        UART_SendChar(*str++);
+    }
+}
 
+void UART_SendUInt(uint32_t num) {
+    char buffer[10];  // enough for 32-bit unsigned int
+    int i = 0;
+
+    if (num == 0) {
+        UART_SendChar('0');
+        return;
+    }
+
+    while (num > 0 && i < sizeof(buffer)) {
+        buffer[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+
+    // Reverse and send
+    while (i--) {
+        UART_SendChar(buffer[i]);
+    }
+}
+
+void UART_SendInt(int32_t num) {
+    if (num < 0) {
+        UART_SendChar('-');
+        num = -num;
+    }
+    UART_SendUInt((uint32_t)num);
+}
+
+void IntToStr(int32_t value, char *str) {
+    char temp[12];  // Enough for -2,147,483,648 and null terminator
+    int i = 0, j = 0;
+    uint8_t is_negative = 0;
+
+    if (value == 0) {
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+    }
+
+    if (value < 0) {
+        is_negative = 1;
+        value = -value;
+    }
+
+    // Convert digits to temp buffer in reverse
+    while (value != 0 && i < sizeof(temp) - 1) {
+        temp[i++] = (value % 10) + '0';
+        value /= 10;
+    }
+
+    if (is_negative) {
+        temp[i++] = '-';
+    }
+
+    // Reverse into output string
+    while (i > 0) {
+        str[j++] = temp[--i];
+    }
+
+    str[j] = '\0';
+}
+
+void FloatToStr(float value, char *str, uint8_t precision) {
+    if (value < 0) {
+        *str++ = '-';
+        value = -value;
+    }
+
+    // Extract integer part
+    uint32_t int_part = (uint32_t)value;
+
+    // Convert integer part to string
+    char int_str[12];
+    IntToStr(int_part, int_str);
+
+    // Copy integer part to final string
+    char *p = int_str;
+    while (*p) {
+        *str++ = *p++;
+    }
+
+    *str++ = '.';  // Decimal point
+
+    // Extract and convert fractional part
+    float frac = value - (float)int_part;
+
+    for (uint8_t i = 0; i < precision; i++) {
+        frac *= 10.0f;
+        uint8_t digit = (uint8_t)frac;
+        *str++ = '0' + digit;
+        frac -= digit;
+    }
+
+    *str = '\0';  // Null-terminate
+}
 

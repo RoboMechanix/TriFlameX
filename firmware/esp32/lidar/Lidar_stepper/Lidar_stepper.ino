@@ -5,8 +5,8 @@
 #define calibration_pin 19
 #define rx_pin 5
 #define tx_pin 4
-#define steps (200*2)
-#define resolution (1.8/2.0) // degree per step
+#define steps (200*1)
+#define resolution (1.8/1.0) // degree per step
 
 extern TOF_Parameter TOF_0;
 volatile float current_angle;
@@ -55,7 +55,7 @@ void tof_task(void *parameter){
 }
 
 void stepper_task(void *parameter){
-  float span = 90.0;
+  float span = 126.0;
   float min_angle_steps = 0, max_angle_steps = 0;
   bool mask = false, mask2 = false;
   int counter = 0;
@@ -119,6 +119,9 @@ void stepper_task(void *parameter){
     angle1 = angle_at_min_dist - 3;
     dist1 = min_dist;
 
+    dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
+    MySerial.print(dataToSend);
+
     angle_at_min_dist = 181;
     min_dist = 9999;  // set high starting value
     digitalWrite(dir_pin, LOW); // clockwise
@@ -144,26 +147,42 @@ void stepper_task(void *parameter){
     angle2 = angle_at_min_dist + 3;
     dist2 = min_dist;
 
-    avg_dist = (dist1 + dist2)/2.0;
-    avg_angle = (angle1 + angle2)/2.0;
-    
-    if(fabs(prev_distance - avg_dist) < distance_tolerance){
-      avg_dist = prev_distance;
-    }
-    if(fabs(prev_angle - avg_angle) < angle_tolerance){
-      avg_angle = prev_angle;
-    }
-    prev_distance = avg_dist;
-    prev_angle = avg_angle;
 
-    Serial.print("(");
-    Serial.print(avg_angle);
-    Serial.print(",");
-    Serial.print(avg_dist);
-    Serial.println(")");
-
-    dataToSend = String(avg_dist) + "," + String(avg_angle) + "\r\n";
+    dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
     MySerial.print(dataToSend);
+
+
+    // avg_dist = (dist1 + dist2)/2.0;
+    // avg_angle = (angle1 + angle2)/2.0;
+    
+    // if(fabs(prev_distance - avg_dist) < distance_tolerance){
+    //   avg_dist = prev_distance;
+    // }
+    // if(fabs(prev_angle - avg_angle) < angle_tolerance){
+    //   avg_angle = prev_angle;
+    // }
+    // prev_distance = avg_dist;
+    // prev_angle = avg_angle;
+
+    // Serial.print("(");
+    // Serial.print(avg_angle);
+    // Serial.print(",");
+    // Serial.print(avg_dist);
+    // Serial.println(")");
+
+    // dataToSend = String(avg_dist) + "," + String(avg_angle) + "\r\n";
+    // MySerial.print(dataToSend);
+
+    // String line = "";
+    // while (MySerial.available()) {
+    //   char c = MySerial.read();
+    //   if (c == '\n') {
+    //     Serial.println("Received: " + line);
+    //     line = "";
+    //   } else if (c != '\r') {
+    //     line += c;
+    //   }
+    // }
 
   }
 }
