@@ -89,9 +89,9 @@ int main(void) {
 //			}
 //		}
 
-		PD_update_angle_ret(angle, current_time_ms);
+		PD_update_angle_ret(angle);
 		if(distance!=0){
-			PD_update_from_distance(distance);
+			PD_update_from_distance(distance, current_time_ms);
 		}
 
 

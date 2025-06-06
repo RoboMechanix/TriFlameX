@@ -15,6 +15,6 @@ void PD_init_angle(float Kp, float Kd);
 void PD_update_angle(float currentAngle, uint64_t time_ms);
 void PD_init( float Kp, float Kd);
 void PD_update_from_distance(float actualDistance, uint64_t time_ms);
-uint8_t PD_update_angle_ret(float currentAngle, uint64_t time_ms);
+uint8_t PD_update_angle_ret(float currentAngle);
 
 #endif // CONTROL_INTERFACE_H
