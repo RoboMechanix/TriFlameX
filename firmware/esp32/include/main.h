@@ -13,6 +13,7 @@
 #include "serial_utils.h"
 #include <ledAsIndicator.h>
 #include "util.h"
+#include "lidar.h"
 
 // ==== Wi-Fi Credentials ====
 extern const char* ssid;
@@ -29,9 +30,10 @@ extern const char* mqtt_pub_topic;
 extern WiFiClient espClient;
 extern PubSubClient client;
 extern HardwareSerial stm32Serial;
+extern SemaphoreHandle_t xSharedDataMutex;
 
 // ==== Global Variables ====
-extern bool go_command; 
+extern volatile bool go_command; 
 extern bool isAutonomous;
 extern int Sensordistance;
 extern int Sensorangle;
@@ -45,7 +47,16 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void setupMQTT(const char* server, const char* client_id, const char* topic);
 void connect_mqttServer();  
+void SerialTask(void *pvParameters);
 void WiFiTask(void *pvParameters);
 void MQTTTask(void *pvParameters);
-void SerialTask(void *pvParameters);
+void joe_task(void *pvParameters);
+void communicationsTask(void *pvParameters);
 
+
+typedef struct {
+  int distance;
+  int angle;
+} SensorData;
+
+extern QueueHandle_t mqttQueue;

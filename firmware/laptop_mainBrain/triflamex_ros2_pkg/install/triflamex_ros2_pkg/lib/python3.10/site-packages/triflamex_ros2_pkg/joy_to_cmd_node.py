@@ -1,16 +1,11 @@
-import os
-import sys
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
-from std_msgs.msg import UInt32
-import paho.mqtt.publish as publish
 from triflamex_ros2_pkg.UTIL import pack_payload, Car
-
 from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
+from triflamex_ros2_pkg.UTIL import reliable_publish
+from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-
-MQTT_BROKER = "192.168.0.69" 
 
 
 class JoyToCmd(Node):
@@ -55,20 +50,30 @@ class JoyToCmd(Node):
             self.get_logger().info(f'{color}Selected car: {self.selected_car.name}{ENDC}')
 
 
-        # Axes to movement
-        throttle = int(abs(msg.axes[1] * 32767))  # Distance #moving forward only, backward movement?
-        angle = int(abs(msg.axes[0]) * 90)       # Angle
-        sign = 0 if msg.axes[0] >= 0 else 1
-        command = 1 if abs(throttle) > 50 else 0
+        # Validate and clamp joystick axes
+        raw_throttle = msg.axes[1]
+        raw_angle = msg.axes[3]
+    
+        # Convert to meaningful values
+        throttle = int(abs(raw_throttle) * 8500)
+        angle = int(abs(raw_angle) * 90)
+        sign = 0 if raw_angle >= 0 else 1
+        command = 1 if throttle > 50 else 0
         
-        throttle = 19
-        angle = 98
+        throttle = 50
+        angle = 99
         
-        packed_data = pack_payload(command, throttle, sign, angle)
-        payload = str(packed_data)
-        topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
+        if command == 0:
+            #return
+            pass  
+        
         try:
-            publish.single(topic, payload=payload, hostname=MQTT_BROKER)
+            packed_data = pack_payload(command, throttle, sign, angle)
+            payload = str(packed_data)
+            topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
+            
+            reliable_publish(topic, payload)
+            
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
        

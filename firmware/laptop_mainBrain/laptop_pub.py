@@ -83,6 +83,8 @@ def publish_message(client):
             pubMsg("Manual Mode", MQTT_TOPIC_PUB_RED, client)
         if not config.isBlackCarAutonomous:
             pubMsg("Manual Mode", MQTT_TOPIC_PUB_BLACK, client)
+            
+        time.sleep(0.5)
 
         
 def pubMsg(msg, topic, client):

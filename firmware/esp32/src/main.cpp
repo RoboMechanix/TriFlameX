@@ -17,7 +17,7 @@ HardwareSerial stm32Serial(2); // UART2: TX2=17, RX2=16
 SemaphoreHandle_t xSharedDataMutex;
 
 u16_t dummydistance_cm = 12; 
-bool go_command = false;
+volatile bool go_command = false;
 bool isAutonomous = true; 
 int Sensordistance= 0;
 int Sensorangle = 45;  
@@ -47,4 +47,3 @@ void setup() {
 void loop(){}
 
     
-

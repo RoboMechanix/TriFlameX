@@ -43,7 +43,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
     if (strcmp(topic, mqtt_sub_laptopCMD) == 0) {
         if (msg == "GO") {
             setCommandSTM32(MOVECOMMAND::GO);
-            sendPackedToSTM32(Sensordistance, Sensorangle); 
+            //sendPackedToSTM32(Sensordistance, Sensorangle); 
         }   
         else if (msg == "STOP") {
             setCommandSTM32(MOVECOMMAND::STOP);
@@ -62,9 +62,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         int angleSign = (raw >> 7) & 0x01;
         int angleMag = raw & 0x7F;
 
-        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         go_command = (command == 1);
-        xSemaphoreGive(xSharedDataMutex);
 
         int angle = angleSign ? -angleMag : angleMag;
 
