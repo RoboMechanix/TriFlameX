@@ -61,13 +61,8 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-<<<<<<< HEAD
-	PD_init(2.0f, 2.5f);        // Distance PD
-	PD_init_angle(1.0f, 3.3f);  // Angle control gains
-=======
-	PD_init(1.0f, 3.0f);        // Distance PD
+	PD_init(0.4f, 2.0f);        // Distance PD
 	PD_init_angle(2.0f, 1.0f);  // Angle control gains
->>>>>>> c94317fbf726e7fa74b8e26493c8a4a3e98cea6b
 
 	while (1) {
 		// Read one line from UART (blocking until '\n')
@@ -88,21 +83,18 @@ int main(void) {
 
 		current_time_ms = TIM_Millis();
 
-<<<<<<< HEAD
-//		UART_SendString("");
-=======
-		// Use received values instead of simulated
-		if(distance!=0)
-		PD_update_from_distance(distance, current_time_ms);
-		//PD_update_angle(88, current_time_ms);
->>>>>>> c94317fbf726e7fa74b8e26493c8a4a3e98cea6b
+//		if(PD_update_angle_ret(angle, current_time_ms)){
+//			if(distance!=0){
+//				PD_update_from_distance(distance, current_time_ms);
+//			}
+//		}
 
-		if(PD_update_angle_ret(angle, current_time_ms)){
-			if(distance!=0){
-				PD_update_from_distance(distance, current_time_ms);
-			}
+		PD_update_angle_ret(angle, current_time_ms);
+		if(distance!=0){
+			PD_update_from_distance(distance, current_time_ms);
 		}
-//
+
+
 //		// Use received values instead of simulated
 //		if(distance!=0)
 //			PD_update_from_distance(distance, current_time_ms);
@@ -115,10 +107,7 @@ int main(void) {
 //		delay_ms(1);
 	}
 
-	CAR_stop();
-
-	while (1)
-		;
+//	CAR_stop();
 }
 
 // --- UART Functions ---

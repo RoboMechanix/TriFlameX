@@ -99,10 +99,10 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
     speed = p + d;
 
     // Clamp speed to [-100, 100]
-    if (speed > 100.0f) {
-        speed = 100.0f;
-    } else if (speed < -100.0f) {
-        speed = -100.0f;
+    if (speed > MAX_LINEAR_SPEED_CORRECTION) {
+        speed = MAX_LINEAR_SPEED_CORRECTION;
+    } else if (speed < -MAX_LINEAR_SPEED_CORRECTION) {
+        speed = -MAX_LINEAR_SPEED_CORRECTION;
     }
 
     // Apply deadband threshold
@@ -111,9 +111,9 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 //    } else if (speed < 0.0f && speed > -30.0f) {
 //        speed = -30.0f; // Minimum backward speed
 //    }
-if(fabs(error)<6){
-	speed=0;
-}
+	if(fabs(error)<6){
+		speed=0;
+	}
     // Movement logic
     if (speed > 0) {
         CAR_forward(speed,speed);
