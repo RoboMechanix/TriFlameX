@@ -6,13 +6,17 @@ from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
 from triflamex_ros2_pkg.UTIL import reliable_publish
 from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-
+speed_array = [15, 30, 45] 
+angle_array = [30, 45, 90]
 
 class JoyToCmd(Node):
     def __init__(self):
         super().__init__('joy_to_cmd')
         self.selected_car = None
         self.first_run = True
+        self.speed = speed_array[0]
+        self.speed_index = 0
+        self.prev_rb_state = 0  
         self.get_logger().info('JoyToCmd Node has been started.')
        
         self.subscription = self.create_subscription(
@@ -30,6 +34,8 @@ class JoyToCmd(Node):
         
         if not msg.buttons[4]: #LB
             self.selected_car = None
+            self.speed_index = 0
+            self.speed = speed_array[self.speed_index]
             #self.get_logger().info('Car selection has been cleared.')
             return
         
@@ -45,10 +51,20 @@ class JoyToCmd(Node):
         if self.selected_car is None:
             return 
         
+        current_rb_state = msg.buttons[5]
+        if current_rb_state and not self.prev_rb_state:
+            # Button was just pressed (rising edge)
+            self.speed_index = (self.speed_index + 1) % len(speed_array)
+            self.speed = speed_array[self.speed_index]
+            self.get_logger().info(f'Speed level:  {self.speed_index+1}')
+        self.prev_rb_state = current_rb_state
+
+        
         if prev_selected_car != self.selected_car:
             color = COLOR_CODES.get(self.selected_car, "")
             self.get_logger().info(f'{color}Selected car: {self.selected_car.name}{ENDC}')
-
+            self.get_logger().info(f'Speed level:  {self.speed_index+1}')
+            
 
         # Validate and clamp joystick axes
         raw_throttle = msg.axes[1]
@@ -60,19 +76,15 @@ class JoyToCmd(Node):
         sign = 0 if raw_angle >= 0 else 1
         command = 1 if throttle > 50 else 0
         
-        throttle = 50
-        angle = 99
-        
-        if command == 0:
-            #return
-            pass  
+        throttle = speed_array[self.speed_index] if command == 1 else 0
+        angle = sign * angle_array[self.speed_index] if angle > 5 else 0
         
         try:
             packed_data = pack_payload(command, throttle, sign, angle)
             payload = str(packed_data)
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             
-            reliable_publish(topic, payload)
+            #reliable_publish(topic, payload)
             
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
