@@ -53,20 +53,21 @@ void setCommandSTM32(MOVECOMMAND command) {
     case MOVECOMMAND::GO:
         xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         go_command = true; 
-        xSemaphoreGive(xSharedDataMutex);
         isAutonomous = true;
+        xSemaphoreGive(xSharedDataMutex);
         break;
 
     case MOVECOMMAND::STOP:
         xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
         go_command = false; 
-        xSemaphoreGive(xSharedDataMutex);
         isAutonomous = true;
+        xSemaphoreGive(xSharedDataMutex);
         break;
 
     case MOVECOMMAND::ManualMode:
+        xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
         isAutonomous = false;
-        go_command = false;
+        xSemaphoreGive(xSharedDataMutex);
         break;
 
     default:

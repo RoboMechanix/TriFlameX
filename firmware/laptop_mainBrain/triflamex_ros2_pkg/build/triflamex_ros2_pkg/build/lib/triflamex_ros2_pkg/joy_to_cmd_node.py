@@ -1,4 +1,5 @@
 import rclpy
+import time
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from triflamex_ros2_pkg.UTIL import pack_payload, Car
@@ -66,26 +67,36 @@ class JoyToCmd(Node):
             self.get_logger().info(f'Speed level:  {self.speed_index+1}')
             
 
-
         # Validate and clamp joystick axes
         raw_throttle = msg.axes[1]
         raw_angle = msg.axes[3]
+        
+        # Dead zone
+        if abs(raw_throttle) < 0.1:
+            raw_throttle = 0.0
+        if abs(raw_angle) < 0.1:
+            raw_angle = 0.0
     
         # Convert to meaningful values
         throttle = int(abs(raw_throttle) * 8500)
         angle = int(abs(raw_angle) * 90)
         sign = 0 if raw_angle >= 0 else 1
-        command = 1 if throttle > 50 else 0
+        command = 1 if abs(raw_throttle) > 0.1 else 0
         
         throttle = speed_array[self.speed_index] if command == 1 else 0
         angle = sign * angle_array[self.speed_index] if angle > 5 else 0
         
+        #throttle = 50
+        #angle = 0
+        
+    
         try:
             packed_data = pack_payload(command, throttle, sign, angle)
             payload = str(packed_data)
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             
-            #reliable_publish(topic, payload)
+            reliable_publish(topic, payload)
+            time.sleep(0.5)
             
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
