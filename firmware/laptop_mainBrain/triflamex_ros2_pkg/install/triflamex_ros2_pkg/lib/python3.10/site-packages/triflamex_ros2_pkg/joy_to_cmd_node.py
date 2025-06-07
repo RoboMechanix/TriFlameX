@@ -7,8 +7,8 @@ from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
 from triflamex_ros2_pkg.UTIL import reliable_publish
 from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-speed_array = [15, 30, 45] 
-angle_array = [30, 45, 90]
+speed_array = [25, 45, 65] 
+angle_array = [100, 110, 125]
 
 class JoyToCmd(Node):
     def __init__(self):
@@ -85,8 +85,6 @@ class JoyToCmd(Node):
                 
         throttle = speed_array[self.index] if command == 1 else 0
         angle = angle_array[self.index] if angle > 10 else 0
-        
-        print(angle)
         
     
         try:
