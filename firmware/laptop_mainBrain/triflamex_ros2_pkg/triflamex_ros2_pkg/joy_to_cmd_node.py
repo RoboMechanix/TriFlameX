@@ -16,7 +16,7 @@ class JoyToCmd(Node):
         self.selected_car = None
         self.first_run = True
         self.speed = speed_array[0]
-        self.speed_index = 0
+        self.index = 0
         self.prev_rb_state = 0  
         self.get_logger().info('JoyToCmd Node has been started.')
        
@@ -35,8 +35,8 @@ class JoyToCmd(Node):
         
         if not msg.buttons[4]: #LB
             self.selected_car = None
-            self.speed_index = 0
-            self.speed = speed_array[self.speed_index]
+            self.index = 0
+            self.speed = speed_array[self.index]
             #self.get_logger().info('Car selection has been cleared.')
             return
         
@@ -55,16 +55,16 @@ class JoyToCmd(Node):
         current_rb_state = msg.buttons[5]
         if current_rb_state and not self.prev_rb_state:
             # Button was just pressed (rising edge)
-            self.speed_index = (self.speed_index + 1) % len(speed_array)
-            self.speed = speed_array[self.speed_index]
-            self.get_logger().info(f'Speed level:  {self.speed_index+1}')
+            self.index = (self.index + 1) % len(speed_array)
+            self.speed = speed_array[self.index]
+            self.get_logger().info(f'Speed level:  {self.index+1}')
         self.prev_rb_state = current_rb_state
 
         
         if prev_selected_car != self.selected_car:
             color = COLOR_CODES.get(self.selected_car, "")
             self.get_logger().info(f'{color}Selected car: {self.selected_car.name}{ENDC}')
-            self.get_logger().info(f'Speed level:  {self.speed_index+1}')
+            self.get_logger().info(f'Speed level:  {self.index+1}')
             
 
         # Validate and clamp joystick axes
@@ -82,12 +82,9 @@ class JoyToCmd(Node):
         angle = int(abs(raw_angle) * 90)
         sign = 0 if raw_angle >= 0 else 1
         command = 1 if abs(raw_throttle) > 0.1 else 0
-        
-        throttle = speed_array[self.speed_index] if command == 1 else 0
-        angle = sign * angle_array[self.speed_index] if angle > 5 else 0
-        
-        #throttle = 50
-        #angle = 0
+                
+        throttle = speed_array[self.index] if command == 1 else 0
+        angle = angle_array[self.index] if angle > 10 else 0
         
     
         try:
