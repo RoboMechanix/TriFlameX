@@ -27,11 +27,17 @@ void MQTTTask(void *pvParameters) {
 void SerialTask(void *pvParameters) {
   while (true) {
     bool command = false;
+    xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
+    command = go_command;
+    bool autonomous = isAutonomous;
+    xSemaphoreGive(xSharedDataMutex);
     //sendPackedToSTM32(30,20);
-    command = getGoCommand();
-    if (command){
+    if (command && autonomous ){
       sendPackedToSTM32(Sensordistance, Sensorangle);
     }
-    vTaskDelay(pdMS_TO_TICKS(300));
+    else if (autonomous){
+      sendPackedToSTM32(0,0);
+    }
+    vTaskDelay(pdMS_TO_TICKS(150));
   }
 }
