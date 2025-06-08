@@ -82,10 +82,12 @@ class JoyToCmd(Node):
         angle = int(abs(raw_angle) * 90)
         sign = 0 if raw_angle >= 0 else 1
         dir = 0 if raw_throttle >= 0 else 1
-        command = 1 if abs(raw_throttle) > 0.1 else 0
+        command = 1 if abs(raw_throttle) > 0.1  or abs(raw_angle) > 0.1 else 0
                 
         throttle = speed_array[self.index] if command == 1 else 0
         angle = angle_array[self.index] if angle > 10 else 0
+        
+        angle = angle-90 if sign else angle
         
         throttle = 10 if throttle == 0 else throttle
         
@@ -95,7 +97,7 @@ class JoyToCmd(Node):
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             
             if command:
-                time.sleep(0.5)
+                time.sleep(0.4)
             else:
                 time.sleep(0.3)
                 
