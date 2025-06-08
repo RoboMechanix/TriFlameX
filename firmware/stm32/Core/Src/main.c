@@ -52,8 +52,8 @@ int main(void) {
 	TIM_initMillis(TIM2, 1);  // 1ms resolution
 
 	// === Initialize PD controllers ===
-	PD_init(0.4f, 2.0f);        // Distance PD
-	PD_init_angle(2.0f, 1.0f);  // Angle control gains
+	PD_init(0.2f, 2.0f);        // Distance PD
+	PD_init_angle(1.0f, 1.0f);  // Angle control gains
 
 	while (1) {
 
@@ -77,12 +77,8 @@ int main(void) {
 		}
 
 		distance = dir? -distance : distance ;
-
+		PD_update_from_distance(distance, current_time_ms);
 		PD_update_angle(angle,1000);
-		if(distance!=0){
-			PD_update_from_distance(distance, current_time_ms);
-		}
-
 
 	}
 

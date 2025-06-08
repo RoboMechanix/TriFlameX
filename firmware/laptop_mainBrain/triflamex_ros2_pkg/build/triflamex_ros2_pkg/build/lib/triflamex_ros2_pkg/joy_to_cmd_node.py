@@ -88,8 +88,10 @@ class JoyToCmd(Node):
         angle = angle_array[self.index] if angle > 10 else 0
         
         angle = angle-90 if sign else angle
+        angle = 90 if raw_angle == 0 else angle
         
         throttle = 10 if throttle == 0 else throttle
+        
         
         try:
             packed_data = pack_payload(command, dir, throttle, sign, angle)
