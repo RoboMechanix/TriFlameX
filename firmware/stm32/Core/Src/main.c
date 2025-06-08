@@ -68,12 +68,14 @@ int main(void) {
 		distance = msg.distance;
 		angle = msg.angle;
 		command= msg.command;
+		dir = msg.dir;
 
 		if (!command){
 			CAR_stop();
 			continue;
 		}
-		distance *=-1;
+
+		distance = dir? -distance : distance ;
 
 		PD_update_angle_ret(angle);
 		if(distance!=0){

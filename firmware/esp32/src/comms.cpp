@@ -31,12 +31,12 @@ void SerialTask(void *pvParameters) {
     command = go_command;
     bool autonomous = isAutonomous;
     xSemaphoreGive(xSharedDataMutex);
-    //sendPackedToSTM32(30,20);
+    
     if (command && autonomous ){
-      sendPackedToSTM32(Sensordistance, Sensorangle);
+      sendPackedToSTM32(false ,Sensordistance, Sensorangle);
     }
     else if (autonomous){
-      sendPackedToSTM32(10,0);
+      sendPackedToSTM32(false,10,0);
     }
     vTaskDelay(pdMS_TO_TICKS(150));
   }

@@ -54,22 +54,24 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
             setCommandSTM32(MOVECOMMAND::ManualMode);
         }
     }
-
     if (strcmp(topic, mqtt_sub_joyRos) == 0) {
         unsigned long raw = msg.toInt();
 
-        int command = (raw >> 23) & 0x01; 
-        int distance = (raw >> 8) & 0x7FFF;
+        int command = (raw >> 23) & 0x01;
+        int direction = (raw >> 22) & 0x01;
+        int distance = (raw >> 8) & 0x3FFF;
         int angleSign = (raw >> 7) & 0x01;
         int angleMag = raw & 0x7F;
 
-        xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
-        go_command = (command == 1);
-        xSemaphoreGive(xSharedDataMutex);
-       
         int angle = angleSign ? -angleMag : angleMag;
 
-        sendPackedToSTM32(distance, angle);
+        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
+        go_command = (command == 1);
+        xSemaphoreGive(xSharedDataMutex);
+
+        bool dir = (direction == 1);
+
+        sendPackedToSTM32(direction, distance, angle);
     }
 
 }

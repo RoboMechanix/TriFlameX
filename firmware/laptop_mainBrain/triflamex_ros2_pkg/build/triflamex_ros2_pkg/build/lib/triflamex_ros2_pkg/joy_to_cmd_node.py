@@ -78,9 +78,10 @@ class JoyToCmd(Node):
             raw_angle = 0.0
     
         # Convert to meaningful values
-        throttle = int(abs(raw_throttle) * 8500)
+        throttle = int((raw_throttle) * 8500)
         angle = int(abs(raw_angle) * 90)
         sign = 0 if raw_angle >= 0 else 1
+        dir = 0 if raw_throttle >= 0 else 1
         command = 1 if abs(raw_throttle) > 0.1 else 0
                 
         throttle = speed_array[self.index] if command == 1 else 0
@@ -89,7 +90,7 @@ class JoyToCmd(Node):
         throttle = 10 if throttle == 0 else throttle
         
         try:
-            packed_data = pack_payload(command, throttle, sign, angle)
+            packed_data = pack_payload(command, dir, throttle, sign, angle)
             payload = str(packed_data)
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             

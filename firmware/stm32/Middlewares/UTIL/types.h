@@ -15,6 +15,7 @@ typedef struct {
 	uint16_t distance;
     int command; // 0 = STOP, 1 = GO
     int angle;   // signed angle (-127 to 127)
+    int dir;
 } UARTMessage;
 
 
