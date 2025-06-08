@@ -7,7 +7,7 @@ from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
 from triflamex_ros2_pkg.UTIL import reliable_publish
 from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-speed_array = [25, 45, 65] 
+speed_array = [20, 30, 45] 
 angle_array = [100, 110, 125]
 
 class JoyToCmd(Node):
@@ -86,15 +86,19 @@ class JoyToCmd(Node):
         throttle = speed_array[self.index] if command == 1 else 0
         angle = angle_array[self.index] if angle > 10 else 0
         
-        throttle = 10 if throttle == 0 else throttle
+        #throttle = 10 if throttle == 0 else throttle
         
         try:
             packed_data = pack_payload(command, throttle, sign, angle)
             payload = str(packed_data)
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             
+            if command:
+                time.sleep(0.5)
+            else:
+                time.sleep(0.3)
+                
             reliable_publish(topic, payload)
-            time.sleep(0.5)
             
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
