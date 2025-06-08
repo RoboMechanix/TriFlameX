@@ -140,7 +140,7 @@ UARTMessage UART_receive_message(int UART_pref_num) {
                 if (sign) angle = -angle;
 
                 UARTMessage msg = {
-                    .type = MSG_COMMAND_DISTANCE_ANGLE,
+                    .type = MSG_DIR_COMMAND_DISTANCE_ANGLE,
                     .command = command,
                     .dir = dir,
                     .distance = distance,

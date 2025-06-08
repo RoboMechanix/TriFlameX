@@ -8,6 +8,7 @@ uint64_t current_time_ms = 1;
 float distance = 0.0f;
 float angle = 0.0f;
 float realangle = 0.0f;
+int dir= 0;
 uint8_t command;
 
 char c;
