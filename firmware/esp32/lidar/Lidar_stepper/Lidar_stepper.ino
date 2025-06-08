@@ -140,7 +140,7 @@ void stepper_task(void *parameter){
       vTaskDelay(1 / portTICK_PERIOD_MS);  
       digitalWrite(step_pin, LOW);
       vTaskDelay(1 / portTICK_PERIOD_MS);  
-      current_angle = i*resolution + 20;
+      current_angle = i*resolution + shifting_angle_factor;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
       // Serial.print(current_angle);
       // Serial.print(",");
