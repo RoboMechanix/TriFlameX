@@ -7,6 +7,9 @@
 #define tx_pin 4
 #define steps (200*2)
 #define resolution (1.8/2.0) // degree per step
+#define shifting_angle_factor 20
+#define CLAMP(value, min, max) ((value) < (min) ? (min) : ((value) > (max) ? (max) : (value)))
+
 
 extern TOF_Parameter TOF_0;
 volatile float current_angle;
@@ -98,7 +101,7 @@ void stepper_task(void *parameter){
     float angle_at_min_dist = 181;
     uint32_t min_dist = 9999;  // set high starting value
     digitalWrite(dir_pin, HIGH); // AntiClockwise
-    vTaskDelay(50 / portTICK_PERIOD_MS);  // for stability
+    vTaskDelay(5 / portTICK_PERIOD_MS);  // for stability
     for (int i = min_angle_steps; i <= max_angle_steps; i ++){
       digitalWrite(step_pin, HIGH);
       vTaskDelay(1 / portTICK_PERIOD_MS);  
@@ -114,22 +117,24 @@ void stepper_task(void *parameter){
         angle_at_min_dist = current_angle;
       }
     }
+
+    angle1 = angle_at_min_dist;
+    dist1 = min_dist;
+    angle1 = CLAMP(angle1, 0, (max_angle - shifting_angle_factor));
+
     Serial.print("(");
-    Serial.print(angle_at_min_dist);
+    Serial.print(angle1);
     Serial.print(",");
-    Serial.print(min_dist);
+    Serial.print(dist1);
     Serial.println(")");
 
-    // angle1 = angle_at_min_dist - 3;
-    // dist1 = min_dist;
-
-    // dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
-    // MySerial.print(dataToSend);
+    dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
+    MySerial.print(dataToSend);
 
     angle_at_min_dist = 181;
     min_dist = 9999;  // set high starting value
     digitalWrite(dir_pin, LOW); // clockwise
-    vTaskDelay(50 / portTICK_PERIOD_MS);  // for stability 
+    vTaskDelay(5 / portTICK_PERIOD_MS);  // for stability 
     for (int i = max_angle_steps; i >= min_angle_steps; i --){
       digitalWrite(step_pin, HIGH);
       vTaskDelay(1 / portTICK_PERIOD_MS);  
@@ -145,40 +150,19 @@ void stepper_task(void *parameter){
         angle_at_min_dist = current_angle;
       }
     }
+
+    angle2 = angle_at_min_dist;
+    dist2 = min_dist;
+    angle2 = CLAMP(angle_at_min_dist, 0, (max_angle - shifting_angle_factor));
+
     Serial.print("(");
-    Serial.print(angle_at_min_dist);
+    Serial.print(angle2);
     Serial.print(",");
-    Serial.print(min_dist);
+    Serial.print(dist2);
     Serial.println(")");
 
-    // angle2 = angle_at_min_dist + 3;
-    // dist2 = min_dist;
-
-
-    // dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
-    // MySerial.print(dataToSend);
-
-
-    // avg_dist = (dist1 + dist2)/2.0;
-    // avg_angle = (angle1 + angle2)/2.0;
-    
-    // if(fabs(prev_distance - avg_dist) < distance_tolerance){
-    //   avg_dist = prev_distance;
-    // }
-    // if(fabs(prev_angle - avg_angle) < angle_tolerance){
-    //   avg_angle = prev_angle;
-    // }
-    // prev_distance = avg_dist;
-    // prev_angle = avg_angle;
-
-    // Serial.print("(");
-    // Serial.print(avg_angle);
-    // Serial.print(",");
-    // Serial.print(avg_dist);
-    // Serial.println(")");
-
-    // dataToSend = String(avg_dist) + "," + String(avg_angle) + "\r\n";
-    // MySerial.print(dataToSend);
+    dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
+    MySerial.print(dataToSend);
 
     // String line = "";
     // while (MySerial.available()) {

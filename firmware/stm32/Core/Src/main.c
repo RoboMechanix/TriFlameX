@@ -99,12 +99,12 @@ int main(void) {
 //		if(distance!=0)
 //			PD_update_from_distance(distance, current_time_ms);
 
-//		char string[10];
-//		FloatToStr(angle, string, 3);
-//		UART_SendString("Number: ");
-//		UART_SendString(string);
-//		UART_SendString("\r\n");
-//		delay_ms(1);
+		char string[10];
+		FloatToStr(angle, string, 3);
+		UART_SendString("Number: ");
+		UART_SendString(string);
+		UART_SendString("\r\n");
+		delay_ms(1);
 	}
 
 //	CAR_stop();
