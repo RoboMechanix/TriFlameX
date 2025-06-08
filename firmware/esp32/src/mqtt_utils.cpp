@@ -1,6 +1,7 @@
 #include <main.h>
 
 long lastMsg = 0;
+bool firstTime = true;
 
 void setupMQTT(const char* server, const char* client_id, const char* topic, const char* topic2) {
     client.setServer(server, 1883);

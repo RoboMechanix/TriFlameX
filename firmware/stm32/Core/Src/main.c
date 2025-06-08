@@ -73,6 +73,7 @@ int main(void) {
 			CAR_stop();
 			continue;
 		}
+		distance *=-1;
 
 		PD_update_angle_ret(angle);
 		if(distance!=0){
