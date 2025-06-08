@@ -1,12 +1,12 @@
 #include "TOF_Sense.h"
-#define dir_pin 14
-#define step_pin 12
+#define dir_pin 23
+#define step_pin 22
 #define en_pin 18
 #define calibration_pin 19
 #define rx_pin 5
 #define tx_pin 4
-#define steps (200*1)
-#define resolution (1.8/1.0) // degree per step
+#define steps (200*2)
+#define resolution (1.8/2.0) // degree per step
 
 extern TOF_Parameter TOF_0;
 volatile float current_angle;
@@ -106,21 +106,25 @@ void stepper_task(void *parameter){
       vTaskDelay(1 / portTICK_PERIOD_MS);  
       current_angle = i*resolution;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
+      // Serial.print(current_angle-10);
+      // Serial.print(",");
+      // Serial.println(current_dist);
       if (current_dist < min_dist) {
         min_dist = current_dist;
         angle_at_min_dist = current_angle;
       }
     }
-    // Serial.print("(");
-    // Serial.print(angle_at_min_dist);
-    // Serial.print(",");
-    // Serial.print(min_dist);
-    // Serial.println(")");
-    angle1 = angle_at_min_dist - 3;
-    dist1 = min_dist;
+    Serial.print("(");
+    Serial.print(angle_at_min_dist);
+    Serial.print(",");
+    Serial.print(min_dist);
+    Serial.println(")");
 
-    dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
-    MySerial.print(dataToSend);
+    // angle1 = angle_at_min_dist - 3;
+    // dist1 = min_dist;
+
+    // dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
+    // MySerial.print(dataToSend);
 
     angle_at_min_dist = 181;
     min_dist = 9999;  // set high starting value
@@ -131,25 +135,28 @@ void stepper_task(void *parameter){
       vTaskDelay(1 / portTICK_PERIOD_MS);  
       digitalWrite(step_pin, LOW);
       vTaskDelay(1 / portTICK_PERIOD_MS);  
-      current_angle = i*resolution;
+      current_angle = i*resolution + 20;
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
-      if (current_dist < min_dist) {
+      // Serial.print(current_angle);
+      // Serial.print(",");
+      // Serial.println(current_dist);
+      if (current_dist <= min_dist) {
         min_dist = current_dist;
         angle_at_min_dist = current_angle;
       }
     }
-    // Serial.print("(");
-    // Serial.print(angle_at_min_dist);
-    // Serial.print(",");
-    // Serial.print(min_dist);
-    // Serial.println(")");
+    Serial.print("(");
+    Serial.print(angle_at_min_dist);
+    Serial.print(",");
+    Serial.print(min_dist);
+    Serial.println(")");
 
-    angle2 = angle_at_min_dist + 3;
-    dist2 = min_dist;
+    // angle2 = angle_at_min_dist + 3;
+    // dist2 = min_dist;
 
 
-    dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
-    MySerial.print(dataToSend);
+    // dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
+    // MySerial.print(dataToSend);
 
 
     // avg_dist = (dist1 + dist2)/2.0;
