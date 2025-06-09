@@ -5,7 +5,7 @@
 #define END_BYTE   0x55
 #define ACK_BYTE   0xCC
 
-#define baudrate 115200
+#define baudrate 500000
 
 enum class MOVECOMMAND{
     GO,

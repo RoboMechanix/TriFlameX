@@ -17,7 +17,7 @@ void MQTTTask(void *pvParameters) {
 
     client.loop();
 
-    String message = String(Sensordistance++);
+    String message = String(Sensordistance);
     publishMessage(mqtt_pub_topic, message);
 
     vTaskDelay(pdMS_TO_TICKS(100));
@@ -33,10 +33,16 @@ void SerialTask(void *pvParameters) {
     xSemaphoreGive(xSharedDataMutex);
     
     if (command && autonomous ){
-      sendPackedToSTM32(false ,Sensordistance, Sensorangle);
+      int dis = 0;
+      int angle = 0;
+      xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
+      dis = Sensordistance;
+      angle = Sensorangle;
+      xSemaphoreGive(xSharedDataMutex);
+      sendPackedToSTM32(false ,dis, angle);
     }
     else if (autonomous){
-      sendPackedToSTM32(false,10,0);
+      sendPackedToSTM32(false,10,90);
     }
     vTaskDelay(pdMS_TO_TICKS(150));
   }

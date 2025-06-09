@@ -4,8 +4,8 @@
 #include "Arduino.h"
 
 //Define uart communication pins 定义uart通信引脚
-#define TOF_RX_PIN  17
-#define TOF_TX_PIN  16
+#define TOF_RX_PIN  5
+#define TOF_TX_PIN  4
 
 //Redefine serial port name 重定义串口名
 #define TOF_UART Serial1
@@ -24,33 +24,6 @@ typedef struct {
 
 void TOF_Active_Decoding();
 void TOF_Inquire_Decoding(uint8_t id);
+#endif // _TOF_SENSE_H_
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif

@@ -1,3 +1,6 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 #pragma once
 
 #include <Arduino.h>
@@ -35,8 +38,7 @@ extern SemaphoreHandle_t xSharedDataMutex;
 // ==== Global Variables ====
 extern volatile bool go_command; 
 extern bool isAutonomous;
-extern int Sensordistance;
-extern int Sensorangle;
+
 
 // ==== FreeRTOS Variables ====
 extern SemaphoreHandle_t xSharedDataMutex;
@@ -60,3 +62,5 @@ typedef struct {
 } SensorData;
 
 extern QueueHandle_t mqttQueue;
+
+#endif // MAIN_H
