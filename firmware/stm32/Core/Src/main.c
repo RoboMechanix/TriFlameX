@@ -80,6 +80,31 @@ int main(void) {
 		PD_update_from_distance(distance, current_time_ms);
 		PD_update_angle(angle,1000);
 
+<<<<<<< HEAD
+=======
+//		if(PD_update_angle_ret(angle, current_time_ms)){
+//			if(distance!=0){
+//				PD_update_from_distance(distance, current_time_ms);
+//			}
+//		}
+
+		PD_update_angle_ret(angle);
+		if(distance!=0){
+			PD_update_from_distance(distance, current_time_ms);
+		}
+
+
+//		// Use received values instead of simulated
+//		if(distance!=0)
+//			PD_update_from_distance(distance, current_time_ms);
+
+		char string[10];
+		FloatToStr(angle, string, 3);
+		UART_SendString("Number: ");
+		UART_SendString(string);
+		UART_SendString("\r\n");
+//		delay_ms(1);
+>>>>>>> temp/before_comm
 	}
 
 }

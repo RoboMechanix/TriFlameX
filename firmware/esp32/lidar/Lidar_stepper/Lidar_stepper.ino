@@ -126,11 +126,8 @@ void stepper_task(void *parameter){
     Serial.print(dist1);
     Serial.println(")");
 
-    // angle1 = angle_at_min_dist - 3;
-    // dist1 = min_dist;
-
-    // dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
-    // MySerial.print(dataToSend);
+    dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
+    MySerial.print(dataToSend);
 
     angle_at_min_dist = 181;
     min_dist = 9999;  // set high starting value
@@ -162,9 +159,9 @@ void stepper_task(void *parameter){
     Serial.print(dist2);
     Serial.println(")");
 
-    // dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
-    // MySerial.print(dataToSend);
-
+    dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
+    MySerial.print(dataToSend);
+    
     // String line = "";
     // while (MySerial.available()) {
     //   char c = MySerial.read();
