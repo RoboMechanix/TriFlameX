@@ -1,7 +1,7 @@
 #ifndef LIDAR_H
 #define LIDAR_H
 // ==== Lidar and Stepper Task Declarations ====
-#include "../lidar/Lidar_stepper/TOF_Sense.h"
+#include "TOF_Sense.h"
 #define dir_pin 23
 #define step_pin 22
 #define en_pin 18

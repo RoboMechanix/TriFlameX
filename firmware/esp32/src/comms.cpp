@@ -16,8 +16,12 @@ void MQTTTask(void *pvParameters) {
     }
 
     client.loop();
+    int dis = 0;
+    xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
+    dis = Sensordistance;
+    xSemaphoreGive(xSharedDataMutex);
 
-    String message = String(Sensordistance);
+    String message = String(dis);
     publishMessage(mqtt_pub_topic, message);
 
     vTaskDelay(pdMS_TO_TICKS(100));

@@ -79,7 +79,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 void publishMessage(const char* topic, const String& payload) {
 
     long now = millis();
-    if (client.connected() && (now - lastMsg > 1000)) {
+    if (client.connected() && (now - lastMsg > 100)) {
         lastMsg = now;
         client.publish(topic, payload.c_str());
     }
