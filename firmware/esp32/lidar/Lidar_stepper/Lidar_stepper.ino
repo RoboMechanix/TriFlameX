@@ -9,8 +9,6 @@
 #define resolution (1.8/2.0) // degree per step
 #define shifting_angle_factor 20
 #define CLAMP(value, min, max) ((value) < (min) ? (min) : ((value) > (max) ? (max) : (value)))
-
-
 extern TOF_Parameter TOF_0;
 volatile float current_angle;
 
@@ -128,8 +126,11 @@ void stepper_task(void *parameter){
     Serial.print(dist1);
     Serial.println(")");
 
-    dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
-    MySerial.print(dataToSend);
+    // angle1 = angle_at_min_dist - 3;
+    // dist1 = min_dist;
+
+    // dataToSend = String(dist1) + "," + String(angle1) + "\r\n";
+    // MySerial.print(dataToSend);
 
     angle_at_min_dist = 181;
     min_dist = 9999;  // set high starting value
@@ -141,6 +142,7 @@ void stepper_task(void *parameter){
       digitalWrite(step_pin, LOW);
       vTaskDelay(1 / portTICK_PERIOD_MS);  
       current_angle = i*resolution + shifting_angle_factor;
+
       uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
       // Serial.print(current_angle);
       // Serial.print(",");
@@ -150,7 +152,6 @@ void stepper_task(void *parameter){
         angle_at_min_dist = current_angle;
       }
     }
-
     angle2 = angle_at_min_dist;
     dist2 = min_dist;
     angle2 = CLAMP(angle_at_min_dist, 0, (max_angle - shifting_angle_factor));
@@ -161,8 +162,8 @@ void stepper_task(void *parameter){
     Serial.print(dist2);
     Serial.println(")");
 
-    dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
-    MySerial.print(dataToSend);
+    // dataToSend = String(dist2) + "," + String(angle2) + "\r\n";
+    // MySerial.print(dataToSend);
 
     // String line = "";
     // while (MySerial.available()) {
