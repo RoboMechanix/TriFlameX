@@ -104,7 +104,7 @@ int main(void) {
 		UART_SendString("Number: ");
 		UART_SendString(string);
 		UART_SendString("\r\n");
-		delay_ms(1);
+//		delay_ms(1);
 	}
 
 //	CAR_stop();
