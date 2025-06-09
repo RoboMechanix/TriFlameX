@@ -4,10 +4,10 @@ const char* ssid = "SSH";
 const char* password = "AzabSSH359";
 const char* mqtt_server = "192.168.0.69"; //IP Address
 
-const char* mqtt_client_id = "ESP32_BLUECar";
-const char* mqtt_sub_laptopCMD = "laptop/commands/bluecar"; 
-const char* mqtt_pub_topic = "sensor/bluecar";
-const char* mqtt_sub_joyRos = "joyROS/bluecar/cmd";
+const char* mqtt_client_id = "ESP32_" TOSTRING(CAR_COLOUR) "Car";
+const char* mqtt_sub_laptopCMD = "laptop/commands/" TOSTRING(CAR_COLOUR) "car";
+const char* mqtt_pub_topic = "sensor/" TOSTRING(CAR_COLOUR) "car";
+const char* mqtt_sub_joyRos = "joyROS/" TOSTRING(CAR_COLOUR) "car/cmd";
 
 
 

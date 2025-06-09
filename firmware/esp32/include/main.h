@@ -18,6 +18,11 @@
 #include "util.h"
 #include "lidar.h"
 
+// ==== Constants === 
+#define CAR_COLOUR blue
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 // ==== Wi-Fi Credentials ====
 extern const char* ssid;
 extern const char* password;
@@ -63,4 +68,4 @@ typedef struct {
 
 extern QueueHandle_t mqttQueue;
 
-#endif // MAIN_H
+#endif // MAIN_H_

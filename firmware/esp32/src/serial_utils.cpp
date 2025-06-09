@@ -7,21 +7,21 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
 }
 
 void sendPackedToSTM32(bool direction, u16_t distance, int8_t angle) {
-    if (distance > 16383 || angle < -127 || angle > 127) {
+    if (distance > 16383 || angle > 255 || angle < 0) {
         Serial.println("Invalid distance or angle range");
+        sendPackedToSTM32(direction,10,90);
         return;
     }
 
     uint8_t buffer[6];
     buffer[0] = START_BYTE;
 
-    // Pack bits: [command:1][dir:1][distance:14][sign:1][angle:7]
+    // Pack bits: [command:1][dir:1][distance:14][angle:8]
     uint32_t packed = 0;
-    packed |= ((go_command ? 1 : 0) & 0x01) << 23;           
-    packed |= ((direction ? 1 : 0) & 0x01) << 22;            
-    packed |= (distance & 0x3FFF) << 8;                      
-    packed |= ((angle < 0 ? 1 : 0) & 0x01) << 7;             
-    packed |= (abs(angle) & 0x7F);                           
+    packed |= ((go_command ? 1 : 0) & 0x01) << 23;      // Bit 23
+    packed |= ((direction ? 1 : 0) & 0x01) << 22;       // Bit 22
+    packed |= (distance & 0x3FFF) << 8;                 // Bits 21–8 (14 bits)
+    packed |= (abs(angle) & 0xFF);                      // Bits 7–0 (8 bits)                         
 
     buffer[1] = (packed >> 16) & 0xFF;
     buffer[2] = (packed >> 8) & 0xFF;

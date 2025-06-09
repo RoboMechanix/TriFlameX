@@ -99,7 +99,10 @@ UARTMessage UART_receive_message(int UART_pref_num) {
         default: return (UARTMessage){ .type = MSG_NONE };
     }
 
-    if (!(USARTx->SR & USART_SR_RXNE)) return (UARTMessage){ .type = MSG_NONE };
+    // Check if data is received
+    if (!(USARTx->SR & USART_SR_RXNE))
+        return (UARTMessage){ .type = MSG_NONE };
+
     uint8_t byte = USARTx->DR & 0xFF;
 
     switch (state) {
@@ -121,7 +124,7 @@ UARTMessage UART_receive_message(int UART_pref_num) {
             if (byte == checksum) {
                 state = WAIT_END;
             } else {
-                state = WAIT_START;
+                state = WAIT_START; // bad checksum
             }
             break;
 
@@ -131,20 +134,19 @@ UARTMessage UART_receive_message(int UART_pref_num) {
                 while (!(USARTx->SR & USART_SR_TXE));
                 USARTx->DR = 0xCC;
 
+                // Unpack message: [command:1][dir:1][distance:14][angle:8]
                 uint32_t packed = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
-                int command = (packed >> 23) & 0x01;
-                int dir     = (packed >> 22) & 0x01;
-                int distance = (packed >> 8) & 0x3FFF;
-                int sign = (packed >> 7) & 0x01;
-                int angle = packed & 0x7F;
-                if (sign) angle = -angle;
+                int command  = (packed >> 23) & 0x01;
+                int dir      = (packed >> 22) & 0x01;
+                int distance = (packed >> 8)  & 0x3FFF; // 14 bits
+                int angle    =  packed        & 0xFF;   // 8 bits unsigned
 
                 UARTMessage msg = {
-                    .type = MSG_DIR_COMMAND_DISTANCE_ANGLE,
+                    .type    = MSG_DIR_COMMAND_DISTANCE_ANGLE,
                     .command = command,
-                    .dir = dir,
+                    .dir     = dir,
                     .distance = distance,
-                    .angle = angle
+                    .angle    = angle // now always positive (0–255)
                 };
                 state = WAIT_START;
                 return msg;
@@ -156,4 +158,3 @@ UARTMessage UART_receive_message(int UART_pref_num) {
 
     return (UARTMessage){ .type = MSG_NONE };
 }
-
