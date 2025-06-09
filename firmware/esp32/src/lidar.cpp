@@ -15,8 +15,6 @@ void stepper_task(void *parameter){
   float min_angle = 0.0 + ((180.0-span)/2.0);
   float max_angle = 180.0 - ((180.0-span)/2.0);
   float angle1 = 0.0, angle2 = 0.0, dist1 = 0.0, dist2 = 0.0, prev_distance = 0.0, prev_angle = 0.0;
-  uint8_t distance_tolerance = 10, angle_tolerance = 3;
-  float avg_dist = 0.0, avg_angle = 0.0;
   float current_angle;
 
   while(1){
@@ -74,6 +72,9 @@ void stepper_task(void *parameter){
     dist1 = min_dist;
     angle1 = CLAMP(angle1, 0, (max_angle - shifting_angle_factor));
 
+    if (TOF_0.dis_status == 0){
+      dist1 = 69999; // If the distance is not valid, set it to 69999
+    }
     xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
     Sensordistance = dist1;
     Sensorangle = angle1;
@@ -109,6 +110,9 @@ void stepper_task(void *parameter){
     dist2 = min_dist;
     angle2 = CLAMP(angle_at_min_dist, 0, (max_angle - shifting_angle_factor));
 
+    if (TOF_0.dis_status == 0){
+      dist2 = 69999; // If the distance is not valid, set it to 69999
+    }
     xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
     Sensordistance = dist2;
     Sensorangle = angle2;
