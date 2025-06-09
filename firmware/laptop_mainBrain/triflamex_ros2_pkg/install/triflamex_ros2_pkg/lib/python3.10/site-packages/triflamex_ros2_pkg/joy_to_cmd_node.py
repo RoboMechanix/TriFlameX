@@ -94,7 +94,7 @@ class JoyToCmd(Node):
         
         
         try:
-            packed_data = pack_payload(command, dir, throttle, sign, angle)
+            packed_data = pack_payload(command, dir, throttle, angle)
             payload = str(packed_data)
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             
