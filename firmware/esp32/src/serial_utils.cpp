@@ -6,8 +6,8 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
     setCommandSTM32(MOVECOMMAND::STOP);
 }
 
-void sendPackedToSTM32(uint16_t distance, int8_t angle) {
-    if (distance > 32767 || angle < -127 || angle > 127) {
+void sendPackedToSTM32(bool direction, u16_t distance, int8_t angle) {
+    if (distance > 16383 || angle < -127 || angle > 127) {
         Serial.println("Invalid distance or angle range");
         return;
     }
@@ -15,21 +15,22 @@ void sendPackedToSTM32(uint16_t distance, int8_t angle) {
     uint8_t buffer[6];
     buffer[0] = START_BYTE;
 
-    // Pack bits: [command(1)][distance(15)][sign(1)][angle(7)]
+    // Pack bits: [command:1][dir:1][distance:14][sign:1][angle:7]
     uint32_t packed = 0;
-    packed |= ((go_command ? 1 : 0) & 0x01) << 23;
-    packed |= (distance & 0x7FFF) << 8;
-    packed |= ((angle < 0 ? 1 : 0) & 0x01) << 7;
-    packed |= (abs(angle) & 0x7F);
+    packed |= ((go_command ? 1 : 0) & 0x01) << 23;           
+    packed |= ((direction ? 1 : 0) & 0x01) << 22;            
+    packed |= (distance & 0x3FFF) << 8;                      
+    packed |= ((angle < 0 ? 1 : 0) & 0x01) << 7;             
+    packed |= (abs(angle) & 0x7F);                           
 
     buffer[1] = (packed >> 16) & 0xFF;
     buffer[2] = (packed >> 8) & 0xFF;
     buffer[3] = packed & 0xFF;
     buffer[5] = END_BYTE;
 
-    // Calculate checksum (XOR of payload bytes only)
+    // Checksum = XOR of payload bytes
     buffer[4] = buffer[1] ^ buffer[2] ^ buffer[3];
-    
+
     stm32Serial.write(buffer, sizeof(buffer));
 
     // Wait for ACK

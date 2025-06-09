@@ -8,6 +8,7 @@ uint64_t current_time_ms = 1;
 float distance = 0.0f;
 float angle = 0.0f;
 float realangle = 0.0f;
+int dir= 0;
 uint8_t command;
 
 char c;
@@ -51,8 +52,8 @@ int main(void) {
 	TIM_initMillis(TIM2, 1);  // 1ms resolution
 
 	// === Initialize PD controllers ===
-	PD_init(0.4f, 2.0f);        // Distance PD
-	PD_init_angle(2.0f, 1.0f);  // Angle control gains
+	PD_init(0.2f, 2.0f);        // Distance PD
+	PD_init_angle(1.0f, 1.0f);  // Angle control gains
 
 	while (1) {
 
@@ -68,17 +69,16 @@ int main(void) {
 		distance = msg.distance;
 		angle = msg.angle;
 		command= msg.command;
+		dir = msg.dir;
 
 		if (!command){
 			CAR_stop();
 			continue;
 		}
 
-		PD_update_angle_ret(angle);
-		if(distance!=0){
-			PD_update_from_distance(distance, current_time_ms);
-		}
-
+		distance = dir? -distance : distance ;
+		PD_update_from_distance(distance, current_time_ms);
+		PD_update_angle(angle,1000);
 
 	}
 
