@@ -89,9 +89,6 @@ class JoyToCmd(Node):
     
         angle = angle - 90 if (sign) else angle
         
-        
-        angle = 129
-        command = 1
 
         try:
             packed_data = pack_payload(command, dir, throttle, angle)
