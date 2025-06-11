@@ -99,7 +99,15 @@ UARTMessage UART_receive_message(int UART_pref_num) {
         default: return (UARTMessage){ .type = MSG_NONE };
     }
 
-    if (!(USARTx->SR & USART_SR_RXNE)) return (UARTMessage){ .type = MSG_NONE };
+    if (!(USARTx->SR & USART_SR_RXNE)) {
+    	if (USART1->SR & USART_SR_ORE) {
+    	        volatile uint32_t tmp = USART1->DR;  // Clear ORE by reading DR
+    	        (void)tmp;
+    	    }
+
+    	return (UARTMessage){ .type = MSG_NONE };
+
+    }
     uint8_t byte = USARTx->DR & 0xFF;
 
     switch (state) {
