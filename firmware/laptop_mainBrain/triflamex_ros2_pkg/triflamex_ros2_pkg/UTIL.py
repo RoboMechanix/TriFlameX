@@ -4,7 +4,7 @@ import paho.mqtt.publish as publish
 import time
 
 def pack_payload(command, distance, sign, angle):
-    payload = (command << 23) | (distance << 8) | (sign << 7) | angle
+    payload = ((command & 0x1) << 23) | ((dir & 0x1) << 22) | ((distance & 0x3FFF) << 8) | (angle & 0xFF)
     return payload
 
 
