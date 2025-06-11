@@ -6,7 +6,7 @@ void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin) {
     setCommandSTM32(MOVECOMMAND::STOP);
 }
 
-void sendPackedToSTM32(bool direction, u16_t distance, int8_t angle) {
+void sendPackedToSTM32(bool direction, u16_t distance, u8_t angle) {
     if (distance > 16383 || angle > 255 || angle < 0) {
         Serial.println("Invalid distance or angle range");
         sendPackedToSTM32(direction,10,90);
