@@ -5,10 +5,11 @@ uint64_t current_time_ms = 1;
 
 
 // === Variables ===
-float distance = 0.0f;
-float angle = 0.0f;
+int  distance = 0.0f;
+int angle = 0.0f;
 float realangle = 0.0f;
 uint8_t command;
+int dir;
 
 char c;
 int x=0;
@@ -68,10 +69,15 @@ int main(void) {
 		distance = msg.distance;
 		angle = msg.angle;
 		command= msg.command;
+		dir = msg.dir;
 
 		if (!command){
 			CAR_stop();
 			continue;
+		}
+
+		if (dir){
+			distance *= -1;
 		}
 
 		PD_update_angle_ret(angle);

@@ -79,19 +79,27 @@ class JoyToCmd(Node):
     
         # Convert to meaningful values
         throttle = int(abs(raw_throttle) * 8500)
+        dir = 0 if raw_throttle >= 0 else 1
         angle = int(abs(raw_angle) * 90)
         sign = 0 if raw_angle >= 0 else 1
         command = 1 if abs(raw_throttle) > 0.1 else 0
                 
-        throttle = speed_array[self.index] if command == 1 else 0
-        angle = angle_array[self.index] if angle > 10 else 0
+        throttle = speed_array[self.index] if command == 1 else 10 
+        angle = angle_array[self.index] if angle > 10 else 90
+    
+        angle = angle - 90 if (sign) else angle
         
-        throttle = 10 if throttle == 0 else throttle
-        throttle = 100
-        angle = 180
+        
+        angle = 129
+        command = 1
+
+        
+        # throttle = 1800
+        # angle = 66
+        # dir = 1
         
         try:
-            packed_data = pack_payload(command, throttle, sign, angle)
+            packed_data = pack_payload(command, dir, throttle, angle)
             payload = str(packed_data)
             topic = f"joyROS/{self.selected_car.name.lower()}car/cmd"
             

@@ -13,6 +13,7 @@ typedef enum {
 typedef struct {
 	MessageType type;
 	uint16_t distance;
+	uint8_t dir;
     int command; // 0 = STOP, 1 = GO
     int angle;   // signed angle (-127 to 127)
 } UARTMessage;

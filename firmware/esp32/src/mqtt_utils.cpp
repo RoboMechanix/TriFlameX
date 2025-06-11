@@ -58,17 +58,21 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         unsigned long raw = msg.toInt();
 
         int command = (raw >> 23) & 0x01; 
-        int distance = (raw >> 8) & 0x7FFF;
-        int angleSign = (raw >> 7) & 0x01;
-        int angleMag = raw & 0x7F;
+        int dir = (raw >> 22) & 0x01; 
+        int distance = (raw >> 8) & 0x3FFF;
+        //int angleSign = (raw >> 7) & 0x01;
+        int angleMag = raw & 0xFF;
 
         xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
         go_command = (command == 1);
         xSemaphoreGive(xSharedDataMutex);
-       
-        int angle = angleSign ? -angleMag : angleMag;
 
-        sendPackedToSTM32(distance, angle);
+        bool direction = (dir == 1);
+
+       
+        //int angle = angleSign ? -angleMag : angleMag;
+
+        sendPackedToSTM32(direction,distance, angleMag);
     }
 
 }
@@ -76,7 +80,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 void publishMessage(const char* topic, const String& payload) {
 
     long now = millis();
-    if (client.connected() && (now - lastMsg > 1000)) {
+    if (client.connected() && (now - lastMsg > 100)) {
         lastMsg = now;
         client.publish(topic, payload.c_str());
     }

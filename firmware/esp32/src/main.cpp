@@ -19,7 +19,7 @@ SemaphoreHandle_t xSharedDataMutex;
 u16_t dummydistance_cm = 12; 
 volatile bool go_command = false;
 bool isAutonomous = true; 
-int Sensordistance= 0;
+int Sensordistance= 999;
 int Sensorangle = 45;  
 
 void setup() {
