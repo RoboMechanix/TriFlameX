@@ -80,7 +80,7 @@ int main(void) {
 			distance *= -1;
 		}
 
-		PD_update_angle_ret(angle);
+		PD_update_angle(angle,69);
 		if(distance!=0){
 			PD_update_from_distance(distance, current_time_ms);
 		}
