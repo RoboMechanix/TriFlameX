@@ -1,0 +1,7 @@
+# Ignore laptop_mainBrain files
+firmware/laptop_mainBrain/__pycache__
+firmware/laptop_mainBrain/triflamex_ros2_pkg/build
+firmware/laptop_mainBrain/triflamex_ros2_pkg/install
+firmware/laptop_mainBrain/triflamex_ros2_pkg/log/
+firmware/laptop_mainBrain/triflamex_ros2_pkg/resource
+firmware/laptop_mainBrain/triflamex_ros2_pkg/test
