@@ -64,13 +64,13 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 
         //int angle = angleSign ? -angleMag : angleMag;
 
-        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
-        go_command = (command == 1);
-        xSemaphoreGive(xSharedDataMutex);
+        // xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
+        // go_command = (command == 1);
+        // xSemaphoreGive(xSharedDataMutex);
 
         bool dir = (direction == 1);
 
-        sendPackedToSTM32(direction, distance, angleMag);
+        sendPackedToSTM32Manual(command, direction, distance, angleMag);
     }
 
 }
