@@ -36,7 +36,7 @@ void SerialTask(void *pvParameters) {
       sendPackedToSTM32(Sensordistance, Sensorangle);
     }
     else if (autonomous){
-      sendPackedToSTM32(0,0);
+      sendPackedToSTM32(10,90);
     }
     vTaskDelay(pdMS_TO_TICKS(150));
   }

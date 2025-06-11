@@ -134,9 +134,9 @@ UARTMessage UART_receive_message(int UART_pref_num) {
                 uint32_t packed = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
                 int command = (packed >> 23) & 0x01;
                 int distance = (packed >> 8) & 0x7FFF;
-                int sign = (packed >> 7) & 0x01;
-                int angle = packed & 0x7F;
-                if (sign) angle = -angle;
+                //int sign = (packed >> 7) & 0x01;
+                int angle = packed & 0xFF;
+                //if (sign) angle = -angle;
 
                 UARTMessage msg = {
                     .type = MSG_COMMAND_DISTANCE_ANGLE,
