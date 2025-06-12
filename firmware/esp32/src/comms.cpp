@@ -1,5 +1,7 @@
 #include <main.h>
 
+int x =9;
+
 void WiFiTask(void *pvParameters) {
   while (true) {
     if (WiFi.status() != WL_CONNECTED) {
@@ -46,7 +48,7 @@ void SerialTask(void *pvParameters) {
       sendPackedToSTM32(false ,dis, angle);
     }
     else if (autonomous){
-      sendPackedToSTM32(false,10,90);
+      sendPackedToSTM32(false,15,210);
     }
     vTaskDelay(pdMS_TO_TICKS(150));
   }
