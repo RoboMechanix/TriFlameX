@@ -1,8 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#pragma once
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
@@ -19,7 +17,7 @@
 #include "lidar.h"
 
 // ==== Constants === 
-#define CAR_COLOUR red
+#define CAR_COLOUR black
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
