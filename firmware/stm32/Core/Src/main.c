@@ -1,18 +1,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 // === Globals ===
 uint64_t current_time_ms = 1;
 
-
-// === Variables ===
-int  distance = 0.0f;
-int angle = 0.0f;
-float realangle = 0.0f;
-uint8_t command;
-int dir;
-
-char c;
-int x=0;
 
 
 // Dummy delay (for simulation only)
@@ -22,10 +13,9 @@ void delay_ms(uint32_t ms) {
 	}
 }
 
-
 int main(void) {
 
-	UART_init(1,BAUDRATE);
+	UART_init(1, BAUDRATE);
 
 	// === Left Motor (TIM3, PA4/PA5) ===
 	TIM_TypeDef *leftTimer = TIM3;
@@ -35,7 +25,7 @@ int main(void) {
 	GPIO_TypeDef *leftDir2Port = GPIOA;
 	uint8_t leftDir2Pin = 5;
 
-	// === Right Motor (TIM4, PB6/PB7) ===
+	// === Right Motor (TIM4, PA2/PA3) ===
 	TIM_TypeDef *rightTimer = TIM4;
 	uint8_t rightChannel = 2;
 	GPIO_TypeDef *rightDir1Port = GPIOA;
@@ -45,47 +35,37 @@ int main(void) {
 
 	// === Init Car Motors ===
 	CAR_init(leftTimer, leftChannel, PWM_FREQ_HZ, leftDir1Port, leftDir2Port,
-			leftDir1Pin, leftDir2Pin, rightTimer, rightChannel, PWM_FREQ_HZ,
-			rightDir1Port, rightDir2Port, rightDir1Pin, rightDir2Pin);
+			 leftDir1Pin, leftDir2Pin, rightTimer, rightChannel, PWM_FREQ_HZ,
+			 rightDir1Port, rightDir2Port, rightDir1Pin, rightDir2Pin);
 
 	// === Init Millisecond Timer (TIM2 used for timing) ===
 	TIM_initMillis(TIM2, 1);  // 1ms resolution
 
-	// === Initialize PD controllers ===
+	// === Initialize PD Controllers ===
 	PD_init(0.4f, 2.0f);        // Distance PD
-	PD_init_angle(2.0f, 1.0f);  // Angle control gains
+	PD_init_angle(2.0f, 1.0f);  // Angle control PD
+	UART1_InterruptsInit();
+
 
 	while (1) {
+		delay_ms(1);  // ~1ms delay
 
-		delay_ms(1);
-		//CAR_forward(100,100);
 
-		UARTMessage msg;
-		do {
-			 msg = UART_receive_message(1);
-		}
-		while (msg.type== MSG_NONE);
-
-		distance = msg.distance;
-		angle = msg.angle;
-		command= msg.command;
-		dir = msg.dir;
-
-		if (!command){
+		if (!command) {
 			CAR_stop();
 			continue;
 		}
 
-		if (dir){
-			distance *= -1;
-		}
+//		if (dir) {
+//			distance *= -1;
+//		}
 
-		PD_update_angle(angle,69);
-		if(distance!=0){
+		PD_update_angle(angle, 69);  // 69 might be the actual angle from IMU
+
+		if (distance != 0) {
 			PD_update_from_distance(distance, current_time_ms);
 		}
-
-
 	}
-
 }
+
+

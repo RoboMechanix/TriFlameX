@@ -100,7 +100,7 @@ class JoyToCmd(Node):
             if command == 1:
                 time.sleep(0.5)
             else:
-                time.sleep(0.3)
+                time.sleep(0.5)
             
         except Exception as e:
             self.get_logger().error(f"Failed to connect to MQTT broker '{MQTT_BROKER}': {e}")
