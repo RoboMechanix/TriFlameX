@@ -36,19 +36,11 @@ void setup() {
     }
     // Blocking the flow till the wi-fi is connected
     connectToWiFi(ssid, password);
-
-    pinMode(dir_pin, OUTPUT);
-    pinMode(step_pin, OUTPUT);
-    Serial.begin(460800);
-    TOF_UART.begin(1500000, SERIAL_8N1, TOF_RX_PIN, TOF_TX_PIN);
-    //MySerial.begin(500000, SERIAL_8N1, rx_pin, tx_pin);
-    pinMode(calibration_pin, INPUT_PULLUP);
-    pinMode(en_pin, OUTPUT);
-    digitalWrite(en_pin, LOW); // activate the stepper
+    tofInit();
+    stepperInit();
     delay(2000); // Give time for Serial to connect
-
     
-    setupSTM32Serial(stm32Serial, 16, 17);
+    setupSTM32Serial(stm32Serial, rx_pin, tx_pin);
     setupMQTT(mqtt_server, mqtt_client_id, mqtt_sub_laptopCMD, mqtt_sub_joyRos);
     
     // Comms on core 0

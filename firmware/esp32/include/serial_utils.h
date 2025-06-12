@@ -6,6 +6,8 @@
 #define ACK_BYTE   0xCC
 
 #define baudrate 500000
+#define rx_pin 16
+#define tx_pin 17
 
 enum class MOVECOMMAND{
     GO,
