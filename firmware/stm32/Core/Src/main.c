@@ -3,8 +3,8 @@
 
 // === Globals ===
 uint64_t current_time_ms = 1;
-
-
+uint8_t is_angle_reached = 0;
+uint32_t time = 0;
 
 // Dummy delay (for simulation only)
 void delay_ms(uint32_t ms) {
@@ -42,29 +42,32 @@ int main(void) {
 	TIM_initMillis(TIM2, 1);  // 1ms resolution
 
 	// === Initialize PD Controllers ===
-	PD_init(0.4f, 2.0f);        // Distance PD
-	PD_init_angle(2.0f, 1.0f);  // Angle control PD
+	PD_init(0.375f, 1.0f);        // Distance PD
+	PD_init_angle(2.2f, 1.0f);  // Angle control PD
 	UART1_InterruptsInit();
-
+	delay_ms(2000);
 
 	while (1) {
-		delay_ms(1);  // ~1ms delay
-
 
 		if (!command) {
 			CAR_stop();
 			continue;
 		}
 
-//		if (dir) {
-//			distance *= -1;
-//		}
 
-		PD_update_angle(angle, 69);  // 69 might be the actual angle from IMU
-
-		if (distance != 0) {
-			PD_update_from_distance(distance, current_time_ms);
+		if(!is_angle_reached && PD_update_angle_ret(angle)){  // 69 might be the actual angle from IMU
+			if (TIM_Millis() - time < 500){
+				is_angle_reached = 1;
+				delay_ms(1000);
+				CAR_stop();
+			}else{
+				time = TIM_Millis();
+				is_angle_reached = 0;
+			}
 		}
+
+		PD_update_from_distance(distance, current_time_ms);
+
 	}
 }
 

@@ -1,6 +1,5 @@
 #include <main.h>
-
-int x =9;
+#include "comm.h"
 
 void WiFiTask(void *pvParameters) {
   while (true) {
@@ -48,7 +47,7 @@ void SerialTask(void *pvParameters) {
       sendPackedToSTM32(false ,dis, angle);
     }
     else if (autonomous){
-      sendPackedToSTM32(false,15,210);
+      sendPackedToSTM32(false, defaultStopDistance, defaultStopAngle);
     }
     vTaskDelay(pdMS_TO_TICKS(150));
   }

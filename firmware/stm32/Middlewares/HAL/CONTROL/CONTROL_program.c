@@ -86,8 +86,8 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 
     // in the backward case
     if(error<0){
-    	kp_global=5;
-    	kd_global=5;
+    	kp_global=4;
+    	kd_global=4;
     }
 
     float p = kp_global * error;

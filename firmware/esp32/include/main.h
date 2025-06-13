@@ -17,7 +17,7 @@
 #include "lidar.h"
 
 // ==== Constants === 
-#define CAR_COLOUR red
+#define CAR_COLOUR black
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
