@@ -1,10 +1,31 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 // === Globals ===
 uint64_t current_time_ms = 1;
-uint8_t is_angle_reached = 0;
-uint32_t time = 0;
+
+// === Variables ===
+float distance = 0.0f;
+float angle = 0.0f;
+float realangle = 0.0f;
+
+char c;
+char uart_rx_buffer[UART_BUFFER_SIZE];
+int uart_rx_index = 0;
+int x = 0;
+
+volatile uint8_t uart_line_ready = 0;
+char uart_rx_buffer_copy[UART_BUFFER_SIZE];  // Used by main loop/task
+
+// Function prototypes
+void UART_Init(void);
+char UART_ReadChar(void);
+int UART_ReadLine(char *buffer, int max_len);
+void PD_Distance_Task(void *pvParameters);
+void PD_Angle_Task(void *pvParameters);
+void UART_Parse_Task(void *pvParameters);
 
 // Dummy delay (for simulation only)
 void delay_ms(uint32_t ms) {
@@ -14,8 +35,8 @@ void delay_ms(uint32_t ms) {
 }
 
 int main(void) {
-
-	UART_init(1, BAUDRATE);
+	// Initialize UART
+	UART_Init();
 
 	// === Left Motor (TIM3, PA4/PA5) ===
 	TIM_TypeDef *leftTimer = TIM3;
@@ -25,7 +46,7 @@ int main(void) {
 	GPIO_TypeDef *leftDir2Port = GPIOA;
 	uint8_t leftDir2Pin = 5;
 
-	// === Right Motor (TIM4, PA2/PA3) ===
+	// === Right Motor (TIM4, PB6/PB7) ===
 	TIM_TypeDef *rightTimer = TIM4;
 	uint8_t rightChannel = 2;
 	GPIO_TypeDef *rightDir1Port = GPIOA;
@@ -35,41 +56,73 @@ int main(void) {
 
 	// === Init Car Motors ===
 	CAR_init(leftTimer, leftChannel, PWM_FREQ_HZ, leftDir1Port, leftDir2Port,
-			 leftDir1Pin, leftDir2Pin, rightTimer, rightChannel, PWM_FREQ_HZ,
-			 rightDir1Port, rightDir2Port, rightDir1Pin, rightDir2Pin);
+			leftDir1Pin, leftDir2Pin, rightTimer, rightChannel, PWM_FREQ_HZ,
+			rightDir1Port, rightDir2Port, rightDir1Pin, rightDir2Pin);
 
 	// === Init Millisecond Timer (TIM2 used for timing) ===
 	TIM_initMillis(TIM2, 1);  // 1ms resolution
+	delay_ms(50);
 
-	// === Initialize PD Controllers ===
-	PD_init(0.375f, 1.0f);        // Distance PD
-	PD_init_angle(2.2f, 1.0f);  // Angle control PD
-	UART1_InterruptsInit();
-	delay_ms(2000);
+	// === Initialize PD controllers ===
+	PD_init(0.4f, 2.0f);        // Distance PD
+	PD_init_angle(1.75f, 0.0f); // Angle control gains
 
+	// === Create FreeRTOS Tasks ===
+	xTaskCreate(UART_Parse_Task, "UARTTask", 128, NULL, 1, NULL);
+	xTaskCreate(PD_Distance_Task, "DistanceTask", 128, NULL, 2, NULL);
+	xTaskCreate(PD_Angle_Task, "AngleTask", 128, NULL, 2, NULL);
+
+	// === Start Scheduler ===
+	vTaskStartScheduler();
+
+	// Should never reach here
+	while (1);
+}
+
+// === Task for PD Distance ===
+void PD_Distance_Task(void *pvParameters) {
 	while (1) {
+		current_time_ms = TIM_Millis();
+		if (distance != 0.0f) {
 
-		if (!command) {
-			CAR_stop();
-			continue;
+			PD_update_from_distance(distance, current_time_ms);
 		}
+		vTaskDelay(pdMS_TO_TICKS(1)); // Update every 10ms
+	}
+}
 
+// === Task for PD Angle ===
+void PD_Angle_Task(void *pvParameters) {
+	while (1) {
+		current_time_ms = TIM_Millis();
+//		if(angle<100 && angle>80){
+//			PD_init(0.0f, 0.0f);        // Distance PD
+//
+//			PD_init_angle(.0f, 0.0f);}
+//		else {
+//			PD_init(0.7f, 9.0f);        // Distance PD
+//
+//			PD_init_angle(1.3f, 0.0f);
+//		}
+		PD_update_angle(angle, current_time_ms);
+		vTaskDelay(pdMS_TO_TICKS(1)); // Update every 10ms
+	}
+}
 
-		if(!is_angle_reached && PD_update_angle_ret(angle)){  // 69 might be the actual angle from IMU
-			if (TIM_Millis() - time < 500){
-				is_angle_reached = 1;
-				delay_ms(1000);
-				CAR_stop();
-			}else{
-				time = TIM_Millis();
-				is_angle_reached = 0;
+// === UART Parser Task ===
+void UART_Parse_Task(void *pvParameters) {
+	while (1) {
+		if (UART_ReadLine(uart_rx_buffer, UART_BUFFER_SIZE)) {
+			// Expected format: "123.45,67.89"
+			char *comma_pos = strchr(uart_rx_buffer, ',');
+			if (comma_pos != NULL) {
+				*comma_pos = 0; // Split string
+				distance = atof(uart_rx_buffer);
+				angle = atof(comma_pos + 1);
+				realangle = angle - 90;
 			}
 		}
-if(distance>maxDistance)
-	PD_init(0.375f, 1.0f);        // Distance PD
-
-		PD_update_from_distance(distance, current_time_ms);
-
+		vTaskDelay(pdMS_TO_TICKS(1)); // Small delay to prevent CPU hogging
 	}
 }
 
