@@ -93,7 +93,8 @@ def on_message(client, userdata, msg):
     try:
         value = int(payload)  # parse directly as int
     except ValueError:
-        print(f"⚠️ Invalid payload: '{payload}'")
+        if not topic == enable_topic:
+            print(f"⚠️ Invalid payload: '{payload}'")
         return  
 
     if topic == MQTT_TOPIC_SUB_BLUE:
