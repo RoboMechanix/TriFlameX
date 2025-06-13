@@ -124,7 +124,9 @@ void PD_Angle_Task(void *pvParameters) {
 		} else
 			PD_update_angle(angle, current_time_ms);
 
-		vTaskDelay(pdMS_TO_TICKS(2)); // Update every 10ms
+		vTaskDelay(pdMS_TO_TICKS(1
+
+		)); // Update every 10ms
 	}
 }
 
