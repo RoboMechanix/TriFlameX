@@ -3,3 +3,15 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+# VSCode extensions config
+.vscode/extensions.json
+
+# ESP32 project main header
+include/main.h
+
+# PlatformIO configuration
+platformio.ini
+
+# STM32 debug launch configuration
+stm32 Debug.launch
+

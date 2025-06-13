@@ -1,6 +1,6 @@
 # === Configuration ===
-REQUIRED_SSID = "iPhone george hany"
-MQTT_BROKER = "172.20.10.2"   
+REQUIRED_SSID = "SSH"
+MQTT_BROKER = "192.168.0.69"   
 INTERFACE = "wlp0s20f3"
 REQUIRED_IP =  MQTT_BROKER 
 MQTT_PORT = 1883
