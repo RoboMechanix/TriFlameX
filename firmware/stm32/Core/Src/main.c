@@ -7,8 +7,8 @@
 uint64_t current_time_ms = 1;
 
 // === Variables ===
-float distance = 0.0f;
-float angle = 0.0f;
+//float distance = 0.0f;
+//float angle = 0.0f;
 float realangle = 0.0f;
 
 char c;
@@ -20,12 +20,12 @@ volatile uint8_t uart_line_ready = 0;
 char uart_rx_buffer_copy[UART_BUFFER_SIZE];  // Used by main loop/task
 
 // Function prototypes
-void UART_Init(void);
-char UART_ReadChar(void);
-int UART_ReadLine(char *buffer, int max_len);
+//void UART_Init(void);
+//char UART_ReadChar(void);
+//int UART_ReadLine(char *buffer, int max_len);
 void PD_Distance_Task(void *pvParameters);
 void PD_Angle_Task(void *pvParameters);
-void UART_Parse_Task(void *pvParameters);
+//void UART_Parse_Task(void *pvParameters);
 
 // Dummy delay (for simulation only)
 void delay_ms(uint32_t ms) {
@@ -36,7 +36,8 @@ void delay_ms(uint32_t ms) {
 
 int main(void) {
 	// Initialize UART
-	UART_Init();
+	UART_init(1, BAUDRATE);
+	UART1_InterruptsInit();
 
 	// === Left Motor (TIM3, PA4/PA5) ===
 	TIM_TypeDef *leftTimer = TIM3;
@@ -64,11 +65,11 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(0.4f, 2.0f);        // Distance PD
-	PD_init_angle(1.75f, 0.0f); // Angle control gains
+	PD_init(0.64f, 6.0f);        // Distance PD
+	PD_init_angle(0.90f, 0.0f); // Angle control gains
 
 	// === Create FreeRTOS Tasks ===
-	xTaskCreate(UART_Parse_Task, "UARTTask", 128, NULL, 1, NULL);
+//	xTaskCreate(UART_Parse_Task, "UARTTask", 128, NULL, 1, NULL);
 	xTaskCreate(PD_Distance_Task, "DistanceTask", 128, NULL, 2, NULL);
 	xTaskCreate(PD_Angle_Task, "AngleTask", 128, NULL, 2, NULL);
 
@@ -84,6 +85,8 @@ void PD_Distance_Task(void *pvParameters) {
 	while (1) {
 		current_time_ms = TIM_Millis();
 		if (distance != 0.0f) {
+if(distance>maxDistance)
+	PD_init(0.64f, 6.0f);        // Distance PD
 
 			PD_update_from_distance(distance, current_time_ms);
 		}
@@ -110,20 +113,5 @@ void PD_Angle_Task(void *pvParameters) {
 }
 
 // === UART Parser Task ===
-void UART_Parse_Task(void *pvParameters) {
-	while (1) {
-		if (UART_ReadLine(uart_rx_buffer, UART_BUFFER_SIZE)) {
-			// Expected format: "123.45,67.89"
-			char *comma_pos = strchr(uart_rx_buffer, ',');
-			if (comma_pos != NULL) {
-				*comma_pos = 0; // Split string
-				distance = atof(uart_rx_buffer);
-				angle = atof(comma_pos + 1);
-				realangle = angle - 90;
-			}
-		}
-		vTaskDelay(pdMS_TO_TICKS(1)); // Small delay to prevent CPU hogging
-	}
-}
 
 
