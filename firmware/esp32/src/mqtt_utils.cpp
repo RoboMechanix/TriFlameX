@@ -44,7 +44,6 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
     if (strcmp(topic, mqtt_sub_laptopCMD) == 0) {
         if (msg == "GO") {
             setCommandSTM32(MOVECOMMAND::GO);
-            //sendPackedToSTM32(Sensordistance, Sensorangle); 
         }   
         else if (msg == "STOP") {
             setCommandSTM32(MOVECOMMAND::STOP);
@@ -60,18 +59,18 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
         int command = (raw >> 23) & 0x01;
         int direction = (raw >> 22) & 0x01;
         int distance = (raw >> 8) & 0x3FFF;
-        int angleSign = (raw >> 7) & 0x01;
-        int angleMag = raw & 0x7F;
+        //int angleSign = (raw >> 7) & 0x01;
+        int angleMag = raw & 0xFF;
 
-        int angle = angleSign ? -angleMag : angleMag;
+        //int angle = angleSign ? -angleMag : angleMag;
 
-        xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
-        go_command = (command == 1);
-        xSemaphoreGive(xSharedDataMutex);
+        // xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
+        // go_command = (command == 1);
+        // xSemaphoreGive(xSharedDataMutex);
 
         bool dir = (direction == 1);
 
-        sendPackedToSTM32(direction, distance, angle);
+        sendPackedToSTM32Manual(command, direction, distance, angleMag);
     }
 
 }
@@ -79,7 +78,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 void publishMessage(const char* topic, const String& payload) {
 
     long now = millis();
-    if (client.connected() && (now - lastMsg > 1000)) {
+    if (client.connected() && (now - lastMsg > 100)) {
         lastMsg = now;
         client.publish(topic, payload.c_str());
     }

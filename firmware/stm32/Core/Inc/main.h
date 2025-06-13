@@ -32,7 +32,7 @@
 #define SIMULATION_DELAY_MS 70  // Delay between updates (ms)
 #define PWM_FREQ_HZ 1000.0f      // PWM frequency
 #define UART_BUFFER_SIZE 64
-#define BAUDRATE 115200
+#define BAUDRATE 500000
 
 
 

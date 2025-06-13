@@ -6,6 +6,8 @@
 #define ACK_BYTE   0xCC
 
 #define baudrate 500000
+#define rx_pin 16
+#define tx_pin 17
 
 enum class MOVECOMMAND{
     GO,
@@ -15,7 +17,8 @@ enum class MOVECOMMAND{
 
 void setupSTM32Serial(HardwareSerial& serial, int rxPin, int txPin);
 void setCommandSTM32(MOVECOMMAND command);
-void sendPackedToSTM32(bool direction, u16_t distance, int8_t angle);
+void sendPackedToSTM32(bool direction, u16_t distance, u8_t angle);
+void sendPackedToSTM32Manual(bool command, bool direction, u16_t distance, u8_t angle);
 
 /*
 * Bit layout: [Command Bit][15-bit Distance][15-bit distance][sign Bit][7-bit angle]

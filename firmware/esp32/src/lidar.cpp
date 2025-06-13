@@ -15,10 +15,8 @@ void stepper_task(void *parameter){
   float min_angle = 0.0 + ((180.0-span)/2.0);
   float max_angle = 180.0 - ((180.0-span)/2.0);
   float angle1 = 0.0, angle2 = 0.0, dist1 = 0.0, dist2 = 0.0, prev_distance = 0.0, prev_angle = 0.0;
-  uint8_t distance_tolerance = 10, angle_tolerance = 3;
-  float avg_dist = 0.0, avg_angle = 0.0;
   float current_angle;
-
+  TickType_t xLastWakeTime; 
   while(1){
     ////////////////////////////////////// Calibration //////////////////////////////////////
     if (!digitalRead(calibration_pin) && !mask){
@@ -47,6 +45,7 @@ void stepper_task(void *parameter){
         digitalWrite(step_pin, LOW);
         vTaskDelay(2 / portTICK_PERIOD_MS); 
       }
+      xLastWakeTime = xTaskGetTickCount();
       mask2 = false;
     }
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -56,14 +55,12 @@ void stepper_task(void *parameter){
     vTaskDelay(5 / portTICK_PERIOD_MS);  // for stability
     for (int i = min_angle_steps; i <= max_angle_steps; i ++){
       digitalWrite(step_pin, HIGH);
-      vTaskDelay(1 / portTICK_PERIOD_MS);  
+      vTaskDelayUntil(&xLastWakeTime, 1 / portTICK_PERIOD_MS);  
       digitalWrite(step_pin, LOW);
-      vTaskDelay(1 / portTICK_PERIOD_MS);  
+      vTaskDelayUntil(&xLastWakeTime, 1 / portTICK_PERIOD_MS);  
       current_angle = i*resolution;
-      uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
-      // Serial.print(current_angle-10);
-      // Serial.print(",");
-      // Serial.println(current_dist);
+      uint32_t current_dist = TOF_0.dis/10;  // Get stable snapshot / by 10
+
       if (current_dist < min_dist) {
         min_dist = current_dist;
         angle_at_min_dist = current_angle;
@@ -72,8 +69,11 @@ void stepper_task(void *parameter){
 
     angle1 = angle_at_min_dist;
     dist1 = min_dist;
-    angle1 = CLAMP(angle1, 0, (max_angle - shifting_angle_factor));
+    angle1 = CLAMP(angle_at_min_dist, (min_angle + shifting_angle_factor), (max_angle - shifting_angle_factor));
 
+    if (TOF_0.dis_status == 0){
+      dist1 = 9999; // If the distance is not valid, set it to 6999
+    }
     xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
     Sensordistance = dist1;
     Sensorangle = angle1;
@@ -91,15 +91,13 @@ void stepper_task(void *parameter){
     vTaskDelay(5 / portTICK_PERIOD_MS);  // for stability 
     for (int i = max_angle_steps; i >= min_angle_steps; i --){
       digitalWrite(step_pin, HIGH);
-      vTaskDelay(1 / portTICK_PERIOD_MS);  
+      vTaskDelayUntil(&xLastWakeTime, 1 / portTICK_PERIOD_MS);  
       digitalWrite(step_pin, LOW);
-      vTaskDelay(1 / portTICK_PERIOD_MS);  
+      vTaskDelayUntil(&xLastWakeTime, 1 / portTICK_PERIOD_MS);  
       current_angle = i*resolution + shifting_angle_factor;
 
-      uint32_t current_dist = TOF_0.dis;  // Get stable snapshot
-      // Serial.print(current_angle);
-      // Serial.print(",");
-      // Serial.println(current_dist);
+      uint32_t current_dist = TOF_0.dis/10;  // Get stable snapshot / by 10
+
       if (current_dist <= min_dist) {
         min_dist = current_dist;
         angle_at_min_dist = current_angle;
@@ -107,8 +105,11 @@ void stepper_task(void *parameter){
     }
     angle2 = angle_at_min_dist;
     dist2 = min_dist;
-    angle2 = CLAMP(angle_at_min_dist, 0, (max_angle - shifting_angle_factor));
+    angle2 = CLAMP(angle_at_min_dist, (min_angle + shifting_angle_factor), (max_angle - shifting_angle_factor));
 
+    if (TOF_0.dis_status == 0){
+      dist2 = 9999; // If the distance is not valid, set it to 6999
+    }
     xSemaphoreTake(xSharedDataMutex, portMAX_DELAY);
     Sensordistance = dist2;
     Sensorangle = angle2;
@@ -121,4 +122,16 @@ void stepper_task(void *parameter){
     Serial.println(")");
 
   }
+}
+
+void stepperInit(){
+  pinMode(dir_pin, OUTPUT);
+  pinMode(step_pin, OUTPUT);
+  pinMode(calibration_pin, INPUT_PULLUP);
+  pinMode(en_pin, OUTPUT);
+  digitalWrite(en_pin, HIGH); // deactivate the stepper
+}
+
+void tofInit(){
+  TOF_UART.begin(1500000, SERIAL_8N1, TOF_RX_PIN, TOF_TX_PIN);
 }

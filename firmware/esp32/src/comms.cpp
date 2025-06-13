@@ -1,4 +1,5 @@
 #include <main.h>
+#include "comm.h"
 
 void WiFiTask(void *pvParameters) {
   while (true) {
@@ -16,8 +17,12 @@ void MQTTTask(void *pvParameters) {
     }
 
     client.loop();
+    int dis = 0;
+    xSemaphoreTake(xSharedDataMutex,portMAX_DELAY);
+    dis = Sensordistance;
+    xSemaphoreGive(xSharedDataMutex);
 
-    String message = String(Sensordistance);
+    String message = String(dis);
     publishMessage(mqtt_pub_topic, message);
 
     vTaskDelay(pdMS_TO_TICKS(100));
@@ -42,7 +47,7 @@ void SerialTask(void *pvParameters) {
       sendPackedToSTM32(false ,dis, angle);
     }
     else if (autonomous){
-      sendPackedToSTM32(false,10,90);
+      sendPackedToSTM32(false, defaultStopDistance, defaultStopAngle);
     }
     vTaskDelay(pdMS_TO_TICKS(150));
   }

@@ -1,8 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#pragma once
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
@@ -17,6 +15,11 @@
 #include <ledAsIndicator.h>
 #include "util.h"
 #include "lidar.h"
+
+// ==== Constants === 
+#define CAR_COLOUR red
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
 
 // ==== Wi-Fi Credentials ====
 extern const char* ssid;
@@ -63,4 +66,4 @@ typedef struct {
 
 extern QueueHandle_t mqttQueue;
 
-#endif // MAIN_H
+#endif // MAIN_H_

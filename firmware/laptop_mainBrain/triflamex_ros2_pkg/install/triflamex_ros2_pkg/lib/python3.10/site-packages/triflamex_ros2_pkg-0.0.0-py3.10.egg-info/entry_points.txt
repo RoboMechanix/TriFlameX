@@ -1,3 +1,0 @@
-[console_scripts]
-joyToCmdNode = triflamex_ros2_pkg.joy_to_cmd_node:main
-

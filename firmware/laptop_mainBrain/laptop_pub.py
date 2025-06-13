@@ -110,6 +110,12 @@ def check_status():
         changed = True
     if changed:
         print_status()
+    if not config.isBlueCar_live:
+        config.redCar_data = 9999
+    if not config.isBlackCar_live:
+        config.blackCar_data= 9999
+    if not config.isRedCar_live:
+        config.blueCar_data= 9999
 
 def print_status():   
     print()

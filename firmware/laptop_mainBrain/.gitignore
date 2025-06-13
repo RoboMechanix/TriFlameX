@@ -1,0 +1,36 @@
+# Ignore laptop_mainBrain files
+firmware/laptop_mainBrain/__pycache__
+firmware/laptop_mainBrain/triflamex_ros2_pkg/build
+firmware/laptop_mainBrain/triflamex_ros2_pkg/install
+firmware/laptop_mainBrain/triflamex_ros2_pkg/log/
+firmware/laptop_mainBrain/triflamex_ros2_pkg/resource
+firmware/laptop_mainBrain/triflamex_ros2_pkg/test
+
+firmware/laptop_mainBrain/.venv
+
+# Ignore laptop_mainBrain venus
+firmware/laptop_mainBrain/venus/__pycache__
+firmware/laptop_mainBrain/venus/build
+firmware/laptop_mainBrain/venus/install
+firmware/laptop_mainBrain/venus/log/
+# Ignore laptop_mainBrain venus resource
+firmware/laptop_mainBrain/venus/resource
+# Ignore laptop_mainBrain venus test
+firmware/laptop_mainBrain/venus/test
+# Ignore laptop_mainBrain venus launch
+firmware/laptop_mainBrain/venus/launch
+# Ignore laptop_mainBrain venus config
+firmware/laptop_mainBrain/venus/config
+# Ignore laptop_mainBrain venus msg
+firmware/laptop_mainBrain/venus/msg  
+# Ignore laptop_mainBrain venus srv
+firmware/laptop_mainBrain/venus/srv
+# Ignore laptop_mainBrain venus action
+firmware/laptop_mainBrain/venus/action
+# Ignore laptop_mainBrain venus scripts
+firmware/laptop_mainBrain/venus/scripts           
+# Ignore laptop_mainBrain venus src
+firmware/laptop_mainBrain/venus/src
+# Ignore laptop_mainBrain venus include
+firmware/laptop_mainBrain/venus/include
+# Ignore laptop_mainBrain venus CMakeLists.txt  
