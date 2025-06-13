@@ -7,7 +7,7 @@ from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
 from triflamex_ros2_pkg.UTIL import reliable_publish
 from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-speed_array = [25, 45, 65] 
+speed_array = [100, 110, 165] 
 angle_array = [100, 110, 125]
 
 class JoyToCmd(Node):
@@ -29,6 +29,9 @@ class JoyToCmd(Node):
     
     def joy_callback(self, msg):
         
+        if msg.buttons[5]:
+            reliable_publish("calibration/enable", "Enable")
+            
         if self.selected_car is None and self.first_run: 
             self.get_logger().info('No car selected. Press LB to select a car.')
             self.first_run = False
@@ -83,13 +86,31 @@ class JoyToCmd(Node):
         angle = int(abs(raw_angle) * 90)
         sign = 0 if raw_angle >= 0 else 1
         command = 1 if abs(raw_throttle) > 0.1 or abs(raw_angle) > 0.1 else 0
-                
-        throttle = speed_array[self.index] if throttle > 50 else 10 
-        angle = angle_array[self.index] if angle > 10 else 90
-    
-        angle = angle - 90 if (sign) else angle
         
-
+        throttle = speed_array[self.index] if throttle > 50 else 10
+        
+        if command:
+            angle = 92
+            
+        if (angle > 10):
+            #throttle = 10
+            angle = 60 if (sign) else 120
+            
+        if not dir :
+            throttle *2.4
+            
+                
+        #throttle = speed_array[self.index] if throttle > 50 else 30 if abs(raw_angle) > 0.1 else 10
+        #angle = angle_array[self.index] if angle > 10 else 90
+    
+        #angle = angle - 90 if (sign) else angle
+        
+        # angle = 120 if (sign) else 50 if (raw_angle == 0) else 90
+        # #angle = 0 if (raw_angle==0) else 90
+        
+        # angle = 92 #60 and 120
+        # throttle = 110
+        
         try:
             packed_data = pack_payload(command, dir, throttle, angle)
             payload = str(packed_data)

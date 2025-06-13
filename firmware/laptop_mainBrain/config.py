@@ -14,6 +14,7 @@ MQTT_TOPIC_PUB_BLUE = "laptop/commands/bluecar"
 MQTT_TOPIC_PUB_RED = "laptop/commands/redcar"
 MQTT_TOPIC_PUB_BLACK = "laptop/commands/blackcar"
 MQTT_CLIENT_ID = "Ubuntu_Client"
+isMQTTEnabled = False
 
 
 # === ESP Data ===
@@ -28,3 +29,9 @@ isBlackCar_live = False
 isBlueCarAutonomous = True
 isRedCarAutonomous = True
 isBlackCarAutonomous = True
+
+
+# === Enable Mode Data ===
+command = True
+#enable_topic = "mqtt/enable" 
+enable_topic = "calibration/enable"
