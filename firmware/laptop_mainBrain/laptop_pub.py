@@ -27,63 +27,68 @@ def on_publish(client, userdata, mid):
     #pass
     
 
-def publish_message(client):
+def publish_message(client):    
     while True:
-        if is_all_autonomous():
-            winner = get_lowest_data_car()
-            if winner == "blue":
-                pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
-                pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
-                pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
-            elif winner == "red":
-                pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
-                pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
-                pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
-            else:
-                pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
-                pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
-                pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
-
-        elif is_two_autonomous():
-            if config.isBlueCarAutonomous and config.isRedCarAutonomous:
-                if config.blueCar_data <= config.redCar_data:
-                    pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
-                    pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
-                else:
-                    pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
-                    pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
-
-            elif config.isBlueCarAutonomous and config.isBlackCarAutonomous:
-                if config.blueCar_data <= config.blackCar_data:
-                    pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
-                    pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
-                else:
-                    pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
-                    pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
-
-            elif config.isRedCarAutonomous and config.isBlackCarAutonomous:
-                if config.redCar_data <= config.blackCar_data:
-                    pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
-                    pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
-                else:
-                    pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
-                    pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
-
+        if not config.isMQTTEnabled:
+            pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
+            pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
+            pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
         else:
-            if config.isBlueCarAutonomous:
-                pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
-            elif config.isRedCarAutonomous:
-                pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
-            elif config.isBlackCarAutonomous:
-                pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
+            if is_all_autonomous():
+                winner = get_lowest_data_car()
+                if winner == "blue":
+                    pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
+                    pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
+                    pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
+                elif winner == "red":
+                    pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
+                    pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
+                    pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
+                else:
+                    pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
+                    pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
+                    pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
 
-        if not config.isBlueCarAutonomous:
-            pubMsg("Manual Mode", MQTT_TOPIC_PUB_BLUE, client)
-        if not config.isRedCarAutonomous:
-            pubMsg("Manual Mode", MQTT_TOPIC_PUB_RED, client)
-        if not config.isBlackCarAutonomous:
-            pubMsg("Manual Mode", MQTT_TOPIC_PUB_BLACK, client)
-            
+            elif is_two_autonomous():
+                if config.isBlueCarAutonomous and config.isRedCarAutonomous:
+                    if config.blueCar_data <= config.redCar_data:
+                        pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
+                        pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
+                    else:
+                        pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
+                        pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
+
+                elif config.isBlueCarAutonomous and config.isBlackCarAutonomous:
+                    if config.blueCar_data <= config.blackCar_data:
+                        pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
+                        pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
+                    else:
+                        pubMsg("STOP", MQTT_TOPIC_PUB_BLUE, client)
+                        pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
+
+                elif config.isRedCarAutonomous and config.isBlackCarAutonomous:
+                    if config.redCar_data <= config.blackCar_data:
+                        pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
+                        pubMsg("STOP", MQTT_TOPIC_PUB_BLACK, client)
+                    else:
+                        pubMsg("STOP", MQTT_TOPIC_PUB_RED, client)
+                        pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
+
+            else:
+                if config.isBlueCarAutonomous:
+                    pubMsg("GO", MQTT_TOPIC_PUB_BLUE, client)
+                elif config.isRedCarAutonomous:
+                    pubMsg("GO", MQTT_TOPIC_PUB_RED, client)
+                elif config.isBlackCarAutonomous:
+                    pubMsg("GO", MQTT_TOPIC_PUB_BLACK, client)
+
+            if not config.isBlueCarAutonomous:
+                pubMsg("Manual Mode", MQTT_TOPIC_PUB_BLUE, client)
+            if not config.isRedCarAutonomous:
+                pubMsg("Manual Mode", MQTT_TOPIC_PUB_RED, client)
+            if not config.isBlackCarAutonomous:
+                pubMsg("Manual Mode", MQTT_TOPIC_PUB_BLACK, client)
+
         time.sleep(0.5)
 
         

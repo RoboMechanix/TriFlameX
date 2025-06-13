@@ -8,7 +8,8 @@ from config import (
     MQTT_TOPIC_SUB_BLACK,
     MQTT_TOPIC_SUB_BLUE_ROS,
     MQTT_TOPIC_SUB_RED_ROS,
-    MQTT_TOPIC_SUB_BLACK_ROS
+    MQTT_TOPIC_SUB_BLACK_ROS,
+    enable_topic
 )
 
 import config
@@ -70,6 +71,8 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
         client.subscribe(MQTT_TOPIC_SUB_BLUE_ROS)
         client.subscribe(MQTT_TOPIC_SUB_RED_ROS)
         client.subscribe(MQTT_TOPIC_SUB_BLACK_ROS)
+        client.subscribe(enable_topic)
+        
     else:
         print(f"❌ Failed to connect, return code {reason_code}")
         is_connected = False
@@ -78,6 +81,9 @@ def on_connect(client, userdata, flags, reason_code, properties=None):
 def on_message(client, userdata, msg):
     topic = msg.topic
     
+    if topic == enable_topic:
+        config.isMQTTEnabled = True
+        
     if topic in [MQTT_TOPIC_SUB_BLUE_ROS, MQTT_TOPIC_SUB_RED_ROS, MQTT_TOPIC_SUB_BLACK_ROS]:
         ros_takeOver(msg)
         return
