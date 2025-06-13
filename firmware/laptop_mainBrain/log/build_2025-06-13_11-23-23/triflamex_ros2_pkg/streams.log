@@ -1,0 +1,34 @@
+[0.390s] Invoking command in '/home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/triflamex_ros2_pkg': PYTHONPATH=/home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/triflamex_ros2_pkg build --build-base /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build install --record /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/install.log --single-version-externally-managed install_data
+[0.547s] running egg_info
+[0.548s] creating ../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info
+[0.548s] writing ../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/PKG-INFO
+[0.548s] writing dependency_links to ../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/dependency_links.txt
+[0.548s] writing entry points to ../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/entry_points.txt
+[0.548s] writing requirements to ../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/requires.txt
+[0.548s] writing top-level names to ../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/top_level.txt
+[0.548s] writing manifest file '../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/SOURCES.txt'
+[0.549s] reading manifest file '../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/SOURCES.txt'
+[0.549s] writing manifest file '../build/triflamex_ros2_pkg/triflamex_ros2_pkg.egg-info/SOURCES.txt'
+[0.549s] running build
+[0.549s] running build_py
+[0.549s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build
+[0.549s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib
+[0.549s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg
+[0.549s] copying triflamex_ros2_pkg/joy_to_cmd_node.py -> /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg
+[0.550s] copying triflamex_ros2_pkg/UTIL.py -> /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg
+[0.550s] copying triflamex_ros2_pkg/__init__.py -> /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg
+[0.550s] running install
+[0.550s] running install_lib
+[0.551s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg
+[0.551s] copying /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg/joy_to_cmd_node.py -> /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg
+[0.551s] copying /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg/UTIL.py -> /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg
+[0.551s] copying /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build/lib/triflamex_ros2_pkg/__init__.py -> /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg
+[0.551s] byte-compiling /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg/joy_to_cmd_node.py to joy_to_cmd_node.cpython-310.pyc
+[0.552s] byte-compiling /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg/UTIL.py to UTIL.cpython-310.pyc
+[0.552s] byte-compiling /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages/triflamex_ros2_pkg/__init__.py to __init__.cpython-310.pyc
+[0.552s] running install_data
+[0.552s] error: can't copy 'resource/triflamex_ros2_pkg': doesn't exist or not a regular file
+[0.552s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/share/ament_index
+[0.552s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/share/ament_index/resource_index
+[0.552s] creating /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/share/ament_index/resource_index/packages
+[0.564s] Invoked command in '/home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/triflamex_ros2_pkg' returned '1': PYTHONPATH=/home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/install/triflamex_ros2_pkg/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/triflamex_ros2_pkg build --build-base /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/build install --record /home/mohammedazab/myRepo/TriFlameX/firmware/laptop_mainBrain/build/triflamex_ros2_pkg/install.log --single-version-externally-managed install_data
