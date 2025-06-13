@@ -97,7 +97,8 @@ class JoyToCmd(Node):
             angle = 60 if (sign) else 120
             
         if not dir :
-            throttle *2.4
+            #throttle *2.4
+            pass
             
                 
         #throttle = speed_array[self.index] if throttle > 50 else 30 if abs(raw_angle) > 0.1 else 10
