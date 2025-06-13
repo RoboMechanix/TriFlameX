@@ -3,7 +3,7 @@
 
 // === Globals ===
 uint64_t current_time_ms = 1;
-uint8_t is_angle_reached = 0;
+uint8_t is_angle_reached = 0, is_distance_reached = 0;
 uint32_t time = 0, time2 = 0 ;
 
 // Dummy delay (for simulation only)
@@ -59,6 +59,9 @@ int main(void) {
 	GPIO_digitalWrite(GPIOB, 9, LOW);
 
 
+	time = TIM_Millis();
+	time2 = TIM_Millis();
+
 	while (1) {
 
 		if (!command) {
@@ -70,7 +73,6 @@ int main(void) {
 		if(!is_angle_reached && PD_update_angle_ret(angle)){
 			if (TIM_Millis() - time > 1000){
 				is_angle_reached = 1;
-				delay_ms(700);
 				CAR_stop();
 			}
 		}else if (!is_angle_reached){
@@ -79,21 +81,22 @@ int main(void) {
 			GPIO_digitalWrite(GPIOB, 9, HIGH); // red high
 			time = TIM_Millis();
 		}
-		if (is_angle_reached){
-			if(PD_update_from_distance_ret(distance)){
-				if (TIM_Millis() - time2 > 1000){
-					GPIO_digitalWrite(GPIOB, 6, LOW); // yellow low
-					GPIO_digitalWrite(GPIOB, 8, HIGH); // green high
-					GPIO_digitalWrite(GPIOB, 9, LOW); // red low
-					CAR_stop();
-				}
-
-			}else{
-				GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
-				GPIO_digitalWrite(GPIOB, 8, LOW); // green low
-				GPIO_digitalWrite(GPIOB, 9, LOW); // red low
-				time2 = TIM_Millis();
+		if (is_angle_reached && !is_distance_reached && PD_update_from_distance_ret(distance)){
+			if (TIM_Millis() - time2 > 1000){
+				is_distance_reached = 1;
+				CAR_stop();
 			}
+		}else if(is_angle_reached && !is_distance_reached){
+			GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
+			GPIO_digitalWrite(GPIOB, 8, LOW); // green low
+			GPIO_digitalWrite(GPIOB, 9, LOW); // red low
+			time2 = TIM_Millis();
+		}
+		if (is_angle_reached && is_distance_reached){
+			GPIO_digitalWrite(GPIOB, 6, LOW); // yellow low
+			GPIO_digitalWrite(GPIOB, 8, HIGH); // green high
+			GPIO_digitalWrite(GPIOB, 9, LOW); // red low
+			CAR_stop();
 		}
 	}
 }

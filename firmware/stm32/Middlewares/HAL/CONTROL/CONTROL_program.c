@@ -148,7 +148,7 @@ uint8_t PD_update_from_distance_ret(float actualDistance)
     } else {
         CAR_stop();
     }
-    return (fabs(error) < DISTANCE_ERROR_THRESH) ? 1 : 0;
+    return (fabs(speed) < DISTANCE_ERROR_THRESH) ? 1 : 0;
 }
 
 
