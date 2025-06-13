@@ -54,6 +54,17 @@ int main(void) {
 	uint8_t rightDir1Pin = 2;
 	GPIO_TypeDef *rightDir2Port = GPIOA;
 	uint8_t rightDir2Pin = 3;
+	// green led
+	GPIO_pinMode(GPIOB, 8, OUTPUT);
+	GPIO_digitalWrite(GPIOB, 8, LOW);
+
+	// yellow led
+	GPIO_pinMode(GPIOB, 6, OUTPUT);
+	GPIO_digitalWrite(GPIOB, 6, LOW);
+
+	// red led
+	GPIO_pinMode(GPIOB, 9, OUTPUT);
+	GPIO_digitalWrite(GPIOB, 9, LOW);
 
 	// === Init Car Motors ===
 	CAR_init(leftTimer, leftChannel, PWM_FREQ_HZ, leftDir1Port, leftDir2Port,
@@ -70,14 +81,15 @@ int main(void) {
 
 	// === Create FreeRTOS Tasks ===
 //	xTaskCreate(UART_Parse_Task, "UARTTask", 128, NULL, 1, NULL);
-	xTaskCreate(PD_Distance_Task, "DistanceTask", 128, NULL, 2, NULL);
-	xTaskCreate(PD_Angle_Task, "AngleTask", 128, NULL, 2, NULL);
+	xTaskCreate(PD_Distance_Task, "DistanceTask", 256, NULL, 2, NULL);
+	xTaskCreate(PD_Angle_Task, "AngleTask", 256, NULL, 2, NULL);
 
 	// === Start Scheduler ===
 	vTaskStartScheduler();
 
 	// Should never reach here
-	while (1);
+	while (1)
+		;
 }
 
 // === Task for PD Distance ===
@@ -85,8 +97,8 @@ void PD_Distance_Task(void *pvParameters) {
 	while (1) {
 		current_time_ms = TIM_Millis();
 		if (distance != 0.0f) {
-if(distance>maxDistance)
-	PD_init(0.64f, 6.0f);        // Distance PD
+			if (distance > maxDistance)
+				PD_init(0.64f, 6.0f);        // Distance PD
 
 			PD_update_from_distance(distance, current_time_ms);
 		}
@@ -107,15 +119,14 @@ void PD_Angle_Task(void *pvParameters) {
 //
 //			PD_init_angle(1.3f, 0.0f);
 //		}
-		if(!command){
+		if (!command) {
 			CAR_stop();
-		}else
-		PD_update_angle(angle, current_time_ms);
+		} else
+			PD_update_angle(angle, current_time_ms);
 
-		vTaskDelay(pdMS_TO_TICKS(1)); // Update every 10ms
+		vTaskDelay(pdMS_TO_TICKS(2)); // Update every 10ms
 	}
 }
 
 // === UART Parser Task ===
-
 

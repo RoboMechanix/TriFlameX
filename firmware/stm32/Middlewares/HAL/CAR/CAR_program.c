@@ -53,6 +53,8 @@ void CAR_init(TIM_TypeDef *TimxLeft ,uint8_t ChannelLeft, float FrequencyLeft,
 
 void CAR_forward(float rightSpeed ,float leftSpeed) {
     // Left motor forward
+	GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
+
     GPIO_digitalWrite(DirLeft1_global, DirLeft1Pin_global, HIGH);
     GPIO_digitalWrite(DirLeft2_global, DirLeft2Pin_global, LOW);
     // Right motor forward
@@ -65,6 +67,8 @@ void CAR_forward(float rightSpeed ,float leftSpeed) {
 
 void CAR_backwards(float rightSpeed , float leftSpeed) {
     // Left motor backward
+	GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
+
     GPIO_digitalWrite(DirLeft1_global, DirLeft1Pin_global, LOW);
     GPIO_digitalWrite(DirLeft2_global, DirLeft2Pin_global, HIGH);
     // Right motor backward
@@ -77,6 +81,8 @@ void CAR_backwards(float rightSpeed , float leftSpeed) {
 
 void CAR_right(float leftSpeed, float rightSpeed) {
     // Left motor forward
+	GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
+
     GPIO_digitalWrite(DirLeft1_global, DirLeft1Pin_global, HIGH);
     GPIO_digitalWrite(DirLeft2_global, DirLeft2Pin_global, LOW);
     // Right motor backward
@@ -89,6 +95,8 @@ void CAR_right(float leftSpeed, float rightSpeed) {
 
 void CAR_left(float rightSpeed, float leftSpeed) {
     // Left motor backward
+	GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
+
     GPIO_digitalWrite(DirLeft1_global, DirLeft1Pin_global, LOW);
     GPIO_digitalWrite(DirLeft2_global, DirLeft2Pin_global, HIGH);
     // Right motor forward
@@ -100,6 +108,8 @@ void CAR_left(float rightSpeed, float leftSpeed) {
 }
 
 void CAR_stop() {
+	GPIO_digitalWrite(GPIOB, 8, HIGH); // green low
+
     // Brake both motors
     GPIO_digitalWrite(DirLeft1_global, DirLeft1Pin_global, LOW);
     GPIO_digitalWrite(DirLeft2_global, DirLeft2Pin_global, LOW);
