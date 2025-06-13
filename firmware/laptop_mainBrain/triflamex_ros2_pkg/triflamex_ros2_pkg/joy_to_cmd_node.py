@@ -7,7 +7,7 @@ from triflamex_ros2_pkg.UTIL import ENDC, COLOR_CODES
 from triflamex_ros2_pkg.UTIL import reliable_publish
 from triflamex_ros2_pkg.UTIL import MQTT_BROKER as MQTT_BROKER
 
-speed_array = [25, 45, 65] 
+speed_array = [100, 110, 165] 
 angle_array = [100, 110, 125]
 
 class JoyToCmd(Node):
@@ -90,11 +90,14 @@ class JoyToCmd(Node):
         throttle = speed_array[self.index] if throttle > 50 else 10
         
         if command:
-            angle = 90
+            angle = 92
             
         if (angle > 10):
-            throttle = 10
+            #throttle = 10
             angle = 60 if (sign) else 120
+            
+        if not dir :
+            throttle *2.4
             
                 
         #throttle = speed_array[self.index] if throttle > 50 else 30 if abs(raw_angle) > 0.1 else 10
@@ -105,8 +108,8 @@ class JoyToCmd(Node):
         # angle = 120 if (sign) else 50 if (raw_angle == 0) else 90
         # #angle = 0 if (raw_angle==0) else 90
         
-        angle = 92 #60 and 120
-        throttle = 110
+        # angle = 92 #60 and 120
+        # throttle = 110
         
         try:
             packed_data = pack_payload(command, dir, throttle, angle)
