@@ -4,7 +4,7 @@
 // === Globals ===
 uint64_t current_time_ms = 1;
 uint8_t is_angle_reached = 0;
-uint32_t time = 0;
+uint32_t time = 0, time2 = 0 ;
 
 // Dummy delay (for simulation only)
 void delay_ms(uint32_t ms) {
@@ -42,12 +42,23 @@ int main(void) {
 	TIM_initMillis(TIM2, 1);  // 1ms resolution
 
 	// === Initialize PD Controllers ===
-	PD_init(0.375f, 1.0f);        // Distance PD
+	PD_init(0.6f, 1.0f);        // Distance PD
 	PD_init_angle(2.5f, 1.0f);  // Angle control PD
 	UART1_InterruptsInit();
 
+	// green led
 	GPIO_pinMode(GPIOB, 8, OUTPUT);
 	GPIO_digitalWrite(GPIOB, 8, LOW);
+
+	// yellow led
+	GPIO_pinMode(GPIOB, 6, OUTPUT);
+	GPIO_digitalWrite(GPIOB, 6, LOW);
+
+	// red led
+	GPIO_pinMode(GPIOB, 9, OUTPUT);
+	GPIO_digitalWrite(GPIOB, 9, LOW);
+
+
 	while (1) {
 
 		if (!command) {
@@ -56,18 +67,33 @@ int main(void) {
 		}
 
 
-		if(!is_angle_reached && PD_update_angle_ret(angle)){  // 69 might be the actual angle from IMU
+		if(!is_angle_reached && PD_update_angle_ret(angle)){
 			if (TIM_Millis() - time > 1000){
 				is_angle_reached = 1;
-				delay_ms(1000);
+				delay_ms(700);
 				CAR_stop();
 			}
-		}else{
+		}else if (!is_angle_reached){
+			GPIO_digitalWrite(GPIOB, 6, LOW); // yellow low
+			GPIO_digitalWrite(GPIOB, 8, LOW); // green low
+			GPIO_digitalWrite(GPIOB, 9, HIGH); // red high
 			time = TIM_Millis();
 		}
 		if (is_angle_reached){
-			PD_update_from_distance(distance, current_time_ms);
-			GPIO_digitalWrite(GPIOB, 8, HIGH);
+			if(PD_update_from_distance_ret(distance)){
+				if (TIM_Millis() - time2 > 1000){
+					GPIO_digitalWrite(GPIOB, 6, LOW); // yellow low
+					GPIO_digitalWrite(GPIOB, 8, HIGH); // green high
+					GPIO_digitalWrite(GPIOB, 9, LOW); // red low
+					CAR_stop();
+				}
+
+			}else{
+				GPIO_digitalWrite(GPIOB, 6, HIGH); // yellow high
+				GPIO_digitalWrite(GPIOB, 8, LOW); // green low
+				GPIO_digitalWrite(GPIOB, 9, LOW); // red low
+				time2 = TIM_Millis();
+			}
 		}
 	}
 }

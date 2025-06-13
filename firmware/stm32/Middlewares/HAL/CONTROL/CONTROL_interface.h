@@ -9,12 +9,13 @@
 #define maxDistance 10 // 10 cm from target
 #define mainAngle 90.0
 #define ANGLE_ERROR_THRESH 10
-#define DISTANCE_ERROR_THRESH 2
+#define DISTANCE_ERROR_THRESH 4
 
 void PD_init_angle(float Kp, float Kd);
 void PD_update_angle(float currentAngle, uint64_t time_ms);
 void PD_init( float Kp, float Kd);
 void PD_update_from_distance(float actualDistance, uint64_t time_ms);
 uint8_t PD_update_angle_ret(float currentAngle);
+uint8_t PD_update_from_distance_ret(float actualDistance);
 
 #endif // CONTROL_INTERFACE_H

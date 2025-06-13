@@ -35,12 +35,6 @@
 #define BAUDRATE 500000
 
 
-
-
-
-
-
-
 extern MOVECOMMAND currentCommand;
 
 #endif

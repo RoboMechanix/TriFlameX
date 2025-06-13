@@ -123,6 +123,34 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
     }
 }
 
+uint8_t PD_update_from_distance_ret(float actualDistance)
+{
+    float error = actualDistance - maxDistance;
+
+    float p = kp_global * error;
+    float d = kd_global*(error - prev_error) ;
+    prev_error = error;
+
+    speed = p + d;
+
+    // Clamp speed to [-MAX_LINEAR_SPEED_CORRECTION, MAX_LINEAR_SPEED_CORRECTION]
+    if (speed > MAX_LINEAR_SPEED_CORRECTION) {
+        speed = MAX_LINEAR_SPEED_CORRECTION;
+    } else if (speed < -MAX_LINEAR_SPEED_CORRECTION) {
+        speed = -MAX_LINEAR_SPEED_CORRECTION;
+    }
+
+    // Movement logic
+    if (speed > 0) {
+        CAR_forward(speed,speed);
+    } else if (speed < 0) {
+        CAR_backwards(-speed,-speed);
+    } else {
+        CAR_stop();
+    }
+    return (fabs(error) < DISTANCE_ERROR_THRESH) ? 1 : 0;
+}
+
 
 // Update angle control, currentAngle and targetAngle in degrees it returns 1 if the error is less than a certain threshold else 0
 uint8_t PD_update_angle_ret(float currentAngle) {
