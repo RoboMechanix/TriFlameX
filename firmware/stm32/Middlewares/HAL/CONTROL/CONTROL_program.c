@@ -9,6 +9,8 @@ float kd_angle = 0;
 float prev_angle_error = 0;
 float prev_angle_time = 0;
 float servo_output = 0;
+#define maxDistance 30 //5cm from target
+#define mainAngle 90
 
 void PD_init_angle(float Kp, float Kd) {
     kp_angle = Kp;
@@ -29,21 +31,24 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
     float steering_correction = kp_angle * error + kd_angle * derivative;
 
     // Clamp correction
-    if (steering_correction > 100) steering_correction = 100;
-    else if (steering_correction < -100) steering_correction = -100;
+    if (steering_correction > 60) steering_correction = 60;
+    else if (steering_correction < -60) steering_correction = -60;
 
     // Use global forward speed (assumed non-negative)
     float base_speed = speed;
     float right_motor_speed;
 	float left_motor_speed;
-    if (error > 0) {
+	if (speed==0)
+CAR_stop();
+
+	if (error < 0) {
         // Turn left: right motor faster, left motor slower
-        right_motor_speed = base_speed + steering_correction;
-        left_motor_speed = base_speed - steering_correction;
-    } else if (error < 0) {
+    	left_motor_speed = base_speed + steering_correction;
+    	right_motor_speed = base_speed - steering_correction;
+    } else if (error > 0) {
         // Turn right: left motor faster, right motor slower
-        right_motor_speed = base_speed - (-steering_correction);  // steering_correction negative here
-        left_motor_speed = base_speed + (-steering_correction);
+    	left_motor_speed = base_speed - (-steering_correction);  // steering_correction negative here
+        right_motor_speed = base_speed + (-steering_correction);
     }
 
     // Clamp motor speeds to [0, 100]
@@ -51,13 +56,14 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
     if (left_motor_speed < -100) left_motor_speed = -100;
     if (right_motor_speed > 100) right_motor_speed = 100;
     if (right_motor_speed < -100) right_motor_speed = -100;
-    if(fabs(error)<3){
+    if(fabs(error)<1){
     	right_motor_speed=0;
     	left_motor_speed=0;
     }
 
 
     // Drive motors forward with computed speeds
+
     if(right_motor_speed>0 && left_motor_speed>0){
     CAR_forward(right_motor_speed, left_motor_speed);
     }
@@ -76,20 +82,18 @@ void PD_update_angle(float currentAngle, uint64_t time_ms) {
 
 void PD_init( float Kp, float Kd)
 {
-	kp_global = Kp;
-	kd_global = Kd;
-}
+kp_global=Kp;
+kd_global=Kd;
 
+}
 void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 {
     float error = actualDistance - maxDistance;
-
-    // in the backward case
     if(error<0){
-    	kp_global=4;
-    	kd_global=4;
-    }
+    	kp_global=2;
+    	kd_global=8;
 
+    }
     float p = kp_global * error;
     float d = kd_global*(error - prev_error) ;
     prev_error = error;
@@ -97,11 +101,11 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 
     speed = p + d;
 
-    // Clamp speed to [-MAX_LINEAR_SPEED_CORRECTION, MAX_LINEAR_SPEED_CORRECTION]
-    if (speed > MAX_LINEAR_SPEED_CORRECTION) {
-        speed = MAX_LINEAR_SPEED_CORRECTION;
-    } else if (speed < -MAX_LINEAR_SPEED_CORRECTION) {
-        speed = -MAX_LINEAR_SPEED_CORRECTION;
+    // Clamp speed to [-100, 100]
+    if (speed > 100.0f) {
+        speed = 100.0f;
+    } else if (speed < -100.0f) {
+        speed = -100.0f;
     }
 
     // Apply deadband threshold
@@ -110,40 +114,15 @@ void PD_update_from_distance(float actualDistance, uint64_t time_ms)
 //    } else if (speed < 0.0f && speed > -30.0f) {
 //        speed = -30.0f; // Minimum backward speed
 //    }
-	if(fabs(error) < DISTANCE_ERROR_THRESH){
-		speed = 0;
-	}
+if(fabs(error)<6){
+	speed=0;
+}
     // Movement logic
-    if (speed > 0) {
-        CAR_forward(speed,speed);
-    } else if (speed < 0) {
-        CAR_backwards(-speed,-speed);
-    } else {
-        CAR_stop();
-    }
+//    if (speed > 0) {
+//        CAR_forward(speed,speed);
+//    } else if (speed < 0) {
+//        CAR_backwards(-speed,-speed);
+//    } else {
+//        CAR_stop();
+//    }
 }
-
-
-// Update angle control, currentAngle and targetAngle in degrees it returns 1 if the error is less than a certain threshold else 0
-uint8_t PD_update_angle_ret(float currentAngle) {
-    float error = mainAngle - currentAngle;  // desired - current
-    float derivative = (error - prev_angle_error) ;
-
-    prev_angle_error = error;
-
-    float steering_correction = kp_angle * error + kd_angle * derivative;
-
-    // Clamp correction
-    if (steering_correction > MAX_STEERING_CORRECTION) steering_correction = MAX_STEERING_CORRECTION;
-    else if (steering_correction < -MAX_STEERING_CORRECTION) steering_correction = -MAX_STEERING_CORRECTION;
-
-    if (steering_correction > 0) {
-    	CAR_right(steering_correction, steering_correction);
-
-    } else if (steering_correction < 0) {
-    	CAR_left(-1*steering_correction, -1*steering_correction);
-    }
-
-    return (fabs(error) < ANGLE_ERROR_THRESH) ? 1 : 0;
-}
-
