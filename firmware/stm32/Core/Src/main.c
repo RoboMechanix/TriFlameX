@@ -43,10 +43,11 @@ int main(void) {
 
 	// === Initialize PD Controllers ===
 	PD_init(0.375f, 1.0f);        // Distance PD
-	PD_init_angle(2.2f, 1.0f);  // Angle control PD
+	PD_init_angle(2.5f, 1.0f);  // Angle control PD
 	UART1_InterruptsInit();
-	delay_ms(2000);
 
+	GPIO_pinMode(GPIOB, 8, OUTPUT);
+	GPIO_digitalWrite(GPIOB, 8, LOW);
 	while (1) {
 
 		if (!command) {
@@ -56,18 +57,18 @@ int main(void) {
 
 
 		if(!is_angle_reached && PD_update_angle_ret(angle)){  // 69 might be the actual angle from IMU
-			if (TIM_Millis() - time < 500){
+			if (TIM_Millis() - time > 1000){
 				is_angle_reached = 1;
 				delay_ms(1000);
 				CAR_stop();
-			}else{
-				time = TIM_Millis();
-				is_angle_reached = 0;
 			}
+		}else{
+			time = TIM_Millis();
 		}
-
-		PD_update_from_distance(distance, current_time_ms);
-
+		if (is_angle_reached){
+			PD_update_from_distance(distance, current_time_ms);
+			GPIO_digitalWrite(GPIOB, 8, HIGH);
+		}
 	}
 }
 
