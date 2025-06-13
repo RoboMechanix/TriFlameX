@@ -107,7 +107,11 @@ void PD_Angle_Task(void *pvParameters) {
 //
 //			PD_init_angle(1.3f, 0.0f);
 //		}
+		if(!command){
+			CAR_stop();
+		}else
 		PD_update_angle(angle, current_time_ms);
+
 		vTaskDelay(pdMS_TO_TICKS(1)); // Update every 10ms
 	}
 }
