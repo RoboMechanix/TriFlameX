@@ -65,6 +65,8 @@ int main(void) {
 				is_angle_reached = 0;
 			}
 		}
+if(distance>maxDistance)
+	PD_init(0.375f, 1.0f);        // Distance PD
 
 		PD_update_from_distance(distance, current_time_ms);
 
