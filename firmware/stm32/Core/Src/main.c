@@ -76,7 +76,7 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(0.64f, 6.0f);        // Distance PD
+	PD_init(1.4f, 6.0f);        // Distance PD
 	PD_init_angle(0.90f, 0.0f); // Angle control gains
 
 	// === Create FreeRTOS Tasks ===
@@ -98,7 +98,7 @@ void PD_Distance_Task(void *pvParameters) {
 		current_time_ms = TIM_Millis();
 		if (distance != 0.0f) {
 			if (distance > maxDistance)
-				PD_init(0.64f, 6.0f);        // Distance PD
+				PD_init(1.4f, 6.0f);        // Distance PD
 
 			PD_update_from_distance(distance, current_time_ms);
 		}
