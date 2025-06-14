@@ -1,4 +1,5 @@
-.
+
+```
 ├── build
 ├── cad
 │   └── design_files
@@ -1009,4 +1010,4 @@
 │       └── SensorData.csv
 └── tree_output.txt
 
-234 directories, 775 files
+```
