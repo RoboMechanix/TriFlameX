@@ -48,6 +48,20 @@
 ---
 ## 📡 Communication
 
+Control messages are packed and include:
+
+| Field      | Description                   |no of BITS |
+|------------|-------------------------------|-----------|
+| Command    | Type of control command       | 1 bit     |
+| Direction  | Direction of movement         | 1 bit     |
+| Distance   | Distance to move or target    | 14 bit    |
+| Angle      | Steering angle or turn value  | 8 bit     |
+
+command -> STOP/GO
+Direction -> FORWARD/BACKWARDS
+Distance -> min (0) - Max (16383) in cm
+Angle -> Min (0) - Max (255)
+
 ### 🔁 Inter-MCU
 - **ESP32 ↔ STM32:** UART with custom packed binary protocol
 
