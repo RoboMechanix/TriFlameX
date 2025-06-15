@@ -21,7 +21,7 @@
 
 ![Hardware Connections](docs/images/hardware_connections.jpg)
 
-### 💡 Key Components
+###  Key Components
 
 | Component               | Quantity / Car |
 |-------------------------|----------------|
@@ -37,6 +37,8 @@
 
 ## System Software Architecture
 
+The TriFlameX system architecture consists of three primary layers: the central laptop controller, ESP32 modules on each car, and STM32 microcontrollers connected to the car's actuators. Communication flows from sensor acquisition to actuation, coordinated through wireless and wired protocols.
+
 ![System Architecture Diagram](docs/images/CommsFlowChart.png)
 
 ### 🧩 Subsystems
@@ -48,7 +50,52 @@
 ---
 ## 📡 Communication
 
-Control messages are packed and include:
+#### Components and Communication Links
+Laptop (Central Brain):
+- Connected via Wi-Fi to ESP32 modules.
+- Runs control logic in Python.
+- Subscribes and publishes MQTT topics for sensor data and commands.
+
+ESP32 Modules (One per Car):
+- Reads Time-of-Flight (ToF) sensor data via UART1.
+- Publishes sensor data to laptop via MQTT.
+- Receives commands from laptop via MQTT.
+- Forwards commands to STM32 over UART2 using a custom binary protocol.
+- Subscribes to joystick commands in manual mode and forwards to STM32.
+
+STM32 Microcontrollers:
+- Connected to ESP32 via UART2.
+- Receives commands, verifies packet integrity.
+- Sends acknowledgments (ACK).
+- Controls motors and servos based on commands.
+
+
+### 🔁 Inter-MCU
+- **ESP32 ↔ STM32:** UART with custom packed binary protocol
+
+# UART Packet Format
+
+Each UART packet sent from ESP32 to STM32 consists of **6 bytes**:
+
+| Byte Index | Field        | Description                                       |
+|------------|--------------|---------------------------------------------------|
+| 0          | Start Byte   | `0xAA` — indicates beginning of message           |
+| 1–3        | Payload      | 3-byte packed data (see layout below)             |
+| 4          | Checksum     | XOR of bytes 1–3                                  |
+| 5          | End Byte     | `0x55` — indicates end of message                 |
+
+### 🔐 Checksum:
+- Ensures data integrity.  
+- `checksum = byte1 ^ byte2 ^ byte3`
+
+### 📩 ACK:
+- STM32 replies with `0xCC` after successful message parsing and checksum validation.
+
+---
+
+## Bit Layout (24 bits = 3 bytes Payload):
+
+**[command:1][dir:1][distance:14][angle:8]**
 
 | Field      | Description                   |no of BITS |
 |------------|-------------------------------|-----------|
@@ -62,30 +109,20 @@ Direction -> FORWARD/BACKWARDS
 Distance -> min (0) - Max (16383) in cm
 Angle -> Min (0) - Max (255)
 
-### 🔁 Inter-MCU
-- **ESP32 ↔ STM32:** UART with custom packed binary protocol
-
-### 🌍 Swarm Network
-- **MQTT (over Wi-Fi)**: All ESP32 devices subscribe to:
-  - `/car/<color>/distance`
-  - `/car/<color>/control`
-  - `/car/<color>/status`
-
-### 🧠 Decision Logic
+###  Decision Logic
 - Each car sends its distance to fire.
 - Laptop selects the car with **lowest distance**.
 - Only that car receives movement commands, others idle.
 
 ---
 
-## 📐 Custom LiDAR Sensor
+## 📐 Custom-Made Thermal LiDAR Sensor
 
-![LiDAR Mount](assets/lidar_mount.png)
+![LiDAR Mount](docs/images/Lidar.png)
 
-- **ToF VL53L0X** sensor mounted on a **NEMA 17 stepper**
-- Performs **150° scans** in ~5 seconds
+- **ToF VL53L0X** sensor mounted on a **NEMA 17 stepper** which Performs **150° scans** in ~5 seconds
 - Data is processed and visualized as a 2D point cloud in **Processing**
-- STL file included: `/cad/lidar_mount.stl`
+- STL file included: [Hardware DIR](hardware) 
 
 ---
 
@@ -110,11 +147,10 @@ Forward/backward and turning control are combined
 Prerequisites
 
    - STM32 C toolchain (Keil, STM32CubeIDE, or arm-none-eabi)
-
    - ESP32 Arduino or FreeRTOS SDK
    - Python 3.10+ for MQTT broker and visualization
    - ROS2 (optional, for integration)
-   - MQTT broker (e.g., Mosquitto or broker running on laptop)
+   - MQTT broker (Mosquitto)
 
 Steps
 
@@ -136,12 +172,17 @@ Steps
    ```bash
    idf.py -p /dev/ttyUSB0 flash monitor
    ```
-4. Run the Python broker or ROS2 nodes on your host PC.
 
-5. Start the MQTT visualizer.
+4. Flash the firmware to the STM32 using stlink
+
+4. Run the Python broker by running [MQTT Client](firmware/laptop_mainBrain/mqtt_client.py) 
+
+5. Run ROS2 Joy Node in your terminal and in another tab run [joytoCMD Node](firmware/laptop_mainBrain/triflamex_ros2_pkg/triflamex_ros2_pkg/joy_to_cmd_node.py)
+
+5. Start the TriFlameX visualizer UI.
 
 6. Place fire object, watch the swarm coordinate.
----
+
 
 ## Usage
 
@@ -149,22 +190,20 @@ Steps
 - **Autonomous Mode:** Cars operate based on autonomous navigation algorithms implemented in Python.
 - Switch modes dynamically by sending control commands.
 
----
-
 
 
 ## Contribution
 
-Contributions are welcome! Please open an issue or submit a pull request with improvements or bug fixes.
+Contributions are welcome! Please open an issue or submit a pull request with improvements or bug fixes for further info refer to [CONTRIBUTING.md](CONTRIBUTING.md)
 
----
 
 ## 📜 License
 
-MIT License – Feel free to fork, adapt, and extend.
+[MIT License](LICENSE) – Feel free to fork, adapt, and extend. 
 
----
 
 ## Contact
 
-For questions or support, contact Mohammed Abdelazim at [mohammed@azab.io] or via GitHub [Mohammed-Azab] or Mohamed Elsheemy at [mo.sheemy21@gmail.com] or via github at [RealBliTzPro] .
+For questions or support, contact 
+   - Mohammed Abdelazim at [mohammed@azab.io] or via GitHub [Mohammed-Azab](https://github.com/Mohammed-Azab).
+   - Mohamed Elsheemy at [mo.sheemy21@gmail.com] or via github at [RealBliTzPro].
