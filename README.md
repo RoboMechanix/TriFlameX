@@ -128,7 +128,7 @@ Angle -> Min (0) - Max (255)
 
 ![LiDAR Mount](docs/images/Lidar.png)
 
-- **ToF VL53L0X** sensor mounted on a **NEMA 17 stepper** which Performs **150° scans** in ~5 seconds
+- **ToF VL53L0X** sensor mounted on a **NEMA 17 stepper** which Performs **span° scans** in being able to be edited in file default value of 126°
 - Data is processed and visualized as a 2D point cloud in **Processing**
 - STL file included: [Hardware DIR](hardware) 
 
@@ -137,24 +137,15 @@ Angle -> Min (0) - Max (255)
 ## 🎯 Motion Control
 
 ### 📌 PD Controllers
+Just change kp_distance, kd_distance , kp_angles , kd_angles to fit your own build and response
 
-#### Distance Controller
-```c
-PWM = Kp_d * error_d + Kd_d * (error_d - prev_error_d);
-```
-#### Angle Controller
-```c
-Steering = Kp_a * angle_error + Kd_a * (angle_error - prev_error_a);
-```
-Saturation and dead zones implemented for stability
-
-Forward/backward and turning control are combined
 
 ## Installation / Build & Run Instructions
 
 Prerequisites
 
-   - STM32 C toolchain (Keil, STM32CubeIDE, or arm-none-eabi)
+   - STM32 C toolchain (STM32CubeIDE)
+
    - ESP32 Arduino or FreeRTOS SDK
    - Python 3.10+ for MQTT broker and visualization
    - ROS2 (optional, for integration)
@@ -180,8 +171,9 @@ Steps
    ```bash
    idf.py -p /dev/ttyUSB0 flash monitor
    ```
+   or with arduino IDE
 
-4. Flash the firmware to the STM32 using stlink
+4. Flash the firmware to the STM32 with STM32CubeIDE using stlink
 
 4. Run the Python broker by running [MQTT Client](firmware/laptop_mainBrain/mqtt_client.py) 
 
