@@ -3,7 +3,15 @@
 
 **TriFlameX** is an STM32-based firmware project designed to enable seamless control of multiple cars (blue, red, black) in both autonomous and manual modes. The system leverages MQTT and ROS2 for communication, allowing real-time control, monitoring, and coordination of vehicles.
 
+![TriFlameX](docs/images/triflamex.jpeg)
+
 ---
+
+## TriFlameX Visualizer GUI
+
+Below is a screenshot of the custom-built TriFlameX Visualizer GUI, which displays real-time system information including sensor data, robot states, LiDAR scans, and decision-making logs.
+
+![TriFlameXVisualizerGUI](docs/images/TriFlameXVisualizer.png)
 
 ## Features
 
