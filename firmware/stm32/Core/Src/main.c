@@ -2,7 +2,10 @@
 #include "main.h"
 #include "FreeRTOS.h"
 #include "task.h"
-
+float kp_distance=0.64f;
+float kd_distance =6.0f;
+float kp_angles = 0.90f;
+float kd_angles = 0.00f;
 // === Globals ===
 uint64_t current_time_ms = 1;
 
@@ -76,8 +79,8 @@ int main(void) {
 	delay_ms(50);
 
 	// === Initialize PD controllers ===
-	PD_init(1.4f, 6.0f);        // Distance PD
-	PD_init_angle(0.90f, 0.0f); // Angle control gains
+	PD_init(kp_distance, kd_distance);        // Distance PD
+	PD_init_angle(kp_angles, kd_angles); // Angle control gains
 
 	// === Create FreeRTOS Tasks ===
 //	xTaskCreate(UART_Parse_Task, "UARTTask", 128, NULL, 1, NULL);
@@ -98,7 +101,7 @@ void PD_Distance_Task(void *pvParameters) {
 		current_time_ms = TIM_Millis();
 		if (distance != 0.0f) {
 			if (distance > maxDistance)
-				PD_init(1.4f, 6.0f);        // Distance PD
+				PD_init(kp_distance, kd_distance);        // Distance PD
 
 			PD_update_from_distance(distance, current_time_ms);
 		}
