@@ -99,7 +99,7 @@ Angle -> Min (0) - Max (255)
 
 Prerequisites
 
-   - STM32 C toolchain (Keil, STM32CubeIDE, or arm-none-eabi)
+   - STM32 C toolchain (STM32CubeIDE)
 
    - ESP32 Arduino or FreeRTOS SDK
    - Python 3.10+ for MQTT broker and visualization
