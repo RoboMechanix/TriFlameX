@@ -92,7 +92,7 @@ Angle -> Min (0) - Max (255)
 ## 🎯 Motion Control
 
 ### 📌 PD Controllers
-
+Just change kp_distance, kd_distance , kp_angles , kd_angles to fit your own build and response
 
 
 ## Installation / Build & Run Instructions
