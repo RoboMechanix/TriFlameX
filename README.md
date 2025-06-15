@@ -93,17 +93,7 @@ Angle -> Min (0) - Max (255)
 
 ### 📌 PD Controllers
 
-#### Distance Controller
-```c
-PWM = Kp_d * error_d + Kd_d * (error_d - prev_error_d);
-```
-#### Angle Controller
-```c
-Steering = Kp_a * angle_error + Kd_a * (angle_error - prev_error_a);
-```
-Saturation and dead zones implemented for stability
 
-Forward/backward and turning control are combined
 
 ## Installation / Build & Run Instructions
 
