@@ -1,5 +1,5 @@
 
-# TriFlameX
+# TriFlameX – Autonomous Swarm Fire-Fighting Robots 
 
 **TriFlameX** is an STM32-based firmware project designed to enable seamless control of multiple cars (blue, red, black) in both autonomous and manual modes. The system leverages MQTT and ROS2 for communication, allowing real-time control, monitoring, and coordination of vehicles.
 
@@ -17,28 +17,92 @@
 
 ---
 
-## Hardware
+## Hardware Architecture
 
-- ESP32 microcontroller
-- Motor drivers and PWM control for vehicle actuation
-- Sensors (e.g., IMU, encoders) for feedback (optional, based on your implementation)
-- Wireless communication module (Wi-Fi for MQTT)
+![Hardware Connections](docs/images/hardware_connections.jpg)
 
----
+### 💡 Key Components
 
-## Software Architecture
-
-- Firmware runs on ESP32 with FreeRTOS for task management
-- ROS2 nodes handle communication and control logic
-- MQTT broker for message exchange
-- Python or C++ clients for higher-level control and monitoring
-- Topics:
-  - /car/control for sending driving commands
-  - /car/status for reporting car state and connectivity
+| Component               | Quantity / Car |
+|-------------------------|----------------|
+| DC Motors               | 4              |
+| H-Bridge Motor Driver   | 1              |
+| ESP32 Module            | 1              |
+| STM32 Microcontroller   | 1              |
+| Custom LiDAR (ToF + Stepper) | 1        |
+| Buck Converters         | 2 (5V & 3.3V)   |
+| 3S LiPo Battery         | 1              |
 
 ---
 
-## Installation
+## System Software Architecture
+
+![System Architecture Diagram](docs/images/CommsFlowChart.png)
+
+### 🧩 Subsystems
+
+- **STM32 (C, direct register)**: Controls motors, handles PD algorithms, receives commands via UART
+- **ESP32 (Arduino/FreeRTOS)**: Reads LiDAR, calculates distance and angle, communicates via MQTT
+- **Laptop (Python, ROS2)**: Acts as central MQTT broker and monitor, visualizes LiDAR scans using Processing
+
+---
+## 📡 Communication
+
+### 🔁 Inter-MCU
+- **ESP32 ↔ STM32:** UART with custom packed binary protocol
+
+### 🌍 Swarm Network
+- **MQTT (over Wi-Fi)**: All ESP32 devices subscribe to:
+  - `/car/<color>/distance`
+  - `/car/<color>/control`
+  - `/car/<color>/status`
+
+### 🧠 Decision Logic
+- Each car sends its distance to fire.
+- Laptop selects the car with **lowest distance**.
+- Only that car receives movement commands, others idle.
+
+---
+
+## 📐 Custom LiDAR Sensor
+
+![LiDAR Mount](assets/lidar_mount.png)
+
+- **ToF VL53L0X** sensor mounted on a **NEMA 17 stepper**
+- Performs **150° scans** in ~5 seconds
+- Data is processed and visualized as a 2D point cloud in **Processing**
+- STL file included: `/cad/lidar_mount.stl`
+
+---
+
+## 🎯 Motion Control
+
+### 📌 PD Controllers
+
+#### Distance Controller
+```c
+PWM = Kp_d * error_d + Kd_d * (error_d - prev_error_d);
+```
+#### Angle Controller
+```c
+Steering = Kp_a * angle_error + Kd_a * (angle_error - prev_error_a);
+```
+Saturation and dead zones implemented for stability
+
+Forward/backward and turning control are combined
+
+## Installation / Build & Run Instructions
+
+Prerequisites
+
+   - STM32 C toolchain (Keil, STM32CubeIDE, or arm-none-eabi)
+
+   - ESP32 Arduino or FreeRTOS SDK
+   - Python 3.10+ for MQTT broker and visualization
+   - ROS2 (optional, for integration)
+   - MQTT broker (e.g., Mosquitto or broker running on laptop)
+
+Steps
 
 1. Clone the repository:
 
@@ -51,42 +115,29 @@
 
    - ESP-IDF for ESP32 firmware development
    - ROS2 Humble (or the ROS2 version you use)
-   - MQTT Broker (e.g., Mosquitto)
+   - MQTT Broker (Mosquitto)
 
 3. Flash the firmware to the ESP32:
 
    ```bash
    idf.py -p /dev/ttyUSB0 flash monitor
    ```
+4. Run the Python broker or ROS2 nodes on your host PC.
 
-4. Run the MQTT broker and ROS2 nodes on your host PC.
+5. Start the MQTT visualizer.
 
+6. Place fire object, watch the swarm coordinate.
 ---
 
 ## Usage
 
-- **Manual Mode:** Control cars directly via MQTT messages or ROS2 topics.
-- **Autonomous Mode:** Cars operate based on autonomous navigation algorithms implemented in ROS2.
+- **Manual Mode:** Control cars directly via MQTT messages with ROS2 topics.
+- **Autonomous Mode:** Cars operate based on autonomous navigation algorithms implemented in Python.
 - Switch modes dynamically by sending control commands.
 
 ---
 
-## Communication Protocol
 
-Control messages are packed and include:
-
-| Field      | Description                    |
-|------------|-------------------------------|
-| Command    | Type of control command       1 bit   |
-| Direction  | Direction of movement         1 bit   |
-| Distance   | Distance to move or target    14 bit  |
-| Angle      | Steering angle or turn value  8 bit   |
-
----
-
-## Project Structure
-
-See 
 
 ## Contribution
 
@@ -94,12 +145,12 @@ Contributions are welcome! Please open an issue or submit a pull request with im
 
 ---
 
-## License
+## 📜 License
 
-Specify your license here (e.g., MIT, GPLv3)
+MIT License – Feel free to fork, adapt, and extend.
 
 ---
 
 ## Contact
 
-For questions or support, contact Mohammed Abdelazim at [your email] or via GitHub [YourGitHubUsername].
+For questions or support, contact Mohammed Abdelazim at [mohammed@azab.io] or via GitHub [Mohammed-Azab].
