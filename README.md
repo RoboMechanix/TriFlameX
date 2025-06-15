@@ -121,11 +121,9 @@ Steps
    - ROS2 Humble (or the ROS2 version you use)
    - MQTT Broker (Mosquitto)
 
-3. Flash the firmware to the ESP32:
+3. Flash the firmware to the ESP32 with arduino IDE and the STM32 with STM32CubeIDE
 
-   ```bash
-   idf.py -p /dev/ttyUSB0 flash monitor
-   ```
+ 
 4. Run the Python broker or ROS2 nodes on your host PC.
 
 5. Start the MQTT visualizer.
