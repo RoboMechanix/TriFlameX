@@ -153,4 +153,4 @@ MIT License – Feel free to fork, adapt, and extend.
 
 ## Contact
 
-For questions or support, contact Mohammed Abdelazim at [mohammed@azab.io] or via GitHub [Mohammed-Azab].
+For questions or support, contact Mohammed Abdelazim at [mohammed@azab.io] or via GitHub [Mohammed-Azab] or Mohamed Elsheemy at [mo.sheemy21@gmail.com] or via github at [RealBliTzPro] .
