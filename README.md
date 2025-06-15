@@ -13,6 +13,10 @@ Below is a screenshot of the custom-built TriFlameX Visualizer GUI, which displa
 
 ![TriFlameXVisualizerGUI](docs/images/TriFlameXVisualizer.png)
 
+## TriFlameX Working Wechanism Video:
+
+![TriFlameXVisualizingVideo](docs/videos/onSiteVideo.mp4)
+
 ## Features
 
 - Supports autonomous and manual driving modes
