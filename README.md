@@ -83,7 +83,7 @@ Angle -> Min (0) - Max (255)
 ![LiDAR Mount](assets/lidar_mount.png)
 
 - **ToF VL53L0X** sensor mounted on a **NEMA 17 stepper**
-- Performs **150° scans** in ~5 seconds
+- Performs **span° scans** in being able to be edited in file default value of 126°
 - Data is processed and visualized as a 2D point cloud in **Processing**
 - STL file included: `/cad/lidar_mount.stl`
 
