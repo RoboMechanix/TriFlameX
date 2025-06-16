@@ -215,3 +215,4 @@ Contributions are welcome! Please open an issue or submit a pull request with im
 For questions or support, contact 
    - Mohammed Abdelazim at [mohammed@azab.io] or via GitHub [Mohammed-Azab](https://github.com/Mohammed-Azab).
    - Mohamed Elsheemy at [mo.sheemy21@gmail.com] or via github at [RealBliTzPro].
+   - George Halim at [georgehany064@gmail.com]
