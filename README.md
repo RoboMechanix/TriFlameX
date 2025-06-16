@@ -126,6 +126,10 @@ Angle -> Min (0) - Max (255)
 - Laptop selects the car with **lowest distance**.
 - Only that car receives movement commands, others idle.
 
+###  Ros2 Termianl Log Screenshot:
+
+![Ros2 Nodes](docs/images/Ros2TerminalLog.png)
+
 ---
 
 ## 📐 Custom-Made Thermal LiDAR Sensor
